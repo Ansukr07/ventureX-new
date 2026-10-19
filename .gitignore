@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Reference & audit documentation
+REFERENCE_WEBSITE.md
+UI_AND_MOTION_AUDIT.md
+reference-analysis/
