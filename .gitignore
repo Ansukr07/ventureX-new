@@ -17,6 +17,7 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
@@ -27,3 +28,6 @@ dist-ssr
 REFERENCE_WEBSITE.md
 UI_AND_MOTION_AUDIT.md
 reference-analysis/
+
+# Scratch & Temporary Testing Scripts/Dumps
+scratch/

@@ -2,7 +2,7 @@
   {
     "slug": "frank-lloyd-wright",
     "name": "Frank Lloyd Wright",
-    "color": "#1E4BD7",
+    "color": "#699ad1",
     "images": [
       "/mosby/frank-lloyd-wright-0.avif",
       "/mosby/frank-lloyd-wright-1.avif",
@@ -43,7 +43,7 @@
   {
     "slug": "irving-gill",
     "name": "Irving Gill",
-    "color": "#D71E1E",
+    "color": "#ec2127",
     "images": [
       "/mosby/irving-gill-0.avif",
       "/mosby/irving-gill-1.avif",
@@ -94,7 +94,7 @@
   {
     "slug": "frank-gehry",
     "name": "Frank Gehry",
-    "color": "#0C7866",
+    "color": "#ec2127",
     "images": [
       "/mosby/frank-gehry-0.avif",
       "/mosby/frank-gehry-1.avif",
@@ -139,7 +139,7 @@
   {
     "slug": "louis-kahn",
     "name": "Louis Kahn",
-    "color": "#581E70",
+    "color": "#f5cf51",
     "images": [
       "/mosby/louis-kahn-0.avif",
       "/mosby/louis-kahn-1.avif",
@@ -183,7 +183,7 @@
   {
     "slug": "i-m-pei",
     "name": "I. M. Pei",
-    "color": "#FFE927",
+    "color": "#699ad1",
     "images": [
       "/mosby/i-m-pei-0.avif",
       "/mosby/i-m-pei-1.avif",
@@ -227,7 +227,7 @@
   {
     "slug": "paul-rudolph",
     "name": "Paul Rudolph",
-    "color": "#000000",
+    "color": "#803f98",
     "images": [
       "/mosby/paul-rudolph-0.avif",
       "/mosby/paul-rudolph-1.avif",
@@ -279,7 +279,7 @@
   {
     "slug": "mary-colter",
     "name": "Mary Colter",
-    "color": "#D71E1E",
+    "color": "#803f98",
     "images": [
       "/mosby/mary-colter-0.avif",
       "/mosby/mary-colter-1.avif",
@@ -323,7 +323,7 @@
   {
     "slug": "louis-sullivan",
     "name": "Louis Sullivan",
-    "color": "#1E4BD7",
+    "color": "#699ad1",
     "images": [
       "/mosby/louis-sullivan-0.avif",
       "/mosby/louis-sullivan-1.avif",

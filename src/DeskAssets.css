@@ -1,0 +1,209 @@
+/* DeskAssets.css - Realistic stationery and desk accessories styling */
+
+.desk-assets-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1; /* Below folder stack (.archive z-index: 2), above desk mat (z-index: 0, 1) */
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  will-change: opacity, transform;
+}
+
+.desk-item {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.desk-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Individual Item Sizing, Anchoring, and Realistic Shadows */
+
+/* 1. Scissors - Top Left */
+.desk-item-scissors {
+  top: clamp(20px, 4vh, 50px);
+  left: clamp(-15px, 1.5vw, 40px);
+  width: clamp(160px, 15vw, 225px);
+  filter: drop-shadow(8px 18px 24px rgba(0, 0, 0, 0.48)) drop-shadow(2px 5px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* 2. Sticky Note - Top Left (pinned with paperclip) */
+.desk-item-sticky {
+  top: clamp(30px, 5.5vh, 65px);
+  left: clamp(140px, 15vw, 240px);
+  width: clamp(125px, 10.5vw, 165px);
+  filter: drop-shadow(4px 14px 18px rgba(0, 0, 0, 0.38)) drop-shadow(1px 3px 6px rgba(0, 0, 0, 0.2));
+}
+
+/* 3. Paperclip on Sticky Note */
+.desk-item-paperclip-sticky {
+  top: clamp(22px, 4.5vh, 52px);
+  left: clamp(210px, 21.5vw, 335px);
+  width: clamp(26px, 2.2vw, 36px);
+  filter: drop-shadow(2px 6px 8px rgba(0, 0, 0, 0.42));
+  z-index: 2;
+}
+
+/* 4. Reading Eyeglasses - Mid Left (In open space left of hero title) */
+.desk-item-glasses {
+  top: clamp(180px, 25vh, 320px);
+  left: clamp(0px, 2.5vw, 60px);
+  width: clamp(180px, 17vw, 260px);
+  filter: drop-shadow(10px 22px 28px rgba(0, 0, 0, 0.52)) drop-shadow(3px 8px 10px rgba(0, 0, 0, 0.28));
+}
+
+/* 5. Crumpled Paper Ball - Mid/Lower Left */
+.desk-item-paper-lowerleft {
+  top: clamp(380px, 46vh, 560px);
+  left: clamp(-15px, 1vw, 30px);
+  width: clamp(95px, 8.5vw, 130px);
+  filter: drop-shadow(10px 22px 26px rgba(0, 0, 0, 0.48)) drop-shadow(3px 6px 10px rgba(0, 0, 0, 0.25));
+}
+
+/* 6. Crumpled Paper Ball - Top Edge */
+.desk-item-paper-top {
+  top: clamp(-20px, 0.5vh, 20px);
+  right: clamp(160px, 20vw, 320px);
+  width: clamp(85px, 7.5vw, 120px);
+  filter: drop-shadow(8px 18px 22px rgba(0, 0, 0, 0.45));
+}
+
+/* 7. Binder Clip - Top Right */
+.desk-item-binder {
+  top: clamp(25px, 4.5vh, 65px);
+  right: clamp(30px, 3.5vw, 75px);
+  width: clamp(95px, 8.5vw, 135px);
+  filter: drop-shadow(8px 16px 20px rgba(0, 0, 0, 0.46)) drop-shadow(2px 5px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* 8. Earphones - Mid/Right Margin (In open space right of hero title) */
+.desk-item-earphones {
+  top: clamp(160px, 22vh, 290px);
+  right: clamp(-15px, 1.8vw, 45px);
+  width: clamp(190px, 18vw, 270px);
+  filter: drop-shadow(8px 18px 24px rgba(0, 0, 0, 0.42)) drop-shadow(2px 6px 10px rgba(0, 0, 0, 0.22));
+}
+
+/* 9. Second Paperclip - Mid/Right Lower */
+.desk-item-paperclip-right {
+  top: clamp(400px, 48vh, 580px);
+  right: clamp(110px, 12vw, 190px);
+  width: clamp(28px, 2.3vw, 38px);
+  filter: drop-shadow(2px 6px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* 10. Crumpled Paper Ball - Bottom Right */
+.desk-item-paper-bottomright {
+  top: clamp(430px, 52vh, 640px);
+  right: clamp(-10px, 1.5vw, 40px);
+  width: clamp(100px, 9vw, 145px);
+  filter: drop-shadow(10px 22px 28px rgba(0, 0, 0, 0.5)) drop-shadow(3px 8px 10px rgba(0, 0, 0, 0.25));
+}
+
+/* Responsive: Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .desk-item-sticky {
+    left: clamp(110px, 13vw, 180px);
+    width: clamp(95px, 10vw, 135px);
+  }
+  .desk-item-paperclip-sticky {
+    left: clamp(165px, 18vw, 245px);
+  }
+  .desk-item-earphones {
+    right: -10px;
+    width: clamp(160px, 17vw, 220px);
+  }
+  .desk-item-glasses {
+    left: 5px;
+    width: clamp(150px, 16vw, 210px);
+  }
+}
+
+/* Responsive: Mobile Viewports (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Clean perimeter framing on mobile: tuck along borders so central folders are 100% unobstructed */
+  .desk-item-scissors {
+    top: 55px;
+    left: -40px;
+    width: 105px;
+  }
+  .desk-item-sticky {
+    display: none; /* Hide sticky on mobile so top header & hero remain clear */
+  }
+  .desk-item-paperclip-sticky {
+    display: none;
+  }
+  .desk-item-glasses {
+    top: 25vh;
+    left: -45px;
+    width: 135px;
+    opacity: 0.85;
+  }
+  .desk-item-binder {
+    top: 55px;
+    right: 12px;
+    width: 70px;
+  }
+  .desk-item-earphones {
+    top: 22vh;
+    right: -55px;
+    width: 155px;
+    opacity: 0.85;
+  }
+  .desk-item-paper-top {
+    top: -20px;
+    right: 80px;
+    width: 70px;
+  }
+  .desk-item-paper-lowerleft {
+    top: 75vh;
+    left: -25px;
+    width: 75px;
+  }
+  .desk-item-paper-bottomright {
+    top: 78vh;
+    right: -25px;
+    width: 80px;
+  }
+  .desk-item-paperclip-right {
+    display: none;
+  }
+}
+
+/* Responsive: Extra Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .desk-item-scissors {
+    top: 48px;
+    left: -45px;
+    width: 95px;
+  }
+  .desk-item-binder {
+    top: 48px;
+    right: 8px;
+    width: 60px;
+  }
+  .desk-item-glasses {
+    display: none;
+  }
+  .desk-item-earphones {
+    top: 24vh;
+    right: -60px;
+    width: 135px;
+    opacity: 0.75;
+  }
+  .desk-item-paper-top {
+    display: none;
+  }
+}
