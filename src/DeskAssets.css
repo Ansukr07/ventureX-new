@@ -8,6 +8,7 @@
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  perspective: 1200px;
   will-change: opacity, transform;
 }
 
@@ -18,6 +19,15 @@
   -webkit-user-drag: none;
   display: block;
   transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.desk-item-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
   will-change: transform, opacity;
 }
 
