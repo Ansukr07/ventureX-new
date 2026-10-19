@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import cases from './cases.json'
 import about from './about.json'
 import './App.css'
@@ -11,23 +11,85 @@ const groups=[
 ]
 function useRoute(){const [path,setPath]=useState(location.pathname);useEffect(()=>{const f=()=>setPath(location.pathname);addEventListener('popstate',f);return()=>removeEventListener('popstate',f)},[]);function go(next){if(next!==location.pathname){history.pushState({},'',next);setPath(next)}window.scrollTo({top:0,behavior:'instant'})}return[path,go]}
 function Link({to,go,children,...props}){return <a href={to} onClick={e=>{e.preventDefault();go(to)}} {...props}>{children}</a>}
-function Footer(){return <footer className="folder-footer"><div className="scale"><span/><small>0  4  8  16　　　　 32</small></div><span>© 2026</span><a href="https://tubikstudio.com/" target="_blank" rel="noreferrer">CRAFTED WITH ♥ BY <u>TUBIK STUDIO</u></a><span className="footer-seal">◕</span></footer>}
-function CompassRow(){return <div className="compass-row" aria-hidden="true">{Array.from({length:7},(_,i)=><span className={'compass compass-'+i} key={i}><i/>N</span>)}</div>}
+function Footer(){return <footer className="folder-footer"><img className="scale" src="/footer/scale.svg" alt="Architectural scale"/><span className="footer-year">© 2026</span><a href="https://tubikstudio.com/" target="_blank" rel="noreferrer"><span>CRAFTED WITH ♥ BY <u>TUBIK STUDIO</u></span><img className="footer-seal" src="/footer/tubik_logo.svg" alt="Tubik Studio"/></a></footer>}
+const compassImages=['f.png','f-1.png','f-2.avif','f-3.png','f-4.png','f-5.png','f-6.avif']
+function CompassRow(){
+ const row=useRef(null)
+ useEffect(()=>{
+  const motion=window.matchMedia('(prefers-reduced-motion: reduce)')
+  let frame=0
+  let pointer=null
+  const draw=()=>{
+   frame=0
+   if(!pointer||motion.matches)return
+   // Measure unrotated wrappers before updating the image transforms.
+   const compasses=Array.from(row.current?.children??[])
+   const angles=compasses.map(el=>{
+    const rect=el.getBoundingClientRect()
+    return Math.atan2(pointer.y-rect.top-rect.height/2,pointer.x-rect.left-rect.width/2)*180/Math.PI+45
+   })
+   compasses.forEach((el,i)=>{el.firstElementChild.style.transform=`rotate(${angles[i]}deg)`})
+  }
+  const move=e=>{
+   if(e.pointerType==='touch'||motion.matches)return
+   pointer={x:e.clientX,y:e.clientY}
+   if(!frame)frame=requestAnimationFrame(draw)
+  }
+  const reset=()=>{
+   if(frame)cancelAnimationFrame(frame)
+   frame=0
+   for(const el of row.current?.children??[])el.firstElementChild.style.transform=''
+  }
+  window.addEventListener('pointermove',move,{passive:true})
+  motion.addEventListener('change',reset)
+  return()=>{
+   window.removeEventListener('pointermove',move)
+   motion.removeEventListener('change',reset)
+   if(frame)cancelAnimationFrame(frame)
+  }
+ },[])
+ return <div ref={row} className="compass-row" aria-hidden="true">{compassImages.map((src,i)=><span className={'compass'+(i===0||i===3?' hide-on-mobile':'')} key={src}><img src={'/footer/'+src} alt="" draggable="false"/></span>)}</div>
+}
 function TabShape({name}){const path="M1.1449 0H-521.145C-531.065 0-540.343 4.90374-545.932 13.0999L-558.55 31.6066C-563.837 39.3607-572.615 44-582 44H62C52.6151 44 43.8369 39.3607 38.5499 31.6066L25.9318 13.0999C20.3434 4.90373 11.0649 0 1.1449 0Z";return <><svg className="tab-side tab-start" viewBox="0 0 62 44" preserveAspectRatio="none" aria-hidden="true"><path d={path} fill="currentColor"/></svg><span className="tab-middle">{name}</span><svg className="tab-side tab-end" viewBox="0 0 62 44" preserveAspectRatio="none" aria-hidden="true"><path d={path} fill="currentColor"/></svg></>}
 function Home({go}){
- const [active,setActive]=useState(3)
- const [hoveredFile,setHoveredFile]=useState(null)
+ const [hovered,setHovered]=useState(null)
+ const [unfolded,setUnfolded]=useState(false)
+ function preview(group,page){
+  setHovered({group,page})
+  setUnfolded(false)
+ }
+ function resetPreview(){
+  setHovered(null)
+  setUnfolded(false)
+ }
  useEffect(()=>{document.title='Mosby’s Files—American Modernist Architecture'},[])
  return <main className="home">
   <section className="intro" id="hero"><h1>VENTURE X</h1></section>
   <section className="archive"><div className="stack">{groups.map((g,i)=>{
-   const previewIndex=hoveredFile?.group===i?hoveredFile.index:g.files[0]
-   const showPreview=hoveredFile?.group===i
-   return <article key={g.label} onMouseLeave={()=>setHoveredFile(null)} className={'folder '+(active===i?'open':'')+(showPreview?' has-file-preview':'')} style={{'--color':g.color,'--preview-color':cases[previewIndex].color,'--preview-ink':cases[previewIndex].slug==='i-m-pei'?'#191919':'#fff','--i':i,'--after':i>active?1:0}}>
-    <div className="tab-row" style={{zIndex:i*4+(showPreview?7:2)}}>{g.files.map(index=><Link key={index} to={'/cases/'+cases[index].slug} go={go} className={'folder-tab '+(cases[index].slug==='i-m-pei'?'tab-dark':'')} style={{'--tab-color':cases[index].color}} onMouseEnter={()=>setHoveredFile({group:i,index})} onFocus={()=>setHoveredFile({group:i,index})} onBlur={()=>setHoveredFile(null)}><TabShape name={cases[index].name}/></Link>)}</div>
-    <div className="cover-lip" aria-hidden="true"/>
-    <div className="folder-face" style={{zIndex:i*4+1}} role="button" tabIndex={0} onClick={()=>setActive(i)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setActive(i)}}} aria-expanded={active===i} aria-label={g.label+' folder'}><span className="folder-category">{g.label} <b>{active===i?'⌄':'‹'}</b></span><span className="folder-description">{g.description}</span>{active===i&&<div className="folder-open-content"><CompassRow/><Footer/></div>}</div>
-    <div className={'file-preview-cover'+(showPreview?' is-active':'')} style={{zIndex:i*4+6}} aria-hidden="true"><span className="folder-category">{g.label} <b>{active===i?'⌄':'‹'}</b></span></div>
+   const selected=hovered?.group===i
+   const later=hovered!==null&&i>hovered.group
+   const expanded=selected||(!hovered&&i===groups.length-1)
+   return <article key={g.label} onMouseLeave={resetPreview}
+    className={'folder'+(later?' is-rotated':'')+(later&&unfolded?' is-unfolded':'')}
+    style={{'--color':cases[g.files[0]].color,'--i':i,'--remaining':groups.length-i-1}}>
+    <div className="folder-inner">
+     <div className={'folder-face'+(selected?' is-rotated':'')+(selected&&hovered.page===0?' is-hovered':'')+(expanded?' is-unfolded':'')}>
+      <span className="folder-category"><span className="folder-category-label">{g.label}</span><svg className="folder-category-arrow" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 3.75L6.17542 8.25L9.5 3.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+      <span className="folder-description">{g.description}</span>
+      {i===groups.length-1&&<div className="folder-open-content"><CompassRow/><Footer/></div>}
+     </div>
+     {g.files.map((index,page)=><Link key={index} to={'/cases/'+cases[index].slug} go={go}
+      className={'folder-sheet'+(selected&&page<hovered.page?' is-rotated':'')}
+      style={{'--sheet-color':cases[index].color,'--page':page}}
+      aria-label={'Explore '+cases[index].name}
+      onMouseEnter={()=>preview(i,page)} onFocus={()=>preview(i,page)}
+      onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))resetPreview()}}>
+      <span className="tab-row" aria-hidden="true">{g.files.map((tabIndex,slot)=><span key={tabIndex}
+       className={'folder-tab'+(slot===page?' is-visible':'')+(cases[index].slug==='i-m-pei'?' tab-dark':'')}
+       style={{'--tab-color':cases[index].color}}><TabShape name={cases[tabIndex].name}/></span>)}</span>
+      <span className="folder-unfold-area" onMouseEnter={()=>setUnfolded(true)} onMouseLeave={()=>setUnfolded(false)}/>
+     </Link>)}
+    </div>
    </article>
   })}</div></section>
  </main>
