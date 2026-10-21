@@ -30,4 +30,4 @@ input, select, textarea, label {
   cursor: var(--app-cursor-pointer);
 }
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{position:relative;isolation:isolate;margin:0;min-width:320px;background:#2b5a48}body::before,body::after{content:'';position:fixed;inset:0;pointer-events:none;background-position:center top;background-size:cover;background-repeat:no-repeat}body::before{z-index:0;background-image:url('/greenmat.svg');opacity:.56}body::after{z-index:1;background-image:url('/assets/dappled-sunlight.png');background-position:25% top;opacity:.32;filter:brightness(.82) contrast(1.4) saturate(.85)}button{font:inherit}a{color:inherit;text-decoration:none}::selection{background:#ffe44d;color:#191919}:focus-visible{outline:2px solid #ffe44d;outline-offset:4px}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#191919}::-webkit-scrollbar-thumb{background:#777}
+html,body{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:none;width:0;height:0}

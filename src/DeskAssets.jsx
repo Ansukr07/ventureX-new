@@ -167,7 +167,7 @@ const ASSETS = [
       lerp: 0.09,
       globalParallaxX: 24,
       globalParallaxY: 19,
-      scrollY: -0.15,
+      scrollY: 0.15,
       rotScroll: -0.02
     },
     entrance: { fromX: -75, fromY: 90, fromRotate: -65, delay: 0.32, duration: 1.2 }
@@ -207,7 +207,7 @@ const ASSETS = [
       lerp: 0.095,
       globalParallaxX: 24,
       globalParallaxY: 19,
-      scrollY: -0.18,
+      scrollY: 0.16,
       rotScroll: 0.02
     },
     entrance: { fromX: 85, fromY: 85, fromRotate: 120, delay: 0.42, duration: 1.2 }
