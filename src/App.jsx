@@ -158,6 +158,31 @@ function isTabDark(color) {
   return color === '#f5cf51' || color === '#f5cf52'
 }
 
+function PaperclipTop({ className = '' }) {
+  return (
+    <svg className={`paperclip-svg ${className}`} viewBox="0 0 24 107" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M2.05513 5.28193C4.21232 2.09502 7.8614 0.000174314 11.9995 3.55316e-05C18.6269 3.55316e-05 23.9995 5.37279 23.9996 12.0001L24.0003 95.0002C24.0003 101.628 18.6275 107 12.0002 107C5.37279 107 0.00010339 101.628 0.00010339 95.0002L0.00010339 42.905H1.99989L1.99989 95.0002C1.99989 100.523 6.47735 105.001 12.0002 105.001C17.5229 105 22.0005 100.523 22.0005 95.0002L21.9998 12.0001C21.9997 6.47745 17.5229 2.00066 12.0002 2.00051C8.34976 2.00051 5.15651 3.95666 3.41065 6.87775L2.05513 5.28193Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function PaperclipFull({ className = '' }) {
+  return (
+    <svg className={`paperclip-full-svg ${className}`} viewBox="0 0 27 119" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M6.07566 41.2136L6.54471 92.5805C6.5831 96.7849 8.75324 103.607 12.6652 105.148C18.4425 107.424 19.2992 98.314 19.4108 92.1056L20.809 14.2625C20.9243 7.84149 17.9926 1.08318 11.5708 1.12736C5.20542 1.17115 1.9815 7.56937 1.93352 13.9347C1.59947 58.2519 -0.17395 97.5992 2.92809 107.458C6.26416 118.061 20.5413 121.357 23.626 110.501C26.7107 99.645 24.338 73.1576 24.7038 43.2007" stroke="currentColor" strokeWidth="2.25426" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+const NOTE_COLORS = [
+  { bg: '#FFDE7A', text: '#181408', name: 'yellow' },
+  { bg: '#8EACED', text: '#0e1726', name: 'blue' },
+  { bg: '#79B6B2', text: '#082524', name: 'teal' },
+  { bg: '#F7A399', text: '#2d0f0c', name: 'coral' }
+]
+
+const NOTE_ROTATIONS = [2.25, -1.75, 1.5, -2.1]
+
 function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringComplete, onSelectCase, onSaveRects }) {
   const [hovered, setHovered] = useState(null)
   const [unfolded, setUnfolded] = useState(false)
@@ -376,6 +401,11 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
   const [isHeaderShrunk, setIsHeaderShrunk] = useState(false)
   const hasFlippedRef = useRef(false)
 
+  const activeCaseIndex = cases.findIndex(c => c.slug === activeEntry.slug)
+  const safeCaseIndex = activeCaseIndex >= 0 ? activeCaseIndex : 0
+  const nextCase = cases[(safeCaseIndex + 1) % cases.length]
+  const nextGroup = groups.find(g => g.files.some(idx => cases[idx].slug === nextCase.slug))
+
   const coverRef = useRef(null)
   const frontShadowRef = useRef(null)
   const coverShadowRef = useRef(null)
@@ -411,7 +441,7 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom'
+      '.project, .extra-photos, .case-bottom, .case-next-widget'
     )
     const folder = folderRef.current
 
@@ -528,7 +558,7 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom'
+      '.project, .extra-photos, .case-bottom, .case-next-widget'
     )
     const folder = folderRef.current
 
@@ -578,7 +608,7 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom'
+          '.project, .extra-photos, .case-bottom, .case-next-widget'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -647,7 +677,7 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom'
+          '.project, .extra-photos, .case-bottom, .case-next-widget'
         )
         const folder = folderRef.current
 
@@ -791,7 +821,8 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
   }, [activeEntry.slug])
 
   return (
-    <main className="case-page" style={{ '--case-color': activeEntry.color, '--first-case-color': firstCaseColor }}>
+    <>
+      <main className="case-page" style={{ '--case-color': activeEntry.color, '--first-case-color': firstCaseColor }}>
       <section className={'case-hero' + (isHeaderShrunk ? ' is-shrunk' : '')}>
         <h1 className="case-hero-title" aria-label={activeEntry.name}>
           {activeEntry.name.split('').map((char, i) => (
@@ -880,7 +911,9 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
                 <div className="dossier-left">
                   <div className="portrait">
                     <img src={activeEntry.images[0]} alt={activeEntry.name} />
-                    <span className="paperclip" aria-hidden="true" />
+                    <span className="portrait-clip-wrapper" aria-hidden="true">
+                      <PaperclipTop className="portrait-paperclip" />
+                    </span>
                   </div>
                   <div className="life-info">
                     {activeEntry.info.map((line, i) => (
@@ -896,21 +929,48 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
               </article>
 
               <div className="projects">
-                {activeEntry.notes.map((note, i) => (
-                  <section className={'project project-' + i} key={i}>
-                    <div className="project-photos">
-                      {activeEntry.images.slice(1 + i * 2, 3 + i * 2).map((src, j) => (
-                        <a href={src} target="_blank" rel="noreferrer" className="project-photo" key={src} aria-label={'Open image of ' + note.title}>
-                          <img src={src} alt={note.title + ' photograph ' + (j + 1)} loading="lazy" />
-                        </a>
-                      ))}
-                    </div>
-                    <div className="project-note paper">
-                      <h2>{note.title}</h2>
-                      <p>{note.text}</p>
-                    </div>
-                  </section>
-                ))}
+                {activeEntry.notes.map((note, i) => {
+                  const noteTheme = NOTE_COLORS[i % NOTE_COLORS.length]
+                  const noteRot = NOTE_ROTATIONS[i % NOTE_ROTATIONS.length]
+                  return (
+                    <section className={'project project-' + i} key={i}>
+                      <div className="project-photos">
+                        {activeEntry.images.slice(1 + i * 2, 3 + i * 2).map((src, j) => (
+                          <a
+                            href={src}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={`project-photo ${j === 0 ? 'photo-plan' : 'photo-feature'}`}
+                            key={src}
+                            aria-label={'Open image of ' + note.title}
+                          >
+                            <img src={src} alt={note.title + ' photograph ' + (j + 1)} loading="lazy" />
+                            {j === 1 && (
+                              <span className="photo-clip-wrapper" aria-hidden="true">
+                                <PaperclipFull className="photo-paperclip" />
+                              </span>
+                            )}
+                          </a>
+                        ))}
+                      </div>
+                      <div
+                        className={`project-note note-${noteTheme.name}`}
+                        style={{
+                          '--note-bg': noteTheme.bg,
+                          '--note-color': noteTheme.text,
+                          '--note-rot': `${noteRot}deg`
+                        }}
+                      >
+                        <span className="note-clip-wrapper" aria-hidden="true">
+                          <PaperclipTop className="note-paperclip" />
+                        </span>
+                        <span className="note-texture-overlay" aria-hidden="true" />
+                        <h2>{note.title}</h2>
+                        <p>{note.text}</p>
+                      </div>
+                    </section>
+                  )
+                })}
 
                 {activeEntry.images.length > activeEntry.notes.length * 2 + 1 && (
                   <div className="extra-photos">
@@ -936,6 +996,31 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
         </div>
       </div>
     </main>
+
+    {/* Floating Next Case Widget matching inspo */}
+    {nextCase && (
+      <aside
+        className="case-next-widget"
+        style={{ '--next-case-color': nextCase.color }}
+        onClick={e => handleTabClick(e, nextCase)}
+        role="button"
+        tabIndex={0}
+        aria-label={`Go to next file: ${nextCase.name}`}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') handleTabClick(e, nextCase)
+        }}
+      >
+        <div className="case-next-card">
+          <span className="case-next-kicker">Next File</span>
+          <h4 className="case-next-name">{nextCase.name}</h4>
+          <p className="case-next-sub">
+            {nextGroup?.label || (nextCase.notes?.[0]?.title ? nextCase.notes[0].title.split('(')[0].trim() : 'Archive Dossier')}
+          </p>
+        </div>
+        <span className="case-next-btn">Next →</span>
+      </aside>
+    )}
+  </>
   )
 }
 
