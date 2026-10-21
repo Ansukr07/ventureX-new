@@ -502,10 +502,7 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
       tl.to(cover, {
         rotateY: -180,
         duration: 1.5,
-        ease: 'power3.inOut',
-        onComplete: () => {
-          gsap.set(cover, { visibility: 'hidden' })
-        }
+        ease: 'power3.inOut'
       }, 0)
 
       // 2. Cover shadow peaks at 0.25s (opacity: 1), fades at 0.6s (opacity: 0)
@@ -632,7 +629,6 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
         const enterTl = gsap.timeline({
           defaults: { duration: 0.75, ease: 'power2.inOut' },
           onComplete: () => {
-            gsap.set(cover, { visibility: 'hidden' })
             isSwitchingRef.current = false
             if (onNavigate) {
               onNavigate('/cases/' + targetCase.slug)
