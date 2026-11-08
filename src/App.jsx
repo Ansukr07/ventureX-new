@@ -14,12 +14,11 @@ if (typeof window !== 'undefined') {
 }
 
 const groups = [
-  { color: '#699ad1', label: 'Organic & Early Modernism', description: 'The movement that broke from European convention before Europe finished writing its manifesto. Buildings designed around human life, natural landscape, and open space — where structure followed environment, not the other way around. The root system beneath everything American Modernism would later become.', files: [0, 1] },
-  { color: '#ec2127', label: 'Expressive', description: 'Where function alone was never enough. These architects pushed form, material, and structure into territory that was confrontational, sculptural, and deeply personal. Every surface carried an argument, every material choice a point of view. Buildings that refused to stand quietly in the background and never apologized for it.', files: [2] },
-  { color: '#f5cf51', label: 'Monumental Modernism', description: 'Architecture at the scale of civilization — civic, institutional, and built to outlast the moment. These buildings draw on mass, geometry, and the precise control of light to create spaces that feel both inevitable and timeless. Modernism stripped of sentimentality, left with only what matters.', files: [3, 4, 5] },
-  { color: '#803f98', label: 'Contextual & Transitional Architecture', description: 'Architecture shaped by place, culture, and continuity rather than formal invention alone. Mix of tradition and modernity through local materials, historical reference, and environmental logic that resist the impulse to impose and choose instead to belong. A quiet but foundational thread in the fabric of American architectural identity.', files: [6, 7] }
+  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
+  { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
+  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, fee, and coordination information for teams considering VentureX.', files: [2, 3] },
+  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4] }
 ]
-
 function useRoute() {
   const [path, setPath] = useState(location.pathname)
   useEffect(() => {
@@ -54,7 +53,7 @@ function Link({ to, go, children, ...props }) {
   )
 }
 
-function Header({ go, onGoHome }) {
+function Header({ go, onGoHome, onAboutClick }) {
   return (
     <header className="the-header">
       <div className="the-header-inner">
@@ -69,9 +68,17 @@ function Header({ go, onGoHome }) {
         >
           VENTURE X
         </a>
-        <Link to="/about" go={go} className="the-header-about">
+        <a
+          href="/about"
+          className="the-header-about"
+          onClick={e => {
+            e.preventDefault()
+            if (onAboutClick) onAboutClick()
+            else go('/about')
+          }}
+        >
           About
-        </Link>
+        </a>
       </div>
     </header>
   )
@@ -82,10 +89,6 @@ function Footer() {
     <footer className="folder-footer">
       <img className="scale" src="/footer/scale.svg" alt="Architectural scale" />
       <span className="footer-year">© 2026</span>
-      <a href="https://tubikstudio.com/" target="_blank" rel="noreferrer">
-        <span>CRAFTED WITH ♥ BY <u>TUBIK STUDIO</u></span>
-        <img className="footer-seal" src="/footer/tubik_logo.svg" alt="Tubik Studio" />
-      </a>
     </footer>
   )
 }
@@ -183,8 +186,21 @@ const NOTE_COLORS = [
 
 const NOTE_ROTATIONS = [2.25, -1.75, 1.5, -2.1]
 
-function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringComplete, onSelectCase, onSaveRects }) {
-  const [hovered, setHovered] = useState(null)
+function Home({
+  go,
+  isEntering,
+  isEnteringFromAbout,
+  closedGroupIndex,
+  closedPageIndex,
+  onEnteringComplete,
+  onSelectCase,
+  onSaveRects,
+  isLeavingForAbout,
+  onHomeLeftForAbout
+}) {
+  const [hovered, setHovered] = useState(() => (isEntering && closedGroupIndex !== null && closedGroupIndex !== undefined)
+    ? { group: closedGroupIndex, page: closedPageIndex ?? 0 }
+    : null)
   const [unfolded, setUnfolded] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
   const isTransitioningRef = useRef(false)
@@ -212,7 +228,55 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
     }
   }, [onSaveRects])
 
-  // Exact zct animation when returning from Case to Home: unselected folders rise from down
+  // Mosby eat: Enter Home from About transition
+  useLayoutEffect(() => {
+    if (!isEnteringFromAbout) return
+    isTransitioningRef.current = true
+    window.scrollTo({ top: 0, behavior: 'instant' })
+
+    const tl = gsap.timeline({
+      defaults: { duration: 0.75, ease: 'power3.out' },
+      onComplete: () => {
+        isTransitioningRef.current = false
+        if (onEnteringComplete) onEnteringComplete()
+      }
+    })
+    tl.from(['.hero-title', '.intro p', '.folder-description'], { y: '-50vh', stagger: 0.1 }, 0.25)
+    tl.from('.desk-assets', { y: '-50vh', duration: 0.75, ease: 'power3.out' }, 0.25)
+    tl.from('.stack', { yPercent: 60, duration: 0.5, ease: 'power4.inOut' }, 0)
+    tl.from('.archive .folder', {
+      yPercent: 200,
+      scale: 1.75,
+      duration: 0.5,
+      stagger: 0.015,
+      ease: 'power4.inOut',
+      clearProps: 'scale,transform'
+    }, 0)
+
+    return () => tl.kill()
+  }, [isEnteringFromAbout, onEnteringComplete])
+
+  // Mosby mat: Leave Home for About transition
+  useLayoutEffect(() => {
+    if (!isLeavingForAbout) return
+    isTransitioningRef.current = true
+    setIsLeaving(true)
+    gsap.set('.stack', { transformOrigin: 'top', pointerEvents: 'none' })
+
+    const tl = gsap.timeline({
+      defaults: { duration: 0.75, ease: 'power3.inOut' },
+      onComplete: () => {
+        if (onHomeLeftForAbout) onHomeLeftForAbout()
+      }
+    })
+    tl.to(['.hero-title', '.intro p', '.folder-description'], { y: '-50vh', stagger: 0.1 }, 0)
+    tl.to('.desk-assets', { y: '-50vh', duration: 0.75, ease: 'power3.inOut' }, 0)
+    tl.to('.stack', { yPercent: 60, scale: 1.75 }, 0)
+
+    return () => tl.kill()
+  }, [isLeavingForAbout, onHomeLeftForAbout])
+
+  // Returning from a file keeps its folder and active page in place while sibling files and folders rise from below
   useLayoutEffect(() => {
     if (isEntering) {
       isTransitioningRef.current = true
@@ -221,24 +285,9 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
         ? folders.filter((_, idx) => idx !== closedGroupIndex)
         : folders
 
-      // Hide unselected folders off-screen BEFORE paint so there is zero flash
-      gsap.set(unselected, { yPercent: 120 })
+      // Start only the folders around the selected one below the stack and bring them up.
+      gsap.set(unselected, { yPercent: 120, visibility: 'visible' })
       gsap.set('.hero-title', { y: '2rem', opacity: 0 })
-
-      let inactiveTabsOnClosedFolder = []
-      if (closedGroupIndex !== null && closedGroupIndex !== undefined && folders[closedGroupIndex]) {
-        const closedFolder = folders[closedGroupIndex]
-        const closedSheets = Array.from(closedFolder.querySelectorAll('.folder-sheet'))
-        if (closedPageIndex !== null && closedPageIndex !== undefined) {
-          inactiveTabsOnClosedFolder = closedSheets
-            .filter((_, idx) => idx !== closedPageIndex)
-            .map(s => s.querySelector('.folder-tab.is-visible'))
-            .filter(Boolean)
-          if (inactiveTabsOnClosedFolder.length > 0) {
-            gsap.set(inactiveTabsOnClosedFolder, { yPercent: 110 })
-          }
-        }
-      }
 
       const tl = gsap.timeline({
         defaults: { duration: 0.75, ease: 'power2.out' },
@@ -248,15 +297,9 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
         }
       })
       tl.to(unselected,
-        { yPercent: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out', clearProps: 'yPercent' },
+        { yPercent: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out', clearProps: 'yPercent,visibility' },
         0
       )
-      if (inactiveTabsOnClosedFolder.length > 0) {
-        tl.to(inactiveTabsOnClosedFolder,
-          { yPercent: 0, duration: 0.6, ease: 'power3.out', clearProps: 'yPercent' },
-          0.3
-        )
-      }
       tl.to('.hero-title',
         { y: 0, opacity: 1, duration: 0.9, ease: 'power2.out', clearProps: 'y,opacity' },
         0
@@ -312,7 +355,7 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
 
   return (
     <main className="home">
-      <DeskAssets isEntering={isEntering} isLeaving={isLeaving} />
+      <DeskAssets isEntering={isEntering || isEnteringFromAbout} isLeaving={isLeaving || isLeavingForAbout} />
       <section className="intro" id="hero">
         <h1 className="hero-title">VENTURE X</h1>
       </section>
@@ -330,7 +373,8 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
                 className={
                   'folder' +
                   (later ? ' is-rotated' : '') +
-                  (later && unfolded ? ' is-unfolded' : '')
+                  (later && unfolded ? ' is-unfolded' : '') +
+                  (isEntering && i !== closedGroupIndex ? ' is-entering-hidden' : '')
                 }
                 style={{
                   '--color': cases[g.files[0]].color,
@@ -395,7 +439,19 @@ function Home({ go, isEntering, closedGroupIndex, closedPageIndex, onEnteringCom
   )
 }
 
-function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNavigate, onRegisterGoHome, onInitialOpenComplete }) {
+function FilePage({
+  entry,
+  isInitialOpen,
+  isEnteringFromAbout,
+  transitionGroupIndex,
+  targetRect,
+  onNavigate,
+  onRegisterGoHome,
+  onInitialOpenComplete,
+  isLeavingForAbout,
+  onCaseLeftForAbout,
+  onCaseEnterComplete
+}) {
   const [activeEntry, setActiveEntry] = useState(entry)
   const isSwitchingRef = useRef(false)
   const [isHeaderShrunk, setIsHeaderShrunk] = useState(false)
@@ -428,6 +484,39 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
   useEffect(() => {
     document.title = activeEntry.name + '—Venture X'
   }, [activeEntry])
+
+  // Mosby aat: Case-to-About leave animation
+  useLayoutEffect(() => {
+    if (!isLeavingForAbout) return
+    const tl = gsap.timeline({
+      defaults: { duration: 1, ease: 'power3.inOut' },
+      onComplete: () => {
+        if (onCaseLeftForAbout) onCaseLeftForAbout()
+      }
+    })
+    tl.to('.case-content', { x: '-100vw' }, 0)
+    tl.to('.case-folder-tags', { x: '-10vw', duration: 0.9 }, 0)
+    tl.to('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
+    tl.to('.case-next-widget', { x: '-100vw', duration: 0.9 }, 0)
+    return () => tl.kill()
+  }, [isLeavingForAbout, onCaseLeftForAbout])
+
+  // Mosby _ct: About-to-Case enter animation
+  useLayoutEffect(() => {
+    if (!isEnteringFromAbout) return
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    const tl = gsap.timeline({
+      defaults: { duration: 1, ease: 'power3.out' },
+      onComplete: () => {
+        if (onCaseEnterComplete) onCaseEnterComplete()
+      }
+    })
+    tl.from('.case-content', { x: '-100vw', duration: 0.9 }, 0)
+    tl.from('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
+    tl.from('.case-folder-tags', { x: '-10vw', duration: 1 }, 0)
+    tl.from('.case-next-widget', { x: '-100vw' }, 0)
+    return () => tl.kill()
+  }, [isEnteringFromAbout, onCaseEnterComplete])
 
   // Initial Open Animation (1.5s power3.inOut with 90deg Flip)
   useLayoutEffect(() => {
@@ -671,25 +760,19 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
         const frontShadow = frontShadowRef.current
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
-        const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
           '.project, .extra-photos, .case-bottom, .case-next-widget'
         )
         const folder = folderRef.current
 
         if (folder) {
-          folder.style.setProperty('--turning-front-color', firstCaseColor)
+          folder.style.setProperty('--turning-front-color', activeEntry.color)
           folder.style.setProperty('--turning-back-color', activeEntry.color)
         }
 
         window.scrollTo({ top: 0, behavior: 'instant' })
 
         gsap.set(cover, { visibility: 'visible' })
-
-        // 0. Only inactive peer tags drop away before folder rotates back into stack
-        if (inactiveTags.length > 0) {
-          gsap.to(inactiveTags, { yPercent: 110, opacity: 0, duration: 0.35, ease: 'power2.in' })
-        }
         if (activeTag) {
           gsap.set(activeTag, { yPercent: 0, opacity: 1 })
         }
@@ -917,10 +1000,32 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
                     ))}
                   </div>
                 </div>
-                <div className="bio">
-                  {activeEntry.bio.map((p, i) => (
-                    <p key={i} className={i === 0 ? 'dropcap' : ''}>{p}</p>
-                  ))}
+                <div className={'bio' + (activeEntry.faqs ? ' faq-content' : '') + (activeEntry.timeline ? ' timeline-content' : '')}>
+                  {activeEntry.timeline
+                    ? <>
+                      <p className="timeline-intro">{activeEntry.bio[0]}</p>
+                      <ol className="event-timeline">
+                        {activeEntry.timeline.map((milestone, i) => (
+                          <li key={i}>
+                            <time>{milestone.date}</time>
+                            <div>
+                              <h2>{milestone.title}</h2>
+                              <p>{milestone.text}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                    </>
+                    : activeEntry.faqs
+                    ? activeEntry.faqs.map(({ question, answer }, i) => (
+                      <section className="faq-item" key={i}>
+                        <h2><span>Q.</span> {question}</h2>
+                        <p><span className="faq-answer-label">A.</span> {answer}</p>
+                      </section>
+                    ))
+                    : activeEntry.bio.map((p, i) => (
+                      <p key={i} className={i === 0 ? 'dropcap' : ''}>{p}</p>
+                    ))}
                 </div>
               </article>
 
@@ -1020,58 +1125,233 @@ function FilePage({ entry, isInitialOpen, transitionGroupIndex, targetRect, onNa
   )
 }
 
-function About({ go }) {
+function AboutGallery({ gallery }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const currentIndexRef = useRef(0)
+  const isAnimatingRef = useRef(false)
+  const iterationRef = useRef(1)
+
   useEffect(() => {
-    document.title = 'About Venture X'
-  }, [])
+    currentIndexRef.current = currentIndex
+  }, [currentIndex])
+
+  useEffect(() => {
+    if (!gallery || gallery.length <= 1) return
+    const interval = setInterval(() => {
+      if (isAnimatingRef.current) return
+      isAnimatingRef.current = true
+      iterationRef.current += 1
+      const prev = currentIndexRef.current
+      const next = (prev + 1) % gallery.length
+      setCurrentIndex(next)
+
+      const prevImg = document.querySelector(`.about-gallery__images img:nth-child(${prev + 1})`)
+      const nextImg = document.querySelector(`.about-gallery__images img:nth-child(${next + 1})`)
+
+      if (prevImg && nextImg) {
+        gsap.fromTo(prevImg, { yPercent: 0 }, { yPercent: -110, duration: 0.6, ease: 'power2.out' })
+        gsap.fromTo(nextImg, { yPercent: 110 }, {
+          yPercent: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          onStart: () => {
+            gsap.set(nextImg, { zIndex: iterationRef.current, opacity: 1 })
+          },
+          onComplete: () => {
+            isAnimatingRef.current = false
+          }
+        })
+      } else {
+        isAnimatingRef.current = false
+      }
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [gallery])
+
   return (
-    <main className="about-page">
-      <article className="about-paper paper">
-        <button className="about-close" onClick={() => go('/')} aria-label="Close About">×</button>
-        <h1>{about.title}</h1>
-        {about.images[0] && (
-          <figure>
-            <img src={about.images[0]} alt="Salk Institute by Louis Kahn" />
-            <figcaption>{about.texts[0]}</figcaption>
-          </figure>
-        )}
-        {about.texts.slice(4, -1).map((p, i) => (
-          <div key={i}>
-            {i === 5 && about.images[1] && (
-              <figure>
-                <img src={about.images[1]} alt="National Assembly Building" />
-                <figcaption>{about.texts[1]}</figcaption>
-              </figure>
-            )}
-            {i === 9 && about.images[2] && (
-              <figure>
-                <img src={about.images[2]} alt="Yale Art and Architecture Building" />
-                <figcaption>{about.texts[2]}</figcaption>
-              </figure>
-            )}
-            <p>{p}</p>
-          </div>
+    <div className="about-gallery">
+      <div className="about-gallery__inner">
+        <div className="about-gallery__images">
+          {gallery.map((item, idx) => (
+            <img
+              key={item.id || idx}
+              src={item.src}
+              alt={item.alt || ''}
+              loading="lazy"
+            />
+          ))}
+        </div>
+      </div>
+      <div className="about-gallery__captions">
+        {gallery.map((item, idx) => (
+          <p key={item.id || idx} className={idx === currentIndex ? 'is-active' : ''}>
+            {item.caption}
+          </p>
         ))}
-        <p className="signature">{about.texts.at(-1)}</p>
-      </article>
+      </div>
+    </div>
+  )
+}
+
+function Signature() {
+  const pathRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const path = pathRef.current
+    if (!path) return
+    const length = path.getTotalLength ? path.getTotalLength() : 4000
+    gsap.fromTo(
+      path,
+      { strokeDasharray: length, strokeDashoffset: length },
+      { strokeDashoffset: 0, duration: 2.4, ease: 'power5.inOut', delay: 0.2 }
+    )
+  }, [])
+
+  return (
+    <svg className="signature" viewBox="0 0 2401 708" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Founder Signature">
+      <path
+        ref={pathRef}
+        d="M265 3C270.333 39.5 279.151 156.427 267 213.5C250.5 291 211.5 522.5 192 570C168.5 627.243 107.196 718.474 45.4999 677.5C-20 634 57.4996 526.5 111.5 440C164.875 354.501 243.818 251.722 259.5 229C284 193.5 359.5 94.5 359.5 94.5C359.5 94.5 422.5 16 444 33.5C465.5 51 439 130 417.5 175.5C396 221 354.808 292.345 334.5 314.5C307 344.5 250 384.5 240.5 344.5C231 304.5 314.5 269.567 348 271.5C374 273 400.5 280.5 420 311.5C440.298 343.768 432.705 371.368 416 402.5C394 443.5 329.5 510 252 546.5C204.341 568.946 175.5 554.5 168.5 528.5C161.5 502.5 166 463.296 240.5 418C315 372.704 356 353.5 432.5 329.5C478.464 315.08 533.5 303 553 315.5C578.672 331.956 577.079 369.042 533 434C514 462 463.329 503.079 436.5 474.5C413.5 450 438.5 399 479.5 343.5C520.5 288 603 266.5 614 298.5C621.047 319 607.471 338.068 597 363C586.5 388 571 429 590 434C609 439 645.5 413.5 651 410C656.5 406.5 725.5 366 746.5 331.5C762.935 304.5 752.5 295 744.5 295C724.5 295 712.237 324.657 707.5 348.5C702.5 373.67 702.5 404 730 410C757.5 416 813 382.5 829 369.5C845 356.5 908 294.5 884.5 283.5C864.874 274.313 819.5 377 845 392.5C870.5 408 975.049 325.961 987.5 316C1000 306 1045.5 263 1017 255C992.5 248.123 963 325.5 958 337.5C953.135 349.176 937 389.5 949.5 393.5C959.5 396.7 974.868 371.313 985.5 359.5C1003.5 339.5 1021.6 322.8 1042 324C1067.5 325.5 1070.5 339.5 1107.5 339.5C1134.12 339.5 1179.5 330.5 1190 306.5C1200.5 282.5 1142.02 224 1129 249.5C1115.98 275 1148.18 298.586 1188 289C1206.69 284.5 1267.5 264 1305.5 259C1343.5 254 1359.65 262.813 1403.5 294C1476 345.567 1515.5 292 1456.5 240.5C1406.04 196.458 1382.85 218.5 1348.5 274.5C1327.32 309.025 1253.42 442.177 1218.5 486C1116.5 614 920.108 654.826 903 599C893.5 568 930.537 539.682 995.5 509.5C1334.5 352 2398.5 238 2398.5 238"
+      />
+    </svg>
+  )
+}
+
+function About({ onClose, onRegisterClose }) {
+  const isLeavingRef = useRef(false)
+
+  useEffect(() => {
+    document.title = 'About—Venture X'
+  }, [])
+
+  // Register programmatic close handler (for header clicks)
+  useEffect(() => {
+    if (onRegisterClose) {
+      onRegisterClose(() => handleClose())
+    }
+  }, [onRegisterClose])
+
+  // Mosby Enter Phase (KE)
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    const tl = gsap.timeline({
+      defaults: { duration: 1, ease: 'power3.out' }
+    })
+    tl.from('.page-about__inner', { y: '60vh', opacity: 0 }, 0)
+    tl.from('.about-gallery', { y: '-60vh' }, 0)
+    tl.from('.page-about__close', { y: '60vh', opacity: 0 }, 0)
+    tl.from('.about-gallery__inner', { yPercent: 100 }, 0)
+    tl.from('.about-gallery__images', { yPercent: -100 }, 0)
+    tl.from(['.page-about__title', '.page-about__desc'], { opacity: 0 }, 0.3)
+
+    return () => tl.kill()
+  }, [])
+
+  // Mosby Leave Phase (WR)
+  const handleClose = () => {
+    if (isLeavingRef.current) return
+    isLeavingRef.current = true
+
+    const tl = gsap.timeline({
+      defaults: { duration: 0.75, ease: 'power3.out' },
+      onComplete: () => {
+        if (onClose) onClose()
+      }
+    })
+    tl.to('.page-about__inner', { y: '60vh', opacity: 0 }, 0)
+    tl.to('.page-about__close', { y: '60vh', opacity: 0 }, 0)
+    tl.to('.about-gallery', { y: '-60vh' }, 0)
+    tl.to('.about-gallery__inner', { yPercent: 100 }, 0)
+    tl.to('.about-gallery__images', { yPercent: -100 }, 0)
+    tl.to(['.page-about__title', '.page-about__desc'], { opacity: 0, duration: 0.3 }, 0)
+  }
+
+  const galleryItems = about.gallery || [
+    { id: 1, src: about.image?.src, alt: about.image?.alt, caption: about.tagline }
+  ]
+
+  return (
+    <main className="page-about">
+      <div className="page-about__inner">
+        <div className="page-about__content">
+          <div className="page-about__left">
+            <h1 className="page-about__title">{about.title}</h1>
+            <div className="page-about__gallery">
+              <AboutGallery gallery={galleryItems} />
+            </div>
+          </div>
+          <div className="page-about__right">
+            <div className="page-about__desc">
+              <div className="rich-text">
+                <p className="about-tagline">{about.tagline}</p>
+                <p>{about.intro}</p>
+                {about.sections.map(section => (
+                  <section className="about-section" key={section.heading}>
+                    <h2>{section.heading}</h2>
+                    {section.paragraphs.map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </div>
+            <div className="page-about__signature">
+              <Signature />
+              <p>
+                <span>Sergii Valiukh,</span> Founder of <a href="https://tubikstudio.com" target="_blank" rel="noopener noreferrer">Tubik Studio</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="page-about__bg" />
+      </div>
+      <div className="page-about__close">
+        <button className="close-button" onClick={handleClose} aria-label="Close About">
+          <svg className="close-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
     </main>
   )
 }
 
 export default function App() {
   const [path, go] = useRoute()
-  const [isHomeEntering, setIsHomeEntering] = useState(false)
+  const [pageTransition, setPageTransition] = useState(null)
+  const [isHomeEnteringFromAbout, setIsHomeEnteringFromAbout] = useState(false)
+  const [isCaseEnteringFromAbout, setIsCaseEnteringFromAbout] = useState(false)
   const [closedGroupIndex, setClosedGroupIndex] = useState(null)
   const [closedPageIndex, setClosedPageIndex] = useState(null)
+  const [isHomeEntering, setIsHomeEntering] = useState(false)
   const [transition, setTransition] = useState(null)
+  const previousRouteRef = useRef('/')
   const filePageGoHomeRef = useRef(null)
+  const aboutCloseRef = useRef(null)
   const folderRectsRef = useRef([])
 
   const entry = cases.find(c => path === '/cases/' + c.slug)
   const currentGroupIndex = entry ? groups.findIndex(g => g.files.some(i => cases[i].slug === entry.slug)) : 0
   const safeCurrentGroupIndex = currentGroupIndex >= 0 ? currentGroupIndex : 0
 
+  // Track previous route so About close returns to the correct place
+  useEffect(() => {
+    if (path !== '/about') {
+      previousRouteRef.current = path
+    }
+  }, [path])
+
   const handleGoHome = () => {
+    if (path === '/about') {
+      if (aboutCloseRef.current) {
+        aboutCloseRef.current()
+      } else {
+        go('/')
+      }
+      return
+    }
     if (entry && filePageGoHomeRef.current) {
       const gIndex = groups.findIndex(g => g.files.some(i => cases[i].slug === entry.slug))
       const safeGIndex = gIndex >= 0 ? gIndex : 0
@@ -1092,10 +1372,55 @@ export default function App() {
     }
   }
 
+  const handleAboutClick = () => {
+    if (path === '/about') return
+    if (pageTransition) return
+
+    if (path === '/') {
+      // Home-to-About leave phase
+      setPageTransition({ type: 'home-to-about' })
+    } else if (entry) {
+      // Case-to-About leave phase
+      setPageTransition({ type: 'case-to-about', slug: entry.slug })
+    } else {
+      go('/about')
+    }
+  }
+
+  const handleHomeLeftForAbout = () => {
+    history.pushState({}, '', '/about')
+    go('/about', false)
+    setPageTransition(null)
+  }
+
+  const handleCaseLeftForAbout = () => {
+    history.pushState({}, '', '/about')
+    go('/about', false)
+    setPageTransition(null)
+  }
+
+  const handleAboutClose = () => {
+    const prev = previousRouteRef.current
+    if (prev && prev.startsWith('/cases/')) {
+      history.pushState({}, '', prev)
+      setIsCaseEnteringFromAbout(true)
+      go(prev, false)
+    } else {
+      history.pushState({}, '', '/')
+      setIsHomeEnteringFromAbout(true)
+      go('/', false)
+    }
+  }
+
   const handleEnteringComplete = () => {
     setIsHomeEntering(false)
+    setIsHomeEnteringFromAbout(false)
     setClosedGroupIndex(null)
     setClosedPageIndex(null)
+  }
+
+  const handleCaseEnterComplete = () => {
+    setIsCaseEnteringFromAbout(false)
   }
 
   const handleSelectCase = (groupIndex, pageIndex, item, targetRect) => {
@@ -1114,7 +1439,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header go={go} onGoHome={handleGoHome} />
+      <Header
+        go={go}
+        onGoHome={handleGoHome}
+        onAboutClick={handleAboutClick}
+      />
       {transition?.type === 'home-to-case' ? (
         <FilePage
           key={`group-${transition.groupIndex}`}
@@ -1144,19 +1473,29 @@ export default function App() {
           key={`group-${safeCurrentGroupIndex}`}
           entry={entry}
           isInitialOpen={false}
+          isEnteringFromAbout={isCaseEnteringFromAbout}
+          isLeavingForAbout={pageTransition?.type === 'case-to-about'}
           targetRect={folderRectsRef.current[safeCurrentGroupIndex]}
           onNavigate={nextPath => go(nextPath, false)}
           onRegisterGoHome={fn => { filePageGoHomeRef.current = fn }}
+          onCaseLeftForAbout={handleCaseLeftForAbout}
+          onCaseEnterComplete={handleCaseEnterComplete}
         />
       ) : path === '/about' ? (
-        <About go={go} />
+        <About
+          onClose={handleAboutClose}
+          onRegisterClose={fn => { aboutCloseRef.current = fn }}
+        />
       ) : (
         <Home
           go={go}
           isEntering={isHomeEntering}
+          isEnteringFromAbout={isHomeEnteringFromAbout}
+          isLeavingForAbout={pageTransition?.type === 'home-to-about'}
           closedGroupIndex={closedGroupIndex}
           closedPageIndex={closedPageIndex}
           onEnteringComplete={handleEnteringComplete}
+          onHomeLeftForAbout={handleHomeLeftForAbout}
           onSelectCase={handleSelectCase}
           onSaveRects={handleSaveFolderRects}
         />
