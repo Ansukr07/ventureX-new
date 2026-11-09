@@ -241,7 +241,11 @@ function Home({
         if (onEnteringComplete) onEnteringComplete()
       }
     })
-    tl.from(['.hero-title', '.intro p', '.folder-description'], { y: '-50vh', stagger: 0.1 }, 0.25)
+    tl.fromTo('.hero-title',
+      { y: '-50vh', opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out', clearProps: 'transform,opacity' },
+      0.25
+    )
     tl.from('.desk-assets', { y: '-50vh', duration: 0.75, ease: 'power3.out' }, 0.25)
     tl.from('.stack', { yPercent: 60, duration: 0.5, ease: 'power4.inOut' }, 0)
     tl.from('.archive .folder', {
@@ -269,7 +273,7 @@ function Home({
         if (onHomeLeftForAbout) onHomeLeftForAbout()
       }
     })
-    tl.to(['.hero-title', '.intro p', '.folder-description'], { y: '-50vh', stagger: 0.1 }, 0)
+    tl.to('.hero-title', { y: '-50vh' }, 0)
     tl.to('.desk-assets', { y: '-50vh', duration: 0.75, ease: 'power3.inOut' }, 0)
     tl.to('.stack', { yPercent: 60, scale: 1.75 }, 0)
 
@@ -286,18 +290,19 @@ function Home({
         : folders
 
       // Start only the folders around the selected one below the stack and bring them up.
-      gsap.set(unselected, { yPercent: 120, visibility: 'visible' })
+      gsap.set(unselected, { yPercent: 120, visibility: 'visible', transition: 'none' })
       gsap.set('.hero-title', { y: '2rem', opacity: 0 })
 
       const tl = gsap.timeline({
         defaults: { duration: 0.75, ease: 'power2.out' },
         onComplete: () => {
+          gsap.set(unselected, { clearProps: 'transform,visibility,transition' })
           isTransitioningRef.current = false
           if (onEnteringComplete) onEnteringComplete()
         }
       })
       tl.to(unselected,
-        { yPercent: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out', clearProps: 'yPercent,visibility' },
+        { yPercent: 0, duration: 0.85, stagger: 0.07, ease: 'power3.out' },
         0
       )
       tl.to('.hero-title',
@@ -777,18 +782,18 @@ function FilePage({
           gsap.set(activeTag, { yPercent: 0, opacity: 1 })
         }
 
-        // 1. Scrapbook items drop down
-        gsap.to(items, { y: '50vh', opacity: 0, duration: 0.2, ease: 'power2.in' })
-
-        // 2. Chars exit to left
-        gsap.to(chars, { xPercent: -150, opacity: 0, duration: 1.15, stagger: 0.035, ease: 'power2.inOut' })
-
-        // 3. Front shadow
-        gsap.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power3.inOut' }, 0)
-        gsap.to(frontShadow, { opacity: 0, duration: 0.4, ease: 'power3.inOut' }, 1.0)
-
-        // 4. Cover rotates shut
-        gsap.to(cover, { rotateY: 0, duration: 1.5, ease: 'power3.inOut' })
+        const closeTl = gsap.timeline({
+          paused: true,
+          onComplete: () => {
+            isSwitchingRef.current = false
+            if (done) done()
+          }
+        })
+        closeTl.to(items, { y: '50vh', opacity: 0, duration: 0.3, ease: 'power2.in' }, 0)
+        closeTl.to(chars, { xPercent: -150, opacity: 0, duration: 0.65, stagger: 0.015, ease: 'power2.inOut' }, 0)
+        closeTl.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: 0.65, ease: 'power3.inOut' }, 0)
+        closeTl.to(frontShadow, { opacity: 0, duration: 0.35, ease: 'power3.inOut' }, 0.65)
+        closeTl.to(cover, { rotateY: 0, duration: 1.25, ease: 'power3.inOut' }, 0)
 
         // 5. Flip folder back to stack geometry
         const isMobile = window.innerWidth <= 768
@@ -816,20 +821,12 @@ function FilePage({
           folder.style.transform = `translateY(${rect.height}px) rotate(-90deg)`
           folder.style.zIndex = '100'
 
-          Flip.from(state, {
-            duration: 1.5,
-            ease: 'power3.inOut',
-            onComplete: () => {
-              isSwitchingRef.current = false
-              if (done) done()
-            }
-          })
-        } else {
-          setTimeout(() => {
-            isSwitchingRef.current = false
-            if (done) done()
-          }, 1500)
+          closeTl.add(Flip.from(state, {
+            duration: 1.25,
+            ease: 'power3.inOut'
+          }), 0)
         }
+        closeTl.play()
       })
     }
   }, [onRegisterGoHome, targetRect, remaining, safeGroupIndex])
@@ -1194,30 +1191,6 @@ function AboutGallery({ gallery }) {
   )
 }
 
-function Signature() {
-  const pathRef = useRef(null)
-
-  useLayoutEffect(() => {
-    const path = pathRef.current
-    if (!path) return
-    const length = path.getTotalLength ? path.getTotalLength() : 4000
-    gsap.fromTo(
-      path,
-      { strokeDasharray: length, strokeDashoffset: length },
-      { strokeDashoffset: 0, duration: 2.4, ease: 'power5.inOut', delay: 0.2 }
-    )
-  }, [])
-
-  return (
-    <svg className="signature" viewBox="0 0 2401 708" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Founder Signature">
-      <path
-        ref={pathRef}
-        d="M265 3C270.333 39.5 279.151 156.427 267 213.5C250.5 291 211.5 522.5 192 570C168.5 627.243 107.196 718.474 45.4999 677.5C-20 634 57.4996 526.5 111.5 440C164.875 354.501 243.818 251.722 259.5 229C284 193.5 359.5 94.5 359.5 94.5C359.5 94.5 422.5 16 444 33.5C465.5 51 439 130 417.5 175.5C396 221 354.808 292.345 334.5 314.5C307 344.5 250 384.5 240.5 344.5C231 304.5 314.5 269.567 348 271.5C374 273 400.5 280.5 420 311.5C440.298 343.768 432.705 371.368 416 402.5C394 443.5 329.5 510 252 546.5C204.341 568.946 175.5 554.5 168.5 528.5C161.5 502.5 166 463.296 240.5 418C315 372.704 356 353.5 432.5 329.5C478.464 315.08 533.5 303 553 315.5C578.672 331.956 577.079 369.042 533 434C514 462 463.329 503.079 436.5 474.5C413.5 450 438.5 399 479.5 343.5C520.5 288 603 266.5 614 298.5C621.047 319 607.471 338.068 597 363C586.5 388 571 429 590 434C609 439 645.5 413.5 651 410C656.5 406.5 725.5 366 746.5 331.5C762.935 304.5 752.5 295 744.5 295C724.5 295 712.237 324.657 707.5 348.5C702.5 373.67 702.5 404 730 410C757.5 416 813 382.5 829 369.5C845 356.5 908 294.5 884.5 283.5C864.874 274.313 819.5 377 845 392.5C870.5 408 975.049 325.961 987.5 316C1000 306 1045.5 263 1017 255C992.5 248.123 963 325.5 958 337.5C953.135 349.176 937 389.5 949.5 393.5C959.5 396.7 974.868 371.313 985.5 359.5C1003.5 339.5 1021.6 322.8 1042 324C1067.5 325.5 1070.5 339.5 1107.5 339.5C1134.12 339.5 1179.5 330.5 1190 306.5C1200.5 282.5 1142.02 224 1129 249.5C1115.98 275 1148.18 298.586 1188 289C1206.69 284.5 1267.5 264 1305.5 259C1343.5 254 1359.65 262.813 1403.5 294C1476 345.567 1515.5 292 1456.5 240.5C1406.04 196.458 1382.85 218.5 1348.5 274.5C1327.32 309.025 1253.42 442.177 1218.5 486C1116.5 614 920.108 654.826 903 599C893.5 568 930.537 539.682 995.5 509.5C1334.5 352 2398.5 238 2398.5 238"
-      />
-    </svg>
-  )
-}
-
 function About({ onClose, onRegisterClose }) {
   const isLeavingRef = useRef(false)
 
@@ -1295,12 +1268,6 @@ function About({ onClose, onRegisterClose }) {
                   </section>
                 ))}
               </div>
-            </div>
-            <div className="page-about__signature">
-              <Signature />
-              <p>
-                <span>Sergii Valiukh,</span> Founder of <a href="https://tubikstudio.com" target="_blank" rel="noopener noreferrer">Tubik Studio</a>
-              </p>
             </div>
           </div>
         </div>
