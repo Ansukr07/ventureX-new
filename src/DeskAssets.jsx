@@ -382,7 +382,7 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
             className="desk-item-inner"
             ref={el => { itemInnerRefs.current[asset.id] = el }}
           >
-            <img src={asset.src} alt={asset.alt} draggable="false" />
+            <img src={asset.src} alt={asset.alt} draggable="false" decoding="async" fetchPriority="low" />
           </div>
         </div>
       ))}

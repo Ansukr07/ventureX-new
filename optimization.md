@@ -37,14 +37,13 @@ These are repository findings, not a production crawl. The production domain, ho
 
 | Finding | Evidence | Priority |
 | --- | --- | --- |
-| Initial HTML describes an architecture archive | `index.html` contains Mosby's Files title and American Modernist Architecture description | P0 |
-| Important content requires JavaScript | `index.html` serves an empty root; React supplies the content | P0 |
-| Titles are changed client-side | `src/App.jsx` sets document.title; this does not provide distinct initial route HTML | P0 |
-| Event content exists but is hidden behind dossier navigation | `src/cases.json`, `src/about.json`, and file routes | P0 |
-| No obvious registration journey in the reviewed main component | No registration URL or primary registration CTA found in `src/App.jsx` | P0: confirm the intended form destination |
-| No sitemap or robots file found in the file inventory | Add production-aware versions after confirming canonical domain | P1 |
-| Generic remote images illustrate event details | Unsplash URLs in event data; avoid implying these show the real event | P1 |
-| Decorative asset and animation overhead | Large embedded-image SVG assets and pointer/GSAP effects | P1: profile on mobile before choosing optimizations |
+| Architecture metadata in the initial HTML | Resolved: `index.html` now describes VentureX and its student startup pitching event | Done in source; verify after deployment |
+| Empty initial React root | Resolved: `scripts/prerender.mjs` emits meaningful initial HTML for ten public routes | Done in build; verify direct production responses |
+| Client-only metadata | Resolved: build output includes per-route titles/descriptions; client navigation updates metadata | Done in build; verify route crawls after deployment |
+| Essential facts buried in dossiers | Partially resolved: homepage summary and pitch guide are available as ordinary HTML; no registration action can be linked until organizer provides its URL | Registration destination TBA |
+| No sitemap or robots file in repository | Resolved conditionally: build emits both when `SITE_URL` is set | Requires final domain and host deployment |
+| Generic remote images resemble event documentation | Resolved in labels/captions: images are identified as illustrative | Replace with approved event/campus imagery if supplied |
+| Decorative image transfer cost | Improved: embedded desk imagery re-encoded to WebP, reducing total assets from about 2.3 MB to 391 KB | Build passed; field performance still needs deployment |
 
 ## P0 — Make the event discoverable and registration actionable
 
