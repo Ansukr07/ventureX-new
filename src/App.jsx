@@ -13,6 +13,26 @@ if (typeof window !== 'undefined') {
   window.Flip = Flip
 }
 
+function setPageMetadata(title, description) {
+  document.title = title
+  const setContent = (selector, attribute, value) => {
+    const element = document.querySelector(selector)
+    if (element) element.setAttribute(attribute, value)
+  }
+  setContent('meta[name="description"]', 'content', description)
+  setContent('meta[property="og:title"]', 'content', title)
+  setContent('meta[property="og:description"]', 'content', description)
+  const url = window.location.origin + window.location.pathname
+  let canonical = document.querySelector('link[rel="canonical"]')
+  if (!canonical) {
+    canonical = document.createElement('link')
+    canonical.rel = 'canonical'
+    document.head.appendChild(canonical)
+  }
+  canonical.href = url
+  setContent('meta[property="og:url"]', 'content', url)
+}
+
 const groups = [
   { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
   { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
@@ -73,6 +93,40 @@ function Footer() {
       <span className="footer-year">© 2026</span>
     </footer>
   )
+}
+
+function PitchGuide() {
+  useEffect(() => {
+    setPageMetadata(
+      'How to Prepare a VentureX Startup Pitch Video | Student Guide',
+      'Prepare your VentureX startup pitch and video demonstration. Learn the confirmed team rules and what to present before the online preliminary round.'
+    )
+  }, [])
+
+  return <main className="pitch-guide">
+    <div className="pitch-guide__inner">
+      <a className="pitch-guide__back" href="/">← VentureX home</a>
+      <h1>Prepare your VentureX pitch</h1>
+      <p className="pitch-guide__lead">The first round is online: student teams submit a startup pitch and video demonstration for investor evaluation. The round is free to enter.</p>
+      <section>
+        <h2>Build a clear case for your venture</h2>
+        <p>Explain the problem your startup addresses, what your product or idea does, and why it matters. Show the venture’s value, business model, and market potential in terms your audience can understand.</p>
+        <p>Use the video demonstration to show the innovation in action where possible. Keep claims accurate and make the team’s vision clear.</p>
+      </section>
+      <section>
+        <h2>Check your team</h2>
+        <p>Teams must have 3–4 students enrolled in accredited higher education institutions across India. Cross-college and interdepartmental teams are permitted. VentureX welcomes ideas from any industry.</p>
+      </section>
+      <section>
+        <h2>Know what happens next</h2>
+        <p>The 30 most promising teams from the online round advance to the live investor pitching round at BMS Institute of Technology &amp; Management in Yelahanka, Bengaluru, on 30 December 2026.</p>
+      </section>
+      <section>
+        <h2>Submission details</h2>
+        <p>The official registration link, deadline, video length, file format, submission method, and judging criteria are TBA. Check the <a href="/cases/frequently-asked-questions">VentureX FAQs</a> for confirmed eligibility and fee information.</p>
+      </section>
+    </div>
+  </main>
 }
 
 const compassImages = ['f.png', 'f-1.png', 'f-2.avif', 'f-3.png', 'f-4.png', 'f-5.png', 'f-6.avif']
@@ -199,7 +253,10 @@ function Home({
   }
 
   useEffect(() => {
-    document.title = 'Venture X'
+    setPageMetadata(
+      'VentureX | Student Startup Pitching & Investor Connect, Bengaluru',
+      'VentureX by E-Cell, BMSIT&M welcomes student startup teams across India. The free online preliminary round leads to an investor pitching finale in Bengaluru on 30 December 2026.'
+    )
   }, [])
 
   // Cache folder positions for pixel-perfect Flip returning
@@ -345,6 +402,13 @@ function Home({
       <DeskAssets isEntering={isEntering || isEnteringFromAbout} isLeaving={isLeaving || isLeavingForAbout} />
       <section className="intro" id="hero">
         <h1 className="hero-title">VENTURE X</h1>
+        <div className="intro-event" aria-label="VentureX event overview">
+          <p className="intro-event__lead">Student startup pitching meets investor connection.</p>
+          <p>By E-Cell, BMSIT&amp;M. Open to student teams across India, with 3–4 members per team.</p>
+          <p>The online video submission round is free. The top 30 teams advance to an in-person investor pitching finale in Bengaluru on 30 December 2026.</p>
+          <p className="intro-event__registration">Registration details will be published here when confirmed.</p>
+          <a className="intro-event__guide" href="/guide/pitch-video">How to prepare your pitch →</a>
+        </div>
       </section>
       <section className="archive">
         <div className="stack">
@@ -468,7 +532,7 @@ function FilePage({
   const peers = group.files.map(i => cases[i])
 
   useEffect(() => {
-    document.title = activeEntry.name + '—Venture X'
+    setPageMetadata(`VentureX ${activeEntry.name} | Student Startup Pitching`, activeEntry.bio?.[0] || 'Explore the VentureX student startup pitching event.')
   }, [activeEntry])
 
   // Mosby aat: Case-to-About leave animation
@@ -944,7 +1008,7 @@ function FilePage({
                 </div>
                 <div className="dossier-left">
                   <div className="portrait">
-                    <img src={activeEntry.images[0]} alt={activeEntry.name} />
+                    <img src={activeEntry.images[0]} alt={'Illustrative image for ' + activeEntry.name} />
                     <span className="portrait-clip-wrapper" aria-hidden="true">
                       <PaperclipTop className="portrait-paperclip" />
                     </span>
@@ -1000,7 +1064,7 @@ function FilePage({
                             key={src}
                             aria-label={'Open image of ' + note.title}
                           >
-                            <img src={src} alt={note.title + ' photograph ' + (j + 1)} loading="lazy" />
+                            <img src={src} alt={'Illustrative image for ' + note.title + ' ' + (j + 1)} loading="lazy" />
                             {j === 1 && (
                               <span className="photo-clip-wrapper" aria-hidden="true">
                                 <PaperclipFull className="photo-paperclip" />
@@ -1031,7 +1095,7 @@ function FilePage({
                 {activeEntry.images.length > activeEntry.notes.length * 2 + 1 && (
                   <div className="extra-photos">
                     {activeEntry.images.slice(1 + activeEntry.notes.length * 2).map((src, i) => (
-                      <img key={src} src={src} alt={activeEntry.name + ' archival image ' + (i + 1)} loading="lazy" />
+                      <img key={src} src={src} alt={'Illustrative image for ' + activeEntry.name + ' ' + (i + 1)} loading="lazy" />
                     ))}
                   </div>
                 )}
@@ -1153,7 +1217,7 @@ function About({ onClose, onRegisterClose }) {
   const isLeavingRef = useRef(false)
 
   useEffect(() => {
-    document.title = 'About—Venture X'
+    setPageMetadata('About VentureX | E-Cell BMSIT&M', about.intro)
   }, [])
 
   // Register programmatic close handler (for header clicks)
@@ -1393,6 +1457,13 @@ export default function App() {
           onNavigate={nextPath => go(nextPath, false)}
           onRegisterGoHome={fn => { filePageGoHomeRef.current = fn }}
         />
+      ) : path === '/about' ? (
+        <About
+          onClose={handleAboutClose}
+          onRegisterClose={fn => { aboutCloseRef.current = fn }}
+        />
+      ) : path === '/guide/pitch-video' ? (
+        <PitchGuide />
       ) : entry ? (
         <FilePage
           key={`group-${safeCurrentGroupIndex}`}
@@ -1406,7 +1477,7 @@ export default function App() {
           onCaseLeftForAbout={handleCaseLeftForAbout}
           onCaseEnterComplete={handleCaseEnterComplete}
         />
-      ) : (
+      ) : path === '/' ? (
         <Home
           go={go}
           isEntering={isHomeEntering}
@@ -1419,6 +1490,12 @@ export default function App() {
           onSelectCase={handleSelectCase}
           onSaveRects={handleSaveFolderRects}
         />
+      ) : (
+        <main className="route-not-found">
+          <h1>Page not found</h1>
+          <p>This file is not in the VentureX archive.</p>
+          <a href="/" onClick={e => { e.preventDefault(); go('/') }}>Back to VentureX</a>
+        </main>
       )}
     </div>
   )
