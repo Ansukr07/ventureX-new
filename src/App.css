@@ -502,9 +502,6 @@
 .case-folder-tag.is-visible {
   pointer-events: auto;
 }
-.case-folder-tag.is-visible:hover:not(.is-active) {
-  transform: translateY(-8px);
-}
 .case-folder-tag.is-active {
   pointer-events: none;
   transform: translateY(0);
@@ -806,6 +803,7 @@
 
 /* Floating Next Case Widget */
 .case-next-widget {
+ display: none !important;
   position: fixed;
   bottom: 30px;
   right: 32px;

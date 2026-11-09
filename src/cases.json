@@ -10,22 +10,22 @@
     ],
     "notes": [
       {
-        "title": "One platform. Two stages.",
-        "text": "Online video submission leads into an offline live pitching round for selected teams."
+        "title": "Pitch It. Prove It. Propel It.",
+        "text": "VentureX is a national-level investor-connect program that brings promising startups and potential investors under one roof."
       }
     ],
     "bio": [
-      "VentureX is a national-level investor-connect program by the Entrepreneurship Cell at BMS Institute of Technology & Management. It brings promising startups and potential investors together, giving founders a place to pitch their ventures and present their business potential.",
-      "The journey has two stages. Teams first submit a startup pitch and video demonstration online for investor evaluation. Shortlisted teams then present their products, business models, and vision in an offline idea-pitching round.",
-      "The event lasts 7 hours, from 9:00 AM to 4:00 PM. Teams have 3 to 4 members. The venue is BMS Institute of Technology & Management in Yelahanka, Bengaluru."
+      "VentureX is a national-level investor-connect program designed to bring promising startups and potential investors under one roof. It gives aspiring entrepreneurs a platform to pitch their ventures, showcase their innovations, and present their business potential to investors.",
+      "VentureX is an entrepreneurial pitching platform by E-Cell, BMSIT&M. The journey begins with an online preliminary round, where teams submit startup pitches and video demonstrations for investors to explore and evaluate.",
+      "Selected teams advance to the next stage, presenting their products, business models, and vision through live pitches to a panel of investors. It is an opportunity to showcase innovation, attract investment, and take the next step towards building a successful venture."
     ],
     "info": [
       "Duration:",
-      "7 hours (9:00 AM to 4:00 PM)",
+      "7 hours (9 A.M. to 4 P.M.)",
       "Format:",
       "Round 1: Online video submission; Round 2: Offline idea pitching",
       "Team size:",
-      "3 to 4 members",
+      "3–4 members",
       "Venue:",
       "BMS Institute of Technology & Management, Yelahanka, Bengaluru"
     ]
@@ -42,30 +42,45 @@
     "notes": [
       {
         "title": "Three execution phases",
-        "text": "Online video submission, selection of the Top 30 teams, and a live investor-pitching round."
+        "text": "Online video submissions lead to a Top 30 shortlist and a live investor-pitching round."
       }
     ],
     "bio": [
-      "VentureX moves from online submissions to a live investor-pitching final. The milestones below combine the event schedule with the three execution phases described in the event document."
+      "VentureX moves from an online preliminary round to a live investor-pitching final. The 30 most promising teams advance to pitch their ventures in person and connect directly with investors."
     ],
     "info": [
       "Round 1:",
-      "Online video submission and evaluation",
+      "Teams submit startup pitch videos for investor evaluation",
       "Shortlist:",
       "Top 30 teams advance",
       "Final round:",
-      "30 December"
+      "30th December"
     ],
     "timeline": [
       {
-        "date": "October",
-        "title": "Launch and registration",
-        "text": "VentureX launches. Registration opens and the registration deadline is in October."
+        "date": "November",
+        "title": "VentureX launch",
+        "text": "VentureX launches."
       },
       {
         "date": "November",
-        "title": "Round 1 evaluation and results",
-        "text": "The online video submissions are evaluated, and the results shortlist the 30 most promising teams for the final stage."
+        "title": "Registration opens",
+        "text": "Teams can register for the online preliminary round."
+      },
+      {
+        "date": "November",
+        "title": "Registration deadline",
+        "text": "Registration closes for teams entering the online preliminary round."
+      },
+      {
+        "date": "December",
+        "title": "Round 1 evaluation",
+        "text": "The online video submissions are evaluated by investors."
+      },
+      {
+        "date": "December",
+        "title": "Round 1 results",
+        "text": "The 30 most promising teams are shortlisted for the final stage."
       },
       {
         "date": "30 December",
@@ -100,7 +115,7 @@
       },
       {
         "question": "Is there an entry fee?",
-        "answer": "Round 1 online video submission is free. Teams shortlisted for the Round 2 offline finale pay an administrative confirmation fee per team. It covers venue access, food, connectivity, and kits; the document does not state the amount."
+        "answer": "Round 1 (online video submission) is free. Teams shortlisted for the Round 2 offline finale pay an administrative confirmation fee of ₹ per team. It covers venue access, food, connectivity, and kits."
       },
       {
         "question": "What are the team size parameters?",
@@ -108,7 +123,7 @@
       },
       {
         "question": "Is there a specific domain or track for startups?",
-        "answer": "No. VentureX follows an open innovation approach, so startups from any domain or industry are welcome."
+        "answer": "No. VentureX follows an Open Innovation approach, so startups from any domain or industry are welcome to participate."
       }
     ]
   },
@@ -185,13 +200,13 @@
     ],
     "notes": [
       {
-        "title": "Build a case worth investing in",
+        "title": "Pitch your vision. Make your case.",
         "text": "Submit your pitch and video demonstration. Show investors what makes your venture stand out, demonstrate its market potential, and pitch your vision."
       }
     ],
     "bio": [
-      "You have the vision. Now make it investment-ready. If you have a promising startup, a scalable business model, or an idea with the potential to disrupt the market, VentureX puts your venture before renowned investors.",
-      "Submit your pitch and video demonstration. Show investors what makes your venture stand out, demonstrate its market potential, and present the value of what you are building.",
+      "You have the vision. Now make it investment-ready. Have a promising startup, a scalable business model, or an idea with the potential to disrupt the market? VentureX puts your venture before renowned investors, giving you a platform to demonstrate its value, validate its potential, and pursue the next stage of growth.",
+      "Submit your pitch and video demonstration. Show investors what makes your venture stand out. Demonstrate your market potential. Pitch your vision. Make your case.",
       "Use the opportunity to validate your venture’s potential and pursue its next stage of growth. Pitch your vision and make a case worth investing in. Ready to make your pitch count? Step into VentureX."
     ],
     "info": [
@@ -213,14 +228,14 @@
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=85"
     ],
     "notes": [
-      { "title": "Where Capital Meets Conviction", "text": "VentureX is an entrepreneurial pitching platform by the Entrepreneurship Cell at BMS Institute of Technology & Management. It brings promising startups, innovative ideas, and potential investors together." },
+      { "title": "Where Capital Meets Connection", "text": "VentureX is a national-level investor-connect program that brings promising startups and potential investors together." },
       { "title": "One platform. Two stages.", "text": "Teams share a startup pitch and video demonstration online. Selected ventures then present their product, business model, and vision in a live pitching round." }
     ],
     "bio": [
-      "VentureX gives aspiring entrepreneurs a place to pitch their ventures, showcase their innovations, and present their business potential to investors.",
-      "It is an opportunity to put a bold idea in front of people who can help it take its next step.",
-      "The journey begins online, where teams share a startup pitch and video demonstration. Selected ventures then move on to a live pitching round, presenting their product, business model, and vision to investors.",
-      "VentureX is more than a pitch. It is a chance to showcase innovation, attract investment, and move towards building a successful venture."
+      "VentureX is an entrepreneurial pitching platform by E-Cell, BMSIT&M, designed to bring promising startups, innovative ideas, and potential investors together.",
+      "The journey begins with an online preliminary round, where teams submit their startup pitches and video demonstrations for investors to explore and evaluate.",
+      "Selected teams advance to the next stage, presenting their products, business models, and vision through live pitches to a panel of investors.",
+      "VentureX is more than just a pitch. It’s an opportunity to showcase innovation, attract investment, and take the next step towards building a successful venture."
     ],
     "info": [
       "Organized by:",
