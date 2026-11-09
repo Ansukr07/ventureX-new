@@ -17,7 +17,7 @@ const groups = [
   { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
   { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
   { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, fee, and coordination information for teams considering VentureX.', files: [2, 3] },
-  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4] }
+  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
 ]
 function useRoute() {
   const [path, setPath] = useState(location.pathname)
@@ -53,7 +53,7 @@ function Link({ to, go, children, ...props }) {
   )
 }
 
-function Header({ go, onGoHome, onAboutClick }) {
+function Header({ go, onGoHome }) {
   return (
     <header className="the-header">
       <div className="the-header-inner">
@@ -67,17 +67,6 @@ function Header({ go, onGoHome, onAboutClick }) {
           }}
         >
           VENTURE X
-        </a>
-        <a
-          href="/about"
-          className="the-header-about"
-          onClick={e => {
-            e.preventDefault()
-            if (onAboutClick) onAboutClick()
-            else go('/about')
-          }}
-        >
-          About
         </a>
       </div>
     </header>
@@ -1409,7 +1398,6 @@ export default function App() {
       <Header
         go={go}
         onGoHome={handleGoHome}
-        onAboutClick={handleAboutClick}
       />
       {transition?.type === 'home-to-case' ? (
         <FilePage
@@ -1448,11 +1436,6 @@ export default function App() {
           onCaseLeftForAbout={handleCaseLeftForAbout}
           onCaseEnterComplete={handleCaseEnterComplete}
         />
-      ) : path === '/about' ? (
-        <About
-          onClose={handleAboutClose}
-          onRegisterClose={fn => { aboutCloseRef.current = fn }}
-        />
       ) : (
         <Home
           go={go}
@@ -1470,3 +1453,4 @@ export default function App() {
     </div>
   )
 }
+

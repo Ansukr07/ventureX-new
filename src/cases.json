@@ -202,5 +202,31 @@
       "Show:",
       "Your venture’s value and market potential"
     ]
+  },
+  {
+    "slug": "about-venturex",
+    "name": "About VentureX",
+    "color": "#699ad1",
+    "images": [
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=85"
+    ],
+    "notes": [
+      { "title": "Where Capital Meets Conviction", "text": "VentureX is an entrepreneurial pitching platform by the Entrepreneurship Cell at BMS Institute of Technology & Management. It brings promising startups, innovative ideas, and potential investors together." },
+      { "title": "One platform. Two stages.", "text": "Teams share a startup pitch and video demonstration online. Selected ventures then present their product, business model, and vision in a live pitching round." }
+    ],
+    "bio": [
+      "VentureX gives aspiring entrepreneurs a place to pitch their ventures, showcase their innovations, and present their business potential to investors.",
+      "It is an opportunity to put a bold idea in front of people who can help it take its next step.",
+      "The journey begins online, where teams share a startup pitch and video demonstration. Selected ventures then move on to a live pitching round, presenting their product, business model, and vision to investors.",
+      "VentureX is more than a pitch. It is a chance to showcase innovation, attract investment, and move towards building a successful venture."
+    ],
+    "info": [
+      "Organized by:",
+      "Entrepreneurship Cell, BMS Institute of Technology & Management",
+      "Format:",
+      "Online submissions followed by a live pitching round"
+    ]
   }
 ]
