@@ -448,7 +448,6 @@ function FilePage({
 }) {
   const [activeEntry, setActiveEntry] = useState(entry)
   const isSwitchingRef = useRef(false)
-  const [isHeaderShrunk, setIsHeaderShrunk] = useState(false)
   const hasFlippedRef = useRef(false)
 
   const activeCaseIndex = cases.findIndex(c => c.slug === activeEntry.slug)
@@ -820,29 +819,6 @@ function FilePage({
     }
   }, [onRegisterGoHome, targetRect, remaining, safeGroupIndex])
 
-  // Sticky header shrink on scroll > 55px
-  useEffect(() => {
-    let frame = 0
-    const onScroll = () => {
-      if (!frame) {
-        frame = requestAnimationFrame(() => {
-          frame = 0
-          const top = window.scrollY || document.documentElement.scrollTop
-          if (top > 55 && !isHeaderShrunk) {
-            setIsHeaderShrunk(true)
-          } else if (top <= 45 && isHeaderShrunk) {
-            setIsHeaderShrunk(false)
-          }
-        })
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      if (frame) cancelAnimationFrame(frame)
-    }
-  }, [isHeaderShrunk])
-
   // Scrapbook Parallax & Micro-rotations (rotate: ±2deg)
   useEffect(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -888,7 +864,7 @@ function FilePage({
   return (
     <>
       <main className="case-page" style={{ '--case-color': activeEntry.color, '--first-case-color': firstCaseColor }}>
-      <section className={'case-hero' + (isHeaderShrunk ? ' is-shrunk' : '')}>
+      <section className="case-hero">
         <h1 className="case-hero-title" aria-label={activeEntry.name}>
           {activeEntry.name.split('').map((char, i) => (
             <span key={`${activeEntry.slug}-${i}`} className="case-char-mask">

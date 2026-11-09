@@ -9,6 +9,7 @@
 @media only screen and (max-width:1024px){:root{--container-offset:30px;--button-size:2.75rem}}
 #root{min-height:100vh}
 .app{overflow:clip;position:relative;z-index:2}
+.home{height:100vh;overflow:hidden}
 .intro{min-height:680px;height:100vh;padding:20vh 4% 0;text-align:center}
 .intro h1{font:400 clamp(58px,9.6vw,132px)/.85 Elegance,serif;white-space:nowrap;margin:0;letter-spacing:.015em}
 .archive{margin-top:-41vh;position:relative;z-index:2}
@@ -198,8 +199,8 @@
 
 /* Sticky Header Shrink */
 .case-hero {
- position: sticky;
- top: 56px;
+ position: relative;
+ top: auto;
  z-index: 100;
  height: 110px;
  display: flex;
