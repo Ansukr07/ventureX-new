@@ -169,6 +169,56 @@
  justify-content: space-between;
  pointer-events: auto;
 }
+.the-header.is-file-header {
+ height: 64px;
+ padding: 0 clamp(28px, 3.5vw, 48px);
+ background: transparent;
+ border-bottom: 0;
+ backdrop-filter: none;
+ -webkit-backdrop-filter: none;
+}
+.file-nav {
+ width: 100%;
+ min-height: 64px;
+ display: flex;
+ align-items: center;
+ justify-content: flex-start;
+ pointer-events: auto;
+}
+.file-nav__back {
+ display: inline-flex;
+ align-items: center;
+ gap: 9px;
+ position: relative;
+ padding: 10px 0;
+ border: 0;
+ background: transparent;
+ color: #fdfaf7;
+ font: 400 15px/1 'Lil Grotesk', Arial, sans-serif;
+ letter-spacing: .01em;
+ cursor: var(--app-cursor-pointer);
+ transition: opacity .2s ease, transform .2s ease;
+}
+.file-nav__back svg {
+ width: 18px;
+ height: 18px;
+ fill: none;
+ stroke: currentColor;
+ stroke-width: 1.5;
+ stroke-linecap: round;
+ stroke-linejoin: round;
+ transition: transform .22s ease;
+}
+.file-nav__back:hover {
+ opacity: .72;
+}
+.file-nav__back:hover svg {
+ transform: translateX(-3px);
+}
+.file-nav__back:focus-visible {
+ outline: 2px solid #f4ff9c;
+ outline-offset: 4px;
+}
 .the-header-logo {
  font: 700 18px/1 Founders, Arial, sans-serif;
  text-transform: uppercase;
@@ -202,7 +252,7 @@
  position: relative;
  top: auto;
  z-index: 100;
- height: 110px;
+ height: 220px;
  display: flex;
  align-items: center;
  padding: 0 clamp(28px, 3.5vw, 48px);
@@ -224,7 +274,7 @@
 }
 .case-hero h1,
 .case-hero-title {
- font: 800 clamp(44px, 6.4vw, 102px)/.85 Founders, Impact, 'Arial Narrow', sans-serif;
+ font: 800 clamp(44px, 6.8vw, 128px)/.9 Founders, Impact, 'Arial Narrow', sans-serif;
  text-transform: uppercase;
  margin: 0;
  letter-spacing: -0.015em;
@@ -1196,6 +1246,8 @@
 
 /* Larger, more readable typography on book pages. */
 .case-page .bio { font-size: 22px; line-height: 1.5; }
+.case-page .bio { max-width: 620px; line-height: 1.56; }
+.case-page .bio p { margin-bottom: 38px; }
 .case-page .life-info { font-size: 15px; line-height: 1.55; }
 .case-page .life-info .info-label { font-size: 13px; }
 .case-page .project-note h2 { font-size: clamp(24px, 2.4vw, 32px); }
@@ -1207,7 +1259,8 @@
 .case-page .case-bottom { font-size: 14px; }
 .case-page .case-bottom a { font-size: 30px; }
 @media(max-width:700px){
- .case-page .bio { font-size: 18px; line-height: 1.5; }
+ .case-page .bio { font-size: 18px; line-height: 1.52; }
+ .case-page .bio p { margin-bottom: 28px; }
  .case-page .life-info { font-size: 13px; }
  .case-page .life-info .info-label { font-size: 12px; }
  .case-page .project-note h2 { font-size: 24px; }

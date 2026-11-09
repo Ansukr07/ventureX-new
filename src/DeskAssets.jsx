@@ -218,10 +218,7 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
   const containerRef = useRef(null)
   const itemOuterRefs = useRef({})
   const itemInnerRefs = useRef({})
-  const centersRef = useRef({})
   const statesRef = useRef({})
-  const mousePosRef = useRef({ x: null, y: null })
-  const mouseVelRef = useRef({ x: 0, y: 0 })
   const animFrameRef = useRef(null)
 
   // Initialize individual physics states for each asset
@@ -234,20 +231,6 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
         rotX: 0,
         rotY: 0,
         scale: 1
-      }
-    })
-  }
-
-  // Measure and cache resting centers of each desk asset
-  const updateCenters = () => {
-    ASSETS.forEach(asset => {
-      const el = itemOuterRefs.current[asset.id]
-      if (el) {
-        const rect = el.getBoundingClientRect()
-        centersRef.current[asset.id] = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        }
       }
     })
   }
@@ -280,16 +263,10 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
           duration,
           delay,
           ease: 'power3.out',
-          clearProps: 'transform',
-          onComplete: () => {
-            updateCenters()
-          }
+          clearProps: 'transform'
         }
       )
     })
-
-    const timer = setTimeout(updateCenters, 300)
-    return () => clearTimeout(timer)
   }, [isEntering])
 
   // 2. Handle Case opening exit transition
@@ -310,162 +287,85 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
     }
   }, [isLeaving])
 
-  // 3. Continuous 60fps/120fps Individual Cursor Physics Loop
+  // 3. The stationery catches the pointer's motion like light paper in a breeze.
   useEffect(() => {
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (isReduced) return
-
-    updateCenters()
-
-    let lastX = null
-    let lastY = null
-
-    const handlePointerMove = e => {
-      if (e.pointerType === 'touch') return
-      if (lastX !== null && lastY !== null) {
-        // Compute cursor swipe velocity (clamped)
-        const vx = Math.max(-50, Math.min(50, e.clientX - lastX))
-        const vy = Math.max(-50, Math.min(50, e.clientY - lastY))
-        mouseVelRef.current.x = vx
-        mouseVelRef.current.y = vy
+    let frame = 0
+    let visible = true
+    let previousTime = 0
+    const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5, vx: 0, vy: 0 }
+    let target = { x: pointer.x, y: pointer.y }
+    let hasPointer = false
+    let observer
+    const move = event => {
+      if (event.pointerType === 'touch' || isReduced) return
+      target = { x: event.clientX, y: event.clientY }
+      hasPointer = true
+      schedule()
+    }
+    const leave = () => { hasPointer = false; pointer.vx = 0; pointer.vy = 0; schedule() }
+    const onScroll = () => schedule()
+    const tick = time => {
+      frame = 0
+      if (!visible) return
+      const delta = previousTime ? Math.min(time - previousTime, 40) : 16.7
+      previousTime = time
+      if (!isReduced) {
+        const pointerEase = 1 - Math.exp(-delta / 95)
+        const oldX = pointer.x
+        const oldY = pointer.y
+        pointer.x += (target.x - pointer.x) * pointerEase
+        pointer.y += (target.y - pointer.y) * pointerEase
+        pointer.vx = (pointer.x - oldX) / Math.max(delta, 1)
+        pointer.vy = (pointer.y - oldY) / Math.max(delta, 1)
+        const scrollY = window.scrollY || 0
+        let unsettled = false
+        ASSETS.forEach(asset => {
+          const inner = itemInnerRefs.current[asset.id]
+          const outer = itemOuterRefs.current[asset.id]
+          if (!inner || !outer) return
+          const physics = asset.physics
+          const cur = statesRef.current[asset.id]
+          const rect = outer.getBoundingClientRect()
+          const dx = pointer.x - (rect.left + rect.width / 2)
+          const dy = pointer.y - (rect.top + rect.height / 2)
+          const distance = Math.hypot(dx, dy)
+          const influence = hasPointer ? Math.pow(Math.max(0, 1 - distance / 560), 2) : 0
+          const gustX = Math.max(-1, Math.min(1, pointer.vx * 42))
+          const gustY = Math.max(-1, Math.min(1, pointer.vy * 42))
+          const targetX = -gustX * influence * 5
+          const targetY = scrollY * physics.scrollY - gustY * influence * 3
+          const targetRot = scrollY * (physics.rotScroll || 0) + gustX * influence * 2.2
+          const targetRotX = gustY * influence * -0.8
+          const targetRotY = gustX * influence * 0.9
+          const ease = 1 - Math.exp(-delta / 240)
+          cur.x += (targetX - cur.x) * ease
+          cur.y += (targetY - cur.y) * ease
+          cur.rot += (targetRot - cur.rot) * ease
+          cur.rotX += (targetRotX - cur.rotX) * ease
+          cur.rotY += (targetRotY - cur.rotY) * ease
+          if (Math.abs(targetX - cur.x) + Math.abs(targetY - cur.y) + Math.abs(targetRot - cur.rot) + Math.abs(targetRotX - cur.rotX) + Math.abs(targetRotY - cur.rotY) > 0.015 || Math.abs(pointer.vx) + Math.abs(pointer.vy) > 0.002) unsettled = true
+          inner.style.transform = `translate3d(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px, 0) rotateX(${cur.rotX.toFixed(2)}deg) rotateY(${cur.rotY.toFixed(2)}deg) rotateZ(${cur.rot.toFixed(2)}deg)`
+          if (physics.fadeWithScroll) inner.style.opacity = Math.max(0, 1 - scrollY / 320).toFixed(2)
+        })
+        if (unsettled || Math.abs(target.x - pointer.x) + Math.abs(target.y - pointer.y) > 0.1) frame = requestAnimationFrame(tick)
       }
-      lastX = e.clientX
-      lastY = e.clientY
-      mousePosRef.current = { x: e.clientX, y: e.clientY }
     }
-
-    const handlePointerLeave = () => {
-      mousePosRef.current = { x: null, y: null }
-      mouseVelRef.current = { x: 0, y: 0 }
-      lastX = null
-      lastY = null
-    }
-
-    const handleResize = () => {
-      updateCenters()
-    }
-
-    window.addEventListener('pointermove', handlePointerMove, { passive: true })
-    window.addEventListener('pointerleave', handlePointerLeave, { passive: true })
-    window.addEventListener('resize', handleResize, { passive: true })
-
-    const startTime = performance.now()
-
-    const tick = () => {
-      const now = performance.now()
-      const elapsed = (now - startTime) * 0.001
-      const scrollY = window.scrollY || 0
-      const mouse = mousePosRef.current
-      const vel = mouseVelRef.current
-
-      // Gradually decay cursor swipe impulse
-      vel.x *= 0.88
-      vel.y *= 0.88
-
-      const halfW = window.innerWidth / 2
-      const halfH = window.innerHeight / 2
-      const hasMouse = mouse.x !== null && mouse.y !== null
-
-      const globalNormX = hasMouse ? (mouse.x - halfW) / halfW : 0
-      const globalNormY = hasMouse ? (mouse.y - halfH) / halfH : 0
-
-      ASSETS.forEach((asset, idx) => {
-        const inner = itemInnerRefs.current[asset.id]
-        if (!inner) return
-
-        const physics = asset.physics
-        const cur = statesRef.current[asset.id]
-        const center = centersRef.current[asset.id]
-
-        let pushX = 0
-        let pushY = 0
-        let rotPush = 0
-        let tiltX = 0
-        let tiltY = 0
-        let liftScale = 1
-
-        // Individual cursor vector calculation relative to THIS asset
-        if (hasMouse && center) {
-          const dx = mouse.x - center.x
-          const dy = mouse.y - center.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-
-          if (dist < physics.radius) {
-            // Smooth proximity falloff (cubic smoothstep)
-            const t = 1 - dist / physics.radius
-            const strength = t * t * (3 - 2 * t)
-
-            // Directional physical repulsion away from cursor
-            const invDist = 1 / (dist || 1)
-            const nx = dx * invDist
-            const ny = dy * invDist
-
-            pushX = -nx * physics.maxPush * strength
-            pushY = -ny * physics.maxPush * strength
-
-            // Cursor sweep wind/impulse transfer
-            pushX += vel.x * 0.25 * strength
-            pushY += vel.y * 0.25 * strength
-
-            // Rotational torque: spins dynamically based on cursor direction & swipe
-            rotPush = (dx / physics.radius) * physics.maxTorque * strength + (vel.x * 0.12 - vel.y * 0.12) * strength
-
-            // 3D perspective tilt towards/away from cursor
-            tiltX = -(dy / physics.radius) * physics.tilt3D * strength
-            tiltY = (dx / physics.radius) * physics.tilt3D * strength
-
-            // Subtle tactile physical lift
-            liftScale = 1 + physics.scaleLift * strength
-          }
-        }
-
-        // Global ambient depth parallax
-        const globX = globalNormX * physics.globalParallaxX
-        const globY = globalNormY * physics.globalParallaxY
-
-        // Scroll parallax
-        const scrY = scrollY * physics.scrollY
-        const scrRot = scrollY * (physics.rotScroll || 0)
-
-        // Subtle ambient organic float
-        const breatheY = Math.sin(elapsed * 1.1 + idx * 0.9) * 2.2
-        const breatheRot = Math.cos(elapsed * 0.8 + idx * 0.7) * 0.5
-
-        // Combined individual targets
-        const targetX = pushX + globX
-        const targetY = pushY + globY + scrY + breatheY
-        const targetRot = rotPush + scrRot + breatheRot
-        const targetRotX = tiltX
-        const targetRotY = tiltY
-        const targetScale = liftScale
-
-        // Independent physics interpolation (lerp) per asset
-        const k = physics.lerp
-        cur.x += (targetX - cur.x) * k
-        cur.y += (targetY - cur.y) * k
-        cur.rot += (targetRot - cur.rot) * k
-        cur.rotX += (targetRotX - cur.rotX) * k
-        cur.rotY += (targetRotY - cur.rotY) * k
-        cur.scale += (targetScale - cur.scale) * k
-
-        inner.style.transform = `translate3d(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px, 0) rotateX(${cur.rotX.toFixed(2)}deg) rotateY(${cur.rotY.toFixed(2)}deg) rotateZ(${cur.rot.toFixed(2)}deg) scale(${cur.scale.toFixed(3)})`
-
-        if (physics.fadeWithScroll) {
-          const fade = Math.max(0, 1 - scrollY / 320)
-          inner.style.opacity = fade.toFixed(2)
-        }
-      })
-
-      animFrameRef.current = requestAnimationFrame(tick)
-    }
-
-    animFrameRef.current = requestAnimationFrame(tick)
-
+    const schedule = () => { if (!frame && visible) frame = requestAnimationFrame(tick) }
+    const onVisibility = () => { visible = !document.hidden; if (visible) schedule(); else if (frame) cancelAnimationFrame(frame) }
+    observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting && !document.hidden; if (visible) schedule(); else if (frame) { cancelAnimationFrame(frame); frame = 0 } })
+    observer.observe(containerRef.current)
+    window.addEventListener('pointermove', move, { passive: true })
+    window.addEventListener('pointerleave', leave, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      window.removeEventListener('pointermove', handlePointerMove)
-      window.removeEventListener('pointerleave', handlePointerLeave)
-      window.removeEventListener('resize', handleResize)
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerleave', leave)
+      window.removeEventListener('scroll', onScroll)
+      document.removeEventListener('visibilitychange', onVisibility)
+      observer?.disconnect()
+      if (frame) cancelAnimationFrame(frame)
     }
   }, [])
 

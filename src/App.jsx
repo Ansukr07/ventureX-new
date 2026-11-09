@@ -53,22 +53,15 @@ function Link({ to, go, children, ...props }) {
   )
 }
 
-function Header({ go, onGoHome }) {
+function Header({ go, isFileOpen = false, onBackHome }) {
   return (
-    <header className="the-header">
-      <div className="the-header-inner">
-        <a
-          href="/"
-          className="the-header-logo"
-          onClick={e => {
-            e.preventDefault()
-            if (onGoHome) onGoHome()
-            else go('/')
-          }}
-        >
-          VENTURE X
-        </a>
-      </div>
+    <header className={'the-header' + (isFileOpen ? ' is-file-header' : '')}>
+      {isFileOpen && <nav className="file-nav" aria-label="File navigation">
+        <button className="file-nav__back" type="button" onClick={onBackHome}>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 4.5 2.75 10l5.5 5.5M3.25 10h14" /></svg>
+          <span>Back to home</span>
+        </button>
+      </nav>}
     </header>
   )
 }
@@ -1373,7 +1366,8 @@ export default function App() {
     <div className="app">
       <Header
         go={go}
-        onGoHome={handleGoHome}
+        isFileOpen={Boolean(entry || transition?.type === 'home-to-case' || transition?.type === 'case-to-home')}
+        onBackHome={handleGoHome}
       />
       {transition?.type === 'home-to-case' ? (
         <FilePage
