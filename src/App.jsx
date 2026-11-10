@@ -570,6 +570,40 @@ function TeamEvidenceBoard({ images }) {
     </section>
   )
 }
+function PixelBarcode({ seed = 19 }) {
+  // Deterministic pixel-noise barcode, in the style of the Departure Mono boarding pass.
+  let s = seed >>> 0
+  const rand = () => {
+    s = (s + 0x6D2B79F5) >>> 0
+    let t = s
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+  const W = 316
+  const H = 46
+  const cell = 4
+  const cols = Math.floor((W - 40) / cell)
+  const rows = Math.floor((H - 2) / cell)
+  const rects = []
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const v = rand()
+      const x = 20 + c * cell
+      const y = 1 + r * cell
+      if (v < 0.42) rects.push(<rect key={`${c}-${r}`} x={x} y={y} width={cell} height={cell} fill="#EEEEEE" />)
+      else if (v > 0.88) rects.push(<rect key={`${c}-${r}b`} x={x} y={y} width={cell} height={cell * 2} fill="#EEEEEE" />)
+    }
+  }
+  return (
+    <svg className="arrival-boarding-pass__barcode" viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+      <rect x="0" y="1" width="20" height={H - 2} fill="#EEEEEE" />
+      {rects}
+      <rect x={W - 14} y="1" width="14" height={H - 2} fill="#EEEEEE" />
+    </svg>
+  )
+}
+
 function ArrivalTicketGuide() {
   const ticketStageRef = useRef(null)
   const [isRevealed, setIsRevealed] = useState(false)
@@ -642,30 +676,52 @@ function ArrivalTicketGuide() {
 
       <div ref={ticketStageRef} className="arrival-ticket-layout">
         <article className="arrival-boarding-pass">
-          <div className="arrival-boarding-pass__topline">
-            <span>VENTUREX · BOARDING PASS</span>
-            <span>BLR / YHK</span>
-          </div>
-          <div className="arrival-boarding-pass__route">
-            <div>
-              <span>ARRIVE IN</span>
-              <strong>BLR</strong>
-              <small>BENGALURU</small>
+          <span className="arrival-boarding-pass__fineprint" aria-hidden="true">DO NOT EXPOSE TO EXCESSIVE HEAT OR DIRECT SUNLIGHT</span>
+          <div className="arrival-boarding-pass__content">
+            <div className="arrival-boarding-pass__topline">
+              <div className="arrival-boarding-pass__brand">
+                <span className="arrival-boarding-pass__logo" aria-hidden="true" />
+                <div>
+                  <p className="arrival-boarding-pass__brandname">VENTUREX ·<br />BOARDING PASS</p>
+                  <small className="arrival-boarding-pass__routecodes">BLR / YHK</small>
+                </div>
+              </div>
+              <div className="arrival-boarding-pass__passtk">
+                <PixelBarcode />
+                <span className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</span>
+              </div>
             </div>
-            <span className="arrival-boarding-pass__arrows" aria-hidden="true">···›</span>
-            <div>
-              <span>FINAL STOP</span>
-              <strong>BMSIT</strong>
-              <small>AVALAHALLI · YELAHANKA</small>
+            <div className="arrival-boarding-pass__route">
+              <div className="arrival-boarding-pass__leg">
+                <span>ARRIVE IN</span>
+                <div className="arrival-boarding-pass__legstack">
+                  <strong>BLR</strong>
+                  <small>BENGALURU</small>
+                </div>
+              </div>
+              <span className="arrival-boarding-pass__arrows" aria-hidden="true">···›</span>
+              <div className="arrival-boarding-pass__leg">
+                <span>FINAL STOP</span>
+                <div className="arrival-boarding-pass__legstack">
+                  <strong>BMSIT</strong>
+                  <small>AVALAHALLI · YELAHANKA</small>
+                </div>
+              </div>
             </div>
+            <div className="arrival-boarding-pass__meta">
+              <div><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
+              <div><span>LAST MILE</span><b>BMTC + WALK / AUTO</b></div>
+              <div><span>DESTINATION</span><b>DODDABALLAPUR MAIN RD</b></div>
+            </div>
+            <p className="arrival-boarding-pass__stars" aria-hidden="true">***********************</p>
           </div>
-          <div className="arrival-boarding-pass__meta">
-            <div><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
-            <div><span>LAST MILE</span><b>BMTC + WALK / AUTO</b></div>
-            <div><span>DESTINATION</span><b>DODDABALLAPUR MAIN RD</b></div>
+          <div className="arrival-boarding-pass__stub">
+            <p className="arrival-boarding-pass__stubbrand">VENTUREX ·<br />BOARDING PASS</p>
+            <small className="arrival-boarding-pass__stubcodes">BLR / YHK</small>
+            <div className="arrival-boarding-pass__stubrow"><span>ARRIVE IN</span><b>BLR</b></div>
+            <div className="arrival-boarding-pass__stubrow"><span>FINAL STOP</span><b>BMSIT</b></div>
+            <div className="arrival-boarding-pass__stubrow"><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
           </div>
-          <div className="arrival-barcode" aria-hidden="true" />
-          <p className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</p>
         </article>
 
         <aside className="arrival-receipt" aria-label="Bengaluru arrival route receipt">
@@ -681,16 +737,27 @@ function ArrivalTicketGuide() {
         </aside>
 
         <div className="arrival-city-ticket">
-          <span className="arrival-city-ticket__hole" aria-hidden="true" />
-          <div className="arrival-city-ticket__vertical">CITY TRANSFER · BMTC 285-M</div>
-          <div className="arrival-city-ticket__main">
-            <div className="arrival-city-ticket__print">
-              <span>BUS TICKET</span>
-              <b>MAJESTIC<br />› AVALAHALLI</b>
-              <small>ORDINARY SERVICE · PAY PER RIDE</small>
+          <div className="arrival-city-ticket__tag">
+            <span className="arrival-city-ticket__hole" aria-hidden="true" />
+            <div className="arrival-city-ticket__cells">
+              <div className="arrival-city-ticket__cell">
+                <span>CITY TRANSFER ·</span>
+                <b>BMTC 285-M</b>
+              </div>
+              <div className="arrival-city-ticket__cell is-right">
+                <span>ORDINARY SERVICE ·</span>
+                <b>PAY PER RIDE</b>
+              </div>
+            </div>
+            <div className="arrival-city-ticket__main">
+              <span className="arrival-city-ticket__side">BUS TICKET</span>
+              <p className="arrival-city-ticket__big">MAJESTIC<br />› AVALAHALLI</p>
+            </div>
+            <div className="arrival-city-ticket__footer">
+              <span className="arrival-city-ticket__dither" aria-hidden="true" />
+              <span className="arrival-city-ticket__serial">YHK—BMSIT</span>
             </div>
           </div>
-          <div className="arrival-city-ticket__stub">YHK—BMSIT</div>
         </div>
       </div>
 
@@ -1843,4 +1910,3 @@ export default function App() {
     </div>
   )
 }
-
