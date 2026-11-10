@@ -579,9 +579,44 @@ function ArrivalTicketGuide() {
     if (!ticketStage) return
 
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const setParallax = (x = 0, y = 0) => {
+      ticketStage.style.setProperty('--ticket-pass-x', `${(-x * 9).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-pass-y', `${(-y * 8).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-pass-rotate-x', `${(-y * 1.5).toFixed(2)}deg`)
+      ticketStage.style.setProperty('--ticket-pass-rotate-y', `${(x * 2).toFixed(2)}deg`)
+      ticketStage.style.setProperty('--ticket-receipt-x', `${(x * 13).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-receipt-y', `${(y * 12).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-receipt-rotate-x', `${(-y * 2.4).toFixed(2)}deg`)
+      ticketStage.style.setProperty('--ticket-receipt-rotate-y', `${(x * 3.2).toFixed(2)}deg`)
+      ticketStage.style.setProperty('--ticket-city-x', `${(x * 18).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-city-y', `${(y * 15).toFixed(2)}px`)
+      ticketStage.style.setProperty('--ticket-city-rotate-x', `${(-y * 3).toFixed(2)}deg`)
+      ticketStage.style.setProperty('--ticket-city-rotate-y', `${(x * 4).toFixed(2)}deg`)
+    }
+    const onPointerMove = event => {
+      if (!event.target.closest('.arrival-boarding-pass, .arrival-receipt, .arrival-city-ticket')) {
+        setParallax()
+        return
+      }
+      const rect = ticketStage.getBoundingClientRect()
+      const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1))
+      const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1))
+      setParallax(x, y)
+    }
+    const onPointerLeave = () => setParallax()
+    if (finePointer) {
+      ticketStage.addEventListener('pointermove', onPointerMove, { passive: true })
+      ticketStage.addEventListener('pointerleave', onPointerLeave, { passive: true })
+    }
+    const cleanupPointer = () => {
+      ticketStage.removeEventListener('pointermove', onPointerMove)
+      ticketStage.removeEventListener('pointerleave', onPointerLeave)
+    }
+
     if (motion.matches || !('IntersectionObserver' in window)) {
       setIsRevealed(true)
-      return
+      return cleanupPointer
     }
 
     const observer = new IntersectionObserver(([entry]) => {
@@ -592,7 +627,10 @@ function ArrivalTicketGuide() {
     }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' })
 
     observer.observe(ticketStage)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      cleanupPointer()
+    }
   }, [])
 
   return (
@@ -630,9 +668,10 @@ function ArrivalTicketGuide() {
           <p className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</p>
         </article>
 
-        <aside className="arrival-receipt">
+        <aside className="arrival-receipt" aria-label="Bengaluru arrival route receipt">
           <p className="arrival-receipt__eyebrow">YOUR LAST LEG</p>
           <h3>Three ways in</h3>
+          <div className="arrival-receipt__rule" aria-hidden="true" />
           <ol>
             <li><b>Flying to BLR</b><span>Take BMTC Vayu Vajra towards Hebbal / Yelahanka, then a local bus or auto to Avalahalli.</span></li>
             <li><b>Arriving by train</b><span>If your train stops at Yelahanka Junction, continue by local bus or auto. From KSR Bengaluru, reach Majestic and take BMTC 285-M towards Avalahalli.</span></li>
@@ -714,10 +753,50 @@ function FilePage({
     let touchStartY = null
     let hasNavigated = false
     let navigationTimer = null
+    let scrollFrame = 0
+    let targetScrollY = window.scrollY
+    let previousFrameTime = 0
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const letNativeWheelHandle = event => {
+      if (event.ctrlKey || event.deltaY === 0 || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return true
+      let element = event.target instanceof Element ? event.target : event.target?.parentElement
+      if (!element || element.closest('input, textarea, select, [contenteditable="true"]')) return true
+      while (element && element !== document.body) {
+        const overflowY = window.getComputedStyle(element).overflowY
+        const canScroll = /(auto|scroll|overlay)/.test(overflowY) && element.scrollHeight > element.clientHeight + 1
+        if (canScroll) {
+          const maxScroll = element.scrollHeight - element.clientHeight
+          if ((event.deltaY < 0 && element.scrollTop > 0) || (event.deltaY > 0 && element.scrollTop < maxScroll)) return true
+        }
+        element = element.parentElement
+      }
+      return false
+    }
+
+    const easeWheelScroll = time => {
+      const scrollRoot = document.scrollingElement || document.documentElement
+      const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight)
+      targetScrollY = Math.min(targetScrollY, maxScroll)
+      const currentScrollY = window.scrollY
+      const distance = targetScrollY - currentScrollY
+      if (Math.abs(distance) < 0.7) {
+        if (distance) window.scrollTo({ top: targetScrollY, behavior: 'instant' })
+        scrollFrame = 0
+        previousFrameTime = 0
+        return
+      }
+      const elapsed = previousFrameTime ? Math.min(time - previousFrameTime, 48) : 16.67
+      previousFrameTime = time
+      const ease = 1 - Math.exp(-elapsed / 220)
+      window.scrollTo({ top: currentScrollY + distance * ease, behavior: 'instant' })
+      scrollFrame = window.requestAnimationFrame(easeWheelScroll)
+    }
 
     const isAtBottom = () => {
       const scrollRoot = document.scrollingElement || document.documentElement
-      return scrollRoot.scrollTop + window.innerHeight >= scrollRoot.scrollHeight - 2
+      const effectiveScrollTop = scrollFrame ? Math.max(scrollRoot.scrollTop, targetScrollY) : scrollRoot.scrollTop
+      return effectiveScrollTop + window.innerHeight >= scrollRoot.scrollHeight - 2
     }
     const reset = () => {
       overscrollAmount = 0
@@ -752,7 +831,17 @@ function FilePage({
         }, 1750)
       }
     }
-    const onWheel = event => addDownwardIntent(event.deltaY)
+    const onWheel = event => {
+      addDownwardIntent(event.deltaY)
+      if (reduceMotion || letNativeWheelHandle(event)) return
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1
+      const scrollRoot = document.scrollingElement || document.documentElement
+      const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight)
+      if (!scrollFrame) targetScrollY = window.scrollY
+      targetScrollY = Math.max(0, Math.min(maxScroll, targetScrollY + event.deltaY * unit * 0.72))
+      event.preventDefault()
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(easeWheelScroll)
+    }
     const onTouchStart = event => {
       touchStartY = event.touches[0]?.clientY ?? null
     }
@@ -769,7 +858,7 @@ function FilePage({
       if (!isAtBottom()) reset()
     }
 
-    window.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: true })
     window.addEventListener('touchend', onTouchEnd, { passive: true })
@@ -781,6 +870,7 @@ function FilePage({
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('scroll', onScroll)
       if (navigationTimer) window.clearTimeout(navigationTimer)
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
     }
   }, [activeEntry.slug])
 
@@ -827,7 +917,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom'
+      '.project, .extra-photos, .case-bottom, .team-evidence'
     )
     const folder = folderRef.current
 
@@ -941,7 +1031,7 @@ function FilePage({
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom'
+      '.project, .extra-photos, .case-bottom, .team-evidence'
     )
     const folder = folderRef.current
 
@@ -991,7 +1081,7 @@ function FilePage({
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom'
+          '.project, .extra-photos, .case-bottom, .team-evidence'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -1058,7 +1148,7 @@ function FilePage({
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom'
+          '.project, .extra-photos, .case-bottom, .team-evidence'
         )
         const folder = folderRef.current
 

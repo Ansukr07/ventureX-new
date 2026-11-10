@@ -1377,7 +1377,7 @@
 .case-page .event-timeline h2 { margin: 0 0 9px; font: 700 20px/1.25 'Lil Grotesk', Arial, sans-serif; color: #18181b; }
 .case-page .event-timeline p { margin: 0; text-indent: 0; font: inherit; }
 
-/* Travel tickets: Arrival guide for out-of-state attendees */
+/* Ticket silhouettes follow the Departure Mono receipt, boarding pass, and bag tag proportions. */
 .arrival-guide {
   width: min(1240px, calc(100% - clamp(32px, 7vw, 96px)));
   margin: 0 auto 54px;
@@ -1386,10 +1386,11 @@
 .arrival-guide__heading { margin: 0 0 30px; }
 .arrival-guide__eyebrow,
 .arrival-receipt__eyebrow {
-  margin: 0 0 12px;
-  font: 700 11px/1.2 'IBM Plex Mono', monospace;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  margin: 0 0 9px;
+  color: #77776f;
+  text-align: center;
+  font: 10px/1.35 'Departure Mono', monospace;
+  letter-spacing: .1em;
 }
 .arrival-guide__heading h2 {
   margin: 0 0 12px;
@@ -1399,27 +1400,31 @@
 .arrival-guide__heading > p:last-child {
   max-width: 660px;
   margin: 0;
-  font: 15px/1.6 'IBM Plex Mono', monospace;
+  font: 15px/1.6 'Departure Mono', monospace;
   opacity: .82;
 }
 .arrival-ticket-layout {
   position: relative;
-  min-height: 480px;
+  min-height: 695px;
   margin: 0 0 34px;
+  perspective: 1500px;
+  transform-style: preserve-3d;
 }
 .arrival-boarding-pass {
   position: absolute;
   top: 0;
   right: 0;
-  width: 88%;
-  min-height: 370px;
+  width: 80%;
+  min-height: 0;
+  aspect-ratio: 1352 / 466;
   padding: 34px 7% 28px 15%;
   overflow: hidden;
+  clip-path: polygon(5.917% .054%, 0 .054%, 0 99.84%, 5.917% 99.84%, 5.917% 99.09%, 6.139% 99.09%, 6.139% 99.84%, 73.52% 99.84%, 73.52% 99.09%, 73.74% 99.09%, 73.74% 99.84%, 100% 99.84%, 100% .054%, 73.74% .054%, 73.74% 2.307%, 73.52% 2.307%, 73.52% .054%, 6.139% .054%, 6.139% 2.307%, 5.917% 2.307%);
   background: #424342;
   color: #f7f7f2;
   opacity: 0;
-  transform: translate3d(5vw, 0, 0) rotate(.35deg);
-  transition: opacity .75s ease, transform 1s cubic-bezier(1,.05,.48,.99);
+  transform: translate3d(calc(5vw + var(--ticket-pass-x, 0px)), calc(14px + var(--ticket-pass-y, 0px)), 0) rotate(.35deg);
+  transition: opacity .75s ease, transform .55s cubic-bezier(.2,.75,.2,1);
   will-change: opacity, transform;
 }
 .arrival-boarding-pass::before,
@@ -1431,13 +1436,13 @@
   width: 2px;
   background: repeating-linear-gradient(to bottom, rgba(255,255,255,.9) 0 13px, transparent 13px 24px);
 }
-.arrival-boarding-pass::before { left: 5%; }
-.arrival-boarding-pass::after { right: 5%; }
+.arrival-boarding-pass::before { left: 6.1%; }
+.arrival-boarding-pass::after { left: 73.5%; }
 .arrival-boarding-pass__topline {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  font: 13px/1.3 'IBM Plex Mono', monospace;
+  font: 13px/1.3 'Departure Mono', monospace;
   letter-spacing: .08em;
 }
 .arrival-boarding-pass__route {
@@ -1450,16 +1455,16 @@
 .arrival-boarding-pass__route > div { display: grid; gap: 4px; }
 .arrival-boarding-pass__route span,
 .arrival-boarding-pass__meta span {
-  font: 10px/1.2 'IBM Plex Mono', monospace;
+  font: 10px/1.2 'Departure Mono', monospace;
   letter-spacing: .1em;
   opacity: .72;
 }
 .arrival-boarding-pass__route strong {
-  font: 400 clamp(42px, 6vw, 78px)/.95 'IBM Plex Mono', monospace;
+  font: 400 clamp(42px, 6vw, 78px)/.95 'Departure Mono', monospace;
   letter-spacing: .04em;
 }
 .arrival-boarding-pass__route small {
-  font: 11px/1.3 'IBM Plex Mono', monospace;
+  font: 11px/1.3 'Departure Mono', monospace;
   letter-spacing: .04em;
 }
 .arrival-boarding-pass__arrows { font-size: 32px !important; opacity: .9 !important; }
@@ -1472,7 +1477,7 @@
 }
 .arrival-boarding-pass__meta > div { display: grid; gap: 7px; }
 .arrival-boarding-pass__meta b {
-  font: 12px/1.35 'IBM Plex Mono', monospace;
+  font: 12px/1.35 'Departure Mono', monospace;
   font-weight: 400;
 }
 .arrival-barcode {
@@ -1487,78 +1492,104 @@
 .arrival-boarding-pass__serial {
   margin: 14px 0 0;
   text-align: right;
-  font: 10px/1.3 'IBM Plex Mono', monospace;
+  font: 10px/1.3 'Departure Mono', monospace;
   letter-spacing: .12em;
 }
 .arrival-receipt {
   position: absolute;
   z-index: 2;
   left: 0;
-  top: 54px;
+  top: 88px;
   width: 34%;
-  min-height: 345px;
-  padding: 24px 25px 25px;
-  clip-path: polygon(0 0,100% 0,100% 94%,76% 100%,52% 96%,27% 100%,0 96%);
-  background: #fbfaf5;
+  min-height: 0;
+  aspect-ratio: 407 / 535;
+  display: flex;
+  flex-direction: column;
+  padding: 34px 28px 42px;
+  clip-path: polygon(100% .047%, 0 .047%, 0 90.701%, 11.302% 91.916%, 26.29% 93%, 36.486% 96.215%, 44.472% 96.215%, 55.774% 96.869%, 63.882% 98.084%, 83.292% 98.084%, 94.84% 99.766%, 100% 99.953%);
+  background: #fff;
   color: #242320;
   box-shadow: 0 18px 44px rgba(0,0,0,.2);
   opacity: 0;
-  transform: translate3d(-4vw, 22px, 0) rotate(-1.5deg);
-  transition: opacity .7s ease .16s, transform 1s cubic-bezier(1,.05,.48,.99) .16s;
+  transform: translate3d(calc(-4vw + var(--ticket-receipt-x, 0px)), calc(22px + var(--ticket-receipt-y, 0px)), 0) rotate(-.55deg);
+  transition: opacity .7s ease .16s, transform .62s cubic-bezier(.2,.75,.2,1) .16s;
   will-change: opacity, transform;
 }
-.arrival-receipt__eyebrow { color: #77776f; font-size: 9px; }
-.arrival-receipt h3 {
-  margin: 0 0 18px;
-  font: 400 25px/1.05 'Signifier', Georgia, serif;
-}
-.arrival-receipt ol { list-style: none; margin: 0; padding: 0; counter-reset: route; }
-.arrival-receipt li {
-  counter-increment: route;
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 7px;
-  margin: 0 0 13px;
-}
-.arrival-receipt li::before {
-  content: '0' counter(route);
-  grid-row: span 2;
-  padding-top: 2px;
+.arrival-receipt__eyebrow {
+  margin: 0 0 8px;
   color: #77776f;
-  font: 9px/1.3 'IBM Plex Mono', monospace;
+  text-align: center;
+  font: 10px/1.35 'Departure Mono', monospace;
+  letter-spacing: .1em;
 }
-.arrival-receipt li b { font: 700 11px/1.35 'IBM Plex Mono', monospace; }
-.arrival-receipt li span { font: 10px/1.45 'IBM Plex Mono', monospace; }
+.arrival-receipt h3 {
+  margin: 0 0 7px;
+  color: #242320;
+  text-align: center;
+  font: 400 19px/1.18 'Departure Mono', monospace;
+  letter-spacing: .01em;
+}
+.arrival-receipt__rule {
+  height: 0;
+  margin: 15px 0 17px;
+  border: 0;
+  border-top: 1px dashed rgba(35,35,32,.42);
+}
+.arrival-receipt ol {
+  list-style: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+.arrival-receipt li {
+  display: grid;
+  gap: 3px;
+  margin: 0 0 9px;
+}
+.arrival-receipt li b {
+  color: #242320;
+  font: 400 12px/1.28 'Departure Mono', monospace;
+}
+.arrival-receipt li span {
+  color: #242320;
+  font: 12px/1.3 'Departure Mono', monospace;
+}
 .arrival-receipt__fineprint {
-  margin: 14px 0 0;
-  padding-top: 10px;
+  margin: auto 0 0;
+  padding-top: 8px;
   border-top: 1px dashed rgba(35,35,32,.35);
-  font: 9px/1.45 'IBM Plex Mono', monospace;
+  color: #55534e;
+  font: 9px/1.3 'Departure Mono', monospace;
 }
 .arrival-city-ticket {
   position: absolute;
   z-index: 3;
-  right: 7%;
+  right: 2.5%;
   bottom: 0;
   display: grid;
-  grid-template-columns: 42px 30px minmax(0, 1fr) 27px;
+  grid-template-columns: 22% 30px minmax(0, 1fr) 27px;
   align-items: stretch;
-  width: 41%;
-  min-height: 176px;
+  width: 38%;
+  min-height: 0;
+  aspect-ratio: 482 / 326;
+  clip-path: polygon(.05% 0,100% 0,100% 100%,9.18% 100%,.05% 86.5%);
   background: #91ad91;
   color: #303b32;
   box-shadow: 0 16px 38px rgba(0,0,0,.22);
   opacity: 0;
-  transform: translate3d(0, 38px, 0) rotate(2deg);
-  transition: opacity .72s ease .3s, transform 1s cubic-bezier(1,.05,.48,.99) .3s;
+  transform: translate3d(var(--ticket-city-x, 0px), calc(38px + var(--ticket-city-y, 0px)), 0) rotate(2deg);
+  transition: opacity .72s ease .3s, transform .68s cubic-bezier(.2,.75,.2,1) .3s;
   will-change: opacity, transform;
 }
 .arrival-city-ticket__hole {
   align-self: center;
   justify-self: center;
-  width: 23px;
-  height: 23px;
-  border: 6px solid rgba(67,91,68,.34);
+  width: 56.6%;
+  aspect-ratio: 1;
+  border: clamp(7px, 2vw, 10px) solid #444;
   border-radius: 50%;
   background: #f6f5ef;
 }
@@ -1573,7 +1604,7 @@
   border-block: 1px solid rgba(41,55,43,.45);
   transform: translate(-50%, -50%) rotate(-90deg);
   white-space: nowrap;
-  font: 9px/1 'IBM Plex Mono', monospace;
+  font: 9px/1 'Departure Mono', monospace;
   letter-spacing: .12em;
 }
 .arrival-city-ticket__main {
@@ -1599,7 +1630,7 @@
   max-width: 100%;
   text-align: center;
   white-space: normal;
-  font: 8px/1.3 'IBM Plex Mono', monospace;
+  font: 8px/1.3 'Departure Mono', monospace;
   letter-spacing: .12em;
 }
 .arrival-city-ticket__print b {
@@ -1607,7 +1638,7 @@
   overflow-wrap: anywhere;
   text-align: center;
   white-space: normal;
-  font: 400 clamp(14px, 2vw, 25px)/1.1 'IBM Plex Mono', monospace;
+  font: 400 clamp(14px, 2vw, 25px)/1.1 'Departure Mono', monospace;
   letter-spacing: .08em;
 }
 .arrival-city-ticket__stub {
@@ -1622,27 +1653,29 @@
   transform: translate(-50%, -50%) rotate(-90deg);
   white-space: nowrap;
   writing-mode: horizontal-tb;
+  font: 8px/1 'Departure Mono', monospace;
+  letter-spacing: .1em;
 }
 .arrival-guide.is-revealed .arrival-boarding-pass,
 .arrival-guide.is-revealed .arrival-receipt,
-.arrival-guide.is-revealed .arrival-city-ticket {
-  opacity: 1;
-  transform: none;
+.arrival-guide.is-revealed .arrival-city-ticket { opacity: 1; }
+.arrival-guide.is-revealed .arrival-boarding-pass {
+  transform: translate3d(var(--ticket-pass-x, 0px), var(--ticket-pass-y, 0px), 0) rotateX(var(--ticket-pass-rotate-x, 0deg)) rotateY(var(--ticket-pass-rotate-y, 0deg)) rotate(.35deg);
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .arrival-ticket-layout:hover .arrival-boarding-pass {
-    transform: translate(20px, -24px) rotate(2deg);
-  }
-  .arrival-ticket-layout:hover .arrival-receipt {
-    transform: rotate(-3deg) translate(-96px, 12px);
-  }
-  .arrival-ticket-layout:hover .arrival-city-ticket {
-    transform: translate(60px, 20px) rotate(5deg);
-  }
+.arrival-guide.is-revealed .arrival-receipt {
+  transform: translate3d(var(--ticket-receipt-x, 0px), var(--ticket-receipt-y, 0px), 0) rotateX(var(--ticket-receipt-rotate-x, 0deg)) rotateY(var(--ticket-receipt-rotate-y, 0deg)) rotate(-.55deg);
+}
+.arrival-guide.is-revealed .arrival-city-ticket {
+  transform: translate3d(var(--ticket-city-x, 0px), var(--ticket-city-y, 0px), 0) rotateX(var(--ticket-city-rotate-x, 0deg)) rotateY(var(--ticket-city-rotate-y, 0deg)) rotate(2deg);
 }
 @media(max-width:900px) {
   .arrival-boarding-pass { width: 94%; padding-left: 13%; }
-  .arrival-receipt { width: 38%; padding-inline: 19px; }
+  .arrival-receipt { width: 44%; padding-inline: 18px; }
+  .arrival-receipt__eyebrow { font-size: 8px; }
+  .arrival-receipt h3 { font-size: 16px; }
+  .arrival-receipt li b,
+  .arrival-receipt li span { font-size: 10px; line-height: 1.25; }
+  .arrival-receipt__fineprint { font-size: 8px; line-height: 1.25; }
   .arrival-city-ticket { width: 46%; right: 4%; }
 }
 @media(max-width:700px) {
@@ -1652,7 +1685,9 @@
   .arrival-ticket-layout { display: flex; flex-direction: column; min-height: 0; }
   .arrival-boarding-pass {
     position: relative;
+    right: auto;
     width: 100%;
+    aspect-ratio: auto;
     min-height: 306px;
     padding: 25px 8% 23px 11%;
   }
@@ -1674,23 +1709,48 @@
     left: auto;
     width: 88%;
     min-height: 0;
+    padding: 22px 20px 28px;
     margin: -14px 0 0 4%;
-    padding: 22px 20px 26px;
   }
+  .arrival-receipt h3 { font-size: 16px; }
+  .arrival-receipt li b { font-size: 11px; }
+  .arrival-receipt li span { font-size: 10px; line-height: 1.25; }
+  .arrival-receipt__fineprint { font-size: 8px; line-height: 1.25; }
   .arrival-city-ticket {
     position: relative;
     right: auto;
     bottom: auto;
     width: 88%;
-    min-height: 150px;
-    grid-template-columns: 34px 24px minmax(0, 1fr) 24px;
+    min-height: 0;
+    aspect-ratio: 482 / 326;
+    grid-template-columns: 22% 24px minmax(0, 1fr) 24px;
     margin: -10px 4% 0 auto;
   }
   .arrival-city-ticket__vertical { width: 145px; }
   .arrival-city-ticket__print { width: min(100%, 145px); }
   .arrival-city-ticket__stub { width: 120px; }
 }
-
+@media (min-width: 701px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .arrival-ticket-layout:hover .arrival-boarding-pass {
+    transform: translate3d(calc(20px + var(--ticket-pass-x, 0px)), calc(-24px + var(--ticket-pass-y, 0px)), 0) rotateX(var(--ticket-pass-rotate-x, 0deg)) rotateY(var(--ticket-pass-rotate-y, 0deg)) rotate(2deg);
+  }
+  .arrival-ticket-layout:hover .arrival-receipt {
+    transform: translate3d(calc(-96px + var(--ticket-receipt-x, 0px)), calc(12px + var(--ticket-receipt-y, 0px)), 0) rotateX(var(--ticket-receipt-rotate-x, 0deg)) rotateY(var(--ticket-receipt-rotate-y, 0deg)) rotate(-1.2deg);
+  }
+  .arrival-ticket-layout:hover .arrival-city-ticket {
+    transform: translate3d(calc(60px + var(--ticket-city-x, 0px)), calc(20px + var(--ticket-city-y, 0px)), 0) rotateX(var(--ticket-city-rotate-x, 0deg)) rotateY(var(--ticket-city-rotate-y, 0deg)) rotate(5deg);
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .arrival-boarding-pass,
+  .arrival-receipt,
+  .arrival-city-ticket {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
 @media(max-width:700px){
  .case-page .timeline-intro { margin-bottom: 26px; }
  .case-page .event-timeline { padding-left: 22px; }
@@ -1716,11 +1776,6 @@
   width: 100%;
   color: #f4eedf;
 }
-
-.team-photo figcaption > span:first-child,
-.team-evidence__note > span,
-
-
 
 .team-evidence__board {
   position: relative;
@@ -1814,6 +1869,10 @@
 }
 .team-photo {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
   min-width: 0;
   margin: 0;
   padding: 10px 10px 5px;
@@ -1855,6 +1914,7 @@
 .team-photo__image {
   position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
   width: 100%;
   aspect-ratio: .94;
   background: #c9c8b9;
@@ -1883,18 +1943,26 @@
   filter: saturate(.78) contrast(1.04);
 }
 .team-photo figcaption {
-  min-height: 54px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 5px 2px 1px;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  flex: 0 0 auto;
+  padding: 10px 4px 7px;
   text-align: center;
 }
 .team-photo__script {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
   max-width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
   overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
   text-align: center;
   font: italic clamp(20px, 1.65vw, 24px)/1.08 'Signifier', Georgia, serif;
 }
@@ -1910,7 +1978,7 @@
   .team-evidence__loupe { right: 6%; top: 12px; width: 120px; height: 120px; }
   .team-evidence__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; }
   .team-photo { padding: 7px 7px 4px; }
-  .team-photo figcaption { min-height: 46px; }
+  .team-photo figcaption { min-height: 58px; }
   .team-photo__script { font-size: 18px; }
 }
 @media(max-width:360px) {
