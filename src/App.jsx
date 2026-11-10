@@ -40,15 +40,6 @@ const groups = [
   { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [5, 7] }
 ]
 
-const teamPhotoNames = [
-  'Vaibhav Balakundi', 'P Deepthi Jain', 'Milan Sampath', 'Yeshwin J',
-  'Rishav Kumar Singh', 'Vansh Baranwal', 'Natania Martin', 'Rohan Ittigi',
-  'Raashi A', 'Jasvanti M', 'Harshith Kumar', 'Disha K',
-  'Archit Kumar', 'Jayakeerthy N J', 'Ansu Kumar', 'Bhuvan Shivaprasad',
-  'Aadya Bajpai', 'Krish Jain', 'Jiya Jain', 'Parikshith S',
-  'Abhyuday Kaushik', 'Dhyeya Talupula', 'Srilakshmi', 'Kushadhi J Yadav',
-  'Namratha R B', 'Bhuvan Tej Reddy Seethi', 'Ujwal Jawalgi', 'Gaurav S'
-]
 function useRoute() {
   const [path, setPath] = useState(location.pathname)
   useEffect(() => {
@@ -414,10 +405,7 @@ function Home({
         <h1 className="hero-title">VENTURE X</h1>
         <div className="intro-event" aria-label="VentureX event overview">
           <p className="intro-event__lead">Student startup pitching meets investor connection.</p>
-          <p>By E-Cell, BMSIT&amp;M. Open to student teams across India, with 3–4 members per team.</p>
-          <p>The online video submission round is free. The top 30 teams advance to an in-person investor pitching finale in Bengaluru on 30 December 2026.</p>
-          <p className="intro-event__registration">Registration details will be published here when confirmed.</p>
-          <a className="intro-event__guide" href="/guide/pitch-video">How to prepare your pitch →</a>
+          <p>By E-Cell, BMSIT&amp;M. Open to student teams across India (3–4 members). Free online round — the top 30 teams pitch live in Bengaluru on 30 December 2026.</p>
         </div>
       </section>
       <section className="archive">
@@ -500,12 +488,62 @@ function Home({
   )
 }
 
-function TeamEvidenceBoard({ images }) {
+const teamDomains = [
+  { name: 'Coordinators', members: [
+    { name: 'Vaibhav Balakundi', role: 'President', img: '/team/team-09.webp' },
+    { name: 'Milan Sampath', role: 'Mentor', img: '/team/team-05.webp' },
+    { name: 'P Deepthi Jain', role: 'Vice President', img: '/team/team-19.webp' },
+    { name: 'Gagan H S', role: 'Vice President', img: '/team/team-31.webp' }
+  ] },
+  { name: 'Tech Domain', members: [
+    { name: 'Ansu Kumar', role: 'Tech Head', img: '/team/team-14.webp' },
+    { name: 'Krish Jain', role: 'Tech Vice Head', img: '/team/team-17.webp' },
+    { name: 'Archit Kumar', role: 'Tech Associate', img: '/team/team-12.webp' },
+    { name: 'Vansh Baranwal', role: 'Tech Associate', img: '/team/team-03.webp' }
+  ] },
+  { name: 'Design Domain', members: [
+    { name: 'Jasvanti M', role: 'Design Head', img: '/team/team-08.webp' },
+    { name: 'Raashi A', role: 'Vice Design Head', img: '/team/team-07.webp' },
+    { name: 'Gaurav S', role: 'Design Associate', img: '/team/team-28.webp' },
+    { name: 'Disha Kanmuse', role: 'Design Associate', img: '/team/team-11.webp' },
+    { name: 'Yeshwin J', role: 'Design Associate', img: '/team/team-01.webp' }
+  ] },
+  { name: 'Marketing', members: [
+    { name: 'Manal Gupta', role: 'Marketing Head', img: '/team/team-32.webp' },
+    { name: 'Ujwal Jawalgi', role: 'Marketing Vice Head', img: '/team/team-27.webp' },
+    { name: 'Srilakshmi', role: 'Marketing Associate', img: '/team/team-23.webp' },
+    { name: 'Poojit Sriram', role: 'Marketing Associate', img: '/team/team-33.webp' },
+    { name: 'Namratha R Bagade', role: 'Marketing Associate', img: '/team/team-25.webp' },
+    { name: 'Abhyuday Kaushik', role: 'Marketing Associate', img: '/team/team-21.webp' },
+    { name: 'Natania Martin', role: 'Marketing Associate', img: '/team/team-04.webp' },
+    { name: 'Rohan Ittigi', role: 'Marketing Associate', img: '/team/team-06.webp' }
+  ] },
+  { name: 'Events & operations', members: [
+    { name: 'Dhyeya Talupula', role: 'Event/Ops Head', img: '/team/team-22.webp' },
+    { name: 'Mohammed Talha', role: 'Event/Ops Vice Head', img: '/team/team-29.webp' },
+    { name: 'Rishav Kumar Singh', role: 'Event/Ops Associate', img: '/team/team-02.webp' },
+    { name: 'Aadya Bajpai', role: 'Events/Ops Associate', img: '/team/team-16.webp' },
+    { name: 'Bhuvan Shivaprasad', role: 'Events/Ops Associate', img: '/team/team-15.webp' },
+    { name: 'Jiya Jain', role: 'Events/Ops Associate', img: '/team/team-18.webp' }
+  ] },
+  { name: 'Corporate relations', members: [
+    { name: 'Arush Singh', role: 'Corporate Relations Head', img: '/team/team-30.webp' },
+    { name: 'Harshith Kumar Medathati', role: 'Corporate Relations Associate', img: '/team/team-10.webp' },
+    { name: 'Bhuvan Tej Reddy Seethi', role: 'Corporate Relations Associate', img: '/team/team-26.webp' }
+  ] },
+  { name: 'Content', members: [
+    { name: 'Parikshith S', role: 'Content Head', img: '/team/team-20.webp' },
+    { name: 'N J Jayakeerthy', role: 'Content Vice Head', img: '/team/team-13.webp' },
+    { name: 'Vimarsha V', role: 'Content Associate', img: '/team/team-34.webp' },
+    { name: 'Kushadhi J Yadav', role: 'Content Associate', img: '/team/team-24.webp' }
+  ] }
+]
+
+function TeamEvidenceBoard() {
   return (
     <section className="team-evidence" aria-label="VentureX team photo archive">
       <div className="team-evidence__board">
         <aside className="team-evidence__note" aria-hidden="true">
-          <span>FIELD NOTES / 01-28</span>
           <strong>THE<br />VENTUREX TEAM</strong>
           <small>One crew. One big idea.</small>
         </aside>
@@ -542,30 +580,36 @@ function TeamEvidenceBoard({ images }) {
           <path d="M54 180 C180 40 212 360 350 258 S515 122 600 315 S812 372 948 190 C1060 424 806 520 670 680 S370 820 132 690 C20 860 230 1030 472 960 S770 1010 923 890 C1035 1120 780 1260 560 1170 S226 1210 76 1370 C10 1520 275 1630 512 1515 S810 1510 940 1710 C1020 1890 740 1960 530 1850 S220 1900 82 2070 C36 2220 300 2320 535 2200 S820 2210 964 2350" />
           <path d="M72 540 C280 650 366 462 514 560 S742 770 920 610 M85 1540 C260 1450 390 1660 580 1550 S780 1440 930 1580" />
         </svg>
-        <div className="team-evidence__grid">
-          {images.map((src, index) => {
-            const frame = String(index + 1).padStart(2, '0')
-            return (
-              <figure className="team-photo" key={src}>
-                <div className="team-photo__image">
-                  <div className="team-photo__placeholder">
-                    <span>PHOTO / {frame}</span>
-                    <small>Drop team-{frame}.jpg here</small>
-                  </div>
-                  <img
-                    src={src}
-                    alt={`Team archive photograph ${frame}`}
-                    loading="lazy"
-                    onError={event => { event.currentTarget.hidden = true }}
-                  />
-                </div>
-                <figcaption>
-                  <span className="team-photo__script">{teamPhotoNames[index]}</span>
-                </figcaption>
-              </figure>
-            )
-          })}
-        </div>
+        {teamDomains.map((domain, di) => (
+          <section className="team-domain" key={domain.name}>
+            <header className="team-domain__head">
+              <h3 className="team-domain__name">{domain.name}</h3>
+            </header>
+            <div className="team-evidence__grid">
+              {domain.members.map(member => {
+                const initials = member.name.split(' ').map(part => part[0]).join('').slice(0, 2)
+                return (
+                  <figure className="team-photo" key={member.name}>
+                    <div className="team-photo__image">
+                      {member.img ? (
+                        <img src={member.img} alt={member.name} loading="lazy" />
+                      ) : (
+                        <div className="team-photo__placeholder">
+                          <span>{initials}</span>
+                          <small>Photo to be pinned</small>
+                        </div>
+                      )}
+                    </div>
+                    <figcaption>
+                      <span className="team-photo__script">{member.name}</span>
+                      <span className="team-photo__role">{member.role}</span>
+                    </figcaption>
+                  </figure>
+                )
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
   )
@@ -606,69 +650,58 @@ function PixelBarcode({ seed = 19 }) {
 
 function ArrivalTicketGuide() {
   const ticketStageRef = useRef(null)
-  const [isRevealed, setIsRevealed] = useState(false)
 
   useEffect(() => {
     const ticketStage = ticketStageRef.current
     if (!ticketStage) return
 
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
-    const setParallax = (x = 0, y = 0) => {
-      ticketStage.style.setProperty('--ticket-pass-x', `${(-x * 9).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-pass-y', `${(-y * 8).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-pass-rotate-x', `${(-y * 1.5).toFixed(2)}deg`)
-      ticketStage.style.setProperty('--ticket-pass-rotate-y', `${(x * 2).toFixed(2)}deg`)
-      ticketStage.style.setProperty('--ticket-receipt-x', `${(x * 13).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-receipt-y', `${(y * 12).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-receipt-rotate-x', `${(-y * 2.4).toFixed(2)}deg`)
-      ticketStage.style.setProperty('--ticket-receipt-rotate-y', `${(x * 3.2).toFixed(2)}deg`)
-      ticketStage.style.setProperty('--ticket-city-x', `${(x * 18).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-city-y', `${(y * 15).toFixed(2)}px`)
-      ticketStage.style.setProperty('--ticket-city-rotate-x', `${(-y * 3).toFixed(2)}deg`)
-      ticketStage.style.setProperty('--ticket-city-rotate-y', `${(x * 4).toFixed(2)}deg`)
+    // Like the Departure Mono reference: hovering the tickets swings the whole
+    // cluster from its flat pose into the tilted resting pose, and it eases
+    // back flat once the cursor leaves.
+    const apply = (pass, receipt, city) => {
+      ticketStage.style.setProperty('--pass-settle', pass.toFixed(4))
+      ticketStage.style.setProperty('--receipt-settle', receipt.toFixed(4))
+      ticketStage.style.setProperty('--city-settle', city.toFixed(4))
     }
-    const onPointerMove = event => {
-      if (!event.target.closest('.arrival-boarding-pass, .arrival-receipt, .arrival-city-ticket')) {
-        setParallax()
-        return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      apply(1, 1, 1)
+      return
+    }
+
+    let raf = 0
+    let target = 0
+    const cur = { pass: 0, receipt: 0, city: 0 }
+    const tick = () => {
+      cur.pass += (target - cur.pass) * 0.06
+      cur.receipt += (target - cur.receipt) * 0.06
+      cur.city += (target - cur.city) * 0.06
+      apply(cur.pass, cur.receipt, cur.city)
+      raf = requestAnimationFrame(tick)
+    }
+    const swingIn = () => { target = 1 }
+    const swingOut = event => {
+      if (!event.relatedTarget || !event.relatedTarget.closest('.arrival-boarding-pass, .arrival-receipt, .arrival-city-ticket')) {
+        target = 0
       }
-      const rect = ticketStage.getBoundingClientRect()
-      const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1))
-      const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1))
-      setParallax(x, y)
     }
-    const onPointerLeave = () => setParallax()
-    if (finePointer) {
-      ticketStage.addEventListener('pointermove', onPointerMove, { passive: true })
-      ticketStage.addEventListener('pointerleave', onPointerLeave, { passive: true })
-    }
-    const cleanupPointer = () => {
-      ticketStage.removeEventListener('pointermove', onPointerMove)
-      ticketStage.removeEventListener('pointerleave', onPointerLeave)
-    }
-
-    if (motion.matches || !('IntersectionObserver' in window)) {
-      setIsRevealed(true)
-      return cleanupPointer
-    }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsRevealed(true)
-        observer.disconnect()
-      }
-    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' })
-
-    observer.observe(ticketStage)
+    const tickets = ticketStage.querySelectorAll('.arrival-boarding-pass, .arrival-receipt, .arrival-city-ticket')
+    tickets.forEach(ticket => {
+      ticket.addEventListener('pointerenter', swingIn)
+      ticket.addEventListener('pointerleave', swingOut)
+    })
+    raf = requestAnimationFrame(tick)
     return () => {
-      observer.disconnect()
-      cleanupPointer()
+      tickets.forEach(ticket => {
+        ticket.removeEventListener('pointerenter', swingIn)
+        ticket.removeEventListener('pointerleave', swingOut)
+      })
+      cancelAnimationFrame(raf)
     }
   }, [])
 
   return (
-    <section className={'arrival-guide' + (isRevealed ? ' is-revealed' : '')} aria-labelledby="arrival-guide-title">
+    <section className="arrival-guide" aria-labelledby="arrival-guide-title">
       <div className="arrival-guide__heading">
         <h2 id="arrival-guide-title">Coming from another state?</h2>
         <p>Get into Bengaluru, then take the last leg to BMSIT&M in Avalahalli, Yelahanka.</p>
@@ -984,7 +1017,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom, .team-evidence'
+      '.project, .extra-photos, .team-evidence'
     )
     const folder = folderRef.current
 
@@ -1098,7 +1131,7 @@ function FilePage({
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom, .team-evidence'
+      '.project, .extra-photos, .team-evidence'
     )
     const folder = folderRef.current
 
@@ -1148,7 +1181,7 @@ function FilePage({
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom, .team-evidence'
+          '.project, .extra-photos, .team-evidence'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -1215,7 +1248,7 @@ function FilePage({
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom, .team-evidence'
+          '.project, .extra-photos, .team-evidence'
         )
         const folder = folderRef.current
 
@@ -1504,18 +1537,11 @@ function FilePage({
                   </div>
                 )}
               </div>
-              {activeEntry.slug === 'team' && <TeamEvidenceBoard images={activeEntry.images} />}
+              {activeEntry.slug === 'team' && <TeamEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="case-bottom">
-        <p>NEXT PAGE</p>
-        <a className="case-bottom-next" href={'/cases/' + nextCase.slug} onClick={e => handleTabClick(e, nextCase)}>
-          {nextCase.name} ↗
-        </a>
       </div>
     </main>
 

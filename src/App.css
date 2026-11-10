@@ -19,8 +19,6 @@
 .intro-event{max-width:650px;margin:clamp(20px,3vh,34px) auto 0;color:#fdfaf7;font:400 clamp(14px,1.15vw,17px)/1.48 'Lil Grotesk',Arial,sans-serif;text-align:center;text-wrap:balance}
 .intro-event p{margin:0 0 8px}
 .intro-event__lead{font-weight:700;font-size:clamp(17px,1.5vw,22px)}
-.intro-event__registration{display:inline-block;margin-top:10px!important;padding:8px 13px;border:1px solid rgba(253,250,247,.7);font-size:13px;letter-spacing:.02em}
-.intro-event__guide{display:block;width:max-content;max-width:100%;margin:8px auto 0;color:#fdfaf7;font-size:13px;text-decoration:underline;text-underline-offset:4px}
 .pitch-guide{min-height:100vh;padding:clamp(72px,10vh,120px) 24px 100px;color:#fdfaf7}
 .pitch-guide__inner{width:min(100%,760px);margin-inline:auto;font:400 clamp(17px,1.45vw,20px)/1.6 'Lil Grotesk',Arial,sans-serif}
 .pitch-guide__back{font-size:14px;text-decoration:underline;text-underline-offset:4px}
@@ -30,7 +28,7 @@
 .pitch-guide h2{margin:0 0 14px;font:700 clamp(23px,2.4vw,32px)/1.1 Founders,Impact,'Arial Narrow',sans-serif;text-transform:uppercase}
 .pitch-guide p{margin:0 0 18px}
 .pitch-guide section a{color:inherit;text-decoration:underline;text-underline-offset:4px}
-.pitch-guide a:focus-visible,.intro-event__guide:focus-visible{outline:2px solid #f4ff9c;outline-offset:4px}
+.pitch-guide a:focus-visible{outline:2px solid #f4ff9c;outline-offset:4px}
 .archive{margin-top:-41vh;position:relative;z-index:2}
 .stack{
  --row:3.75rem;--open-size:80vh;--fold-size:20vw;--tab-height:2.75rem;
@@ -115,8 +113,6 @@
  .intro-event{max-width:390px;margin-top:22px;font-size:13px;line-height:1.4}
  .intro-event p{margin-bottom:6px}
  .intro-event__lead{font-size:17px}
- .intro-event__registration{margin-top:5px!important;padding:6px 9px;font-size:11px}
- .intro-event__guide{margin-top:4px;font-size:11px}
  .archive{margin-top:-25vh}.stack{width:calc(100% - 24px);--row:50px;--open-size:75vh}
  .folder-description{left:20px;right:20px;font-size:14px}
  .folder-open-content{left:20px;right:20px;bottom:25px}.compass-row{gap:12px;margin-bottom:60px}
@@ -1001,18 +997,6 @@
   transform: scale(1.04);
 }
 
-.case-bottom {
-  padding: 90px 4% 130px;
-  font: 12px 'Lil Grotesk', Arial, sans-serif;
-}
-.case-bottom > p { margin-bottom: 12px; }
-.case-bottom a {
-  font: 28px Signifier, Georgia, serif;
-}
-.case-bottom a:hover {
-  text-decoration: underline;
-}
-
 /* ========================================================
    About Page (Mosby Files Inspo Exact Architecture & Layout)
    ======================================================== */
@@ -1311,7 +1295,6 @@
  .case-char { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; }
  .case-cover-flip, .case-cover-sweep { display: none !important; }
  .case-content-switch { animation: none !important; transform: none !important; opacity: 1 !important; }
- .arrival-boarding-pass, .arrival-receipt, .arrival-city-ticket { opacity: 1; transform: none; transition: none; }
 }
 
 @media(max-width:480px){
@@ -1333,8 +1316,6 @@
 .case-page .case-next-name { font-size: 22px; }
 .case-page .case-next-sub { font-size: 12px; }
 .case-page .case-next-btn { font-size: 16px; }
-.case-page .case-bottom { font-size: 14px; }
-.case-page .case-bottom a { font-size: 30px; }
 @media(max-width:700px){
  .case-page .bio { font-size: 18px; line-height: 1.52; }
  .case-page .bio p { margin-bottom: 28px; }
@@ -1344,7 +1325,6 @@
  .case-page .project-note p { font-size: 16px; }
  .case-page .case-next-name { font-size: 17px; }
  .case-page .case-next-btn { font-size: 15px; }
- .case-page .case-bottom a { font-size: 25px; }
 }
 /* Increase spacing between text blocks in the book pages. */
 .case-page .bio p { margin-bottom: 34px; }
@@ -1425,10 +1405,12 @@
   clip-path: polygon(5.917% .054%, 0 .054%, 0 99.84%, 5.917% 99.84%, 5.917% 99.09%, 6.139% 99.09%, 6.139% 99.84%, 73.52% 99.84%, 73.52% 99.09%, 73.74% 99.09%, 73.74% 99.84%, 100% 99.84%, 100% .054%, 73.74% .054%, 73.74% 2.307%, 73.52% 2.307%, 73.52% .054%, 6.139% .054%, 6.139% 2.307%, 5.917% 2.307%);
   background: #444444;
   color: #eeeeee;
-  opacity: 0;
-  transform: translate3d(calc(5vw + var(--ticket-pass-x, 0px)), calc(14px + var(--ticket-pass-y, 0px)), 0) rotate(2deg);
-  transition: opacity .75s ease, transform .55s cubic-bezier(.2,.75,.2,1);
-  will-change: opacity, transform;
+  transform: translate3d(calc(var(--pass-settle, 1) * 1.4cqw), calc(var(--pass-settle, 1) * -1.6cqw), 0) rotate(calc(var(--pass-settle, 1) * 2deg));
+
+
+
+
+  will-change: transform;
 }
 .arrival-boarding-pass__content {
   position: absolute;
@@ -1650,10 +1632,12 @@
   clip-path: polygon(100% .047%, 0 .047%, 0 90.701%, 11.302% 91.916%, 26.29% 93%, 36.486% 96.215%, 44.472% 96.215%, 55.774% 96.869%, 63.882% 98.084%, 83.292% 98.084%, 94.84% 99.766%, 100% 99.953%);
   background: #fff;
   color: #333333;
-  opacity: 0;
-  transform: translate3d(calc(-4vw + var(--ticket-receipt-x, 0px)), calc(22px + var(--ticket-receipt-y, 0px)), 0) rotate(-3deg);
-  transition: opacity .7s ease .16s, transform .62s cubic-bezier(.2,.75,.2,1) .16s;
-  will-change: opacity, transform;
+  transform: translate3d(calc(var(--receipt-settle, 1) * -6.7cqw), calc(var(--receipt-settle, 1) * 1.2cqw), 0) rotate(calc(var(--receipt-settle, 1) * -3deg));
+
+
+
+
+  will-change: transform;
 }
 .arrival-receipt__eyebrow {
   margin: 0 0 max(5px, 0.57cqw);
@@ -1726,10 +1710,12 @@
   top: 44%;
   width: 33%;
   aspect-ratio: 471 / 340;
-  opacity: 0;
-  transform: translate3d(var(--ticket-city-x, 0px), calc(38px + var(--ticket-city-y, 0px)), 0);
-  transition: opacity .72s ease .3s, transform .68s cubic-bezier(.2,.75,.2,1) .3s;
-  will-change: opacity, transform;
+  transform: translate3d(calc(var(--city-settle, 1) * 4.2cqw), calc(var(--city-settle, 1) * 1.4cqw), 0) rotate(calc(-5deg + var(--city-settle, 1) * 5deg));
+
+
+
+
+  will-change: transform;
 }
 .arrival-city-ticket__tag {
   position: absolute;
@@ -1738,6 +1724,7 @@
   width: 64.3%;
   aspect-ratio: 326 / 482;
   transform: translate(-50%, -50%) rotate(-85deg);
+  clip-path: polygon(0 9.18%, 13.5% 0, 100% 0, 100% 100%, 0 100%);
   background: #8aa788;
   color: #444444;
 }
@@ -1879,18 +1866,6 @@
   line-height: 1;
   letter-spacing: .28em;
 }
-.arrival-guide.is-revealed .arrival-boarding-pass,
-.arrival-guide.is-revealed .arrival-receipt,
-.arrival-guide.is-revealed .arrival-city-ticket { opacity: 1; }
-.arrival-guide.is-revealed .arrival-boarding-pass {
-  transform: translate3d(var(--ticket-pass-x, 0px), var(--ticket-pass-y, 0px), 0) rotateX(var(--ticket-pass-rotate-x, 0deg)) rotateY(var(--ticket-pass-rotate-y, 0deg)) rotate(2deg);
-}
-.arrival-guide.is-revealed .arrival-receipt {
-  transform: translate3d(var(--ticket-receipt-x, 0px), var(--ticket-receipt-y, 0px), 0) rotateX(var(--ticket-receipt-rotate-x, 0deg)) rotateY(var(--ticket-receipt-rotate-y, 0deg)) rotate(-3deg);
-}
-.arrival-guide.is-revealed .arrival-city-ticket {
-  transform: translate3d(var(--ticket-city-x, 0px), var(--ticket-city-y, 0px), 0) rotateX(var(--ticket-city-rotate-x, 0deg)) rotateY(var(--ticket-city-rotate-y, 0deg));
-}
 @media(max-width:700px) {
   .arrival-guide { width: calc(100% - 28px); margin: 0 auto 38px; }
   .arrival-guide__heading h2 { font-size: clamp(32px, 9vw, 48px); }
@@ -1944,16 +1919,6 @@
     top: auto;
     width: 88%;
     margin: 18px 4% 4px auto;
-  }
-}
-@media(prefers-reduced-motion:reduce) {
-  .arrival-boarding-pass,
-  .arrival-receipt,
-  .arrival-city-ticket {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
   }
 }
 @media(max-width:700px){
@@ -2064,6 +2029,25 @@
   filter: drop-shadow(0 2px 1px rgba(57,20,16,.45));
 }
 .team-evidence__thread path + path { stroke-width: 3; opacity: .9; }
+.team-domain {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 54px;
+}
+.team-domain__head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 26px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(233, 201, 102, .5);
+}
+.team-domain__name {
+  margin: 0;
+  font: italic 400 clamp(26px, 3.2vw, 40px)/1 'Signifier', Georgia, serif;
+  letter-spacing: -.01em;
+  color: #f4eedf;
+}
 .team-evidence__grid {
   position: relative;
   z-index: 2;
@@ -2171,9 +2155,19 @@
   text-align: center;
   font: italic clamp(20px, 1.65vw, 24px)/1.08 'Signifier', Georgia, serif;
 }
+.team-photo__role {
+  display: block;
+  margin-top: 5px;
+  font: 400 8.5px/1.3 'Departure Mono', monospace;
+  letter-spacing: .14em;
+  color: #6f6a58;
+  text-transform: uppercase;
+}
+.team-photo__placeholder span { font: 700 26px/1 'Signifier', Georgia, serif; letter-spacing: .06em; }
 
 @media(max-width:900px) {
   .team-evidence__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 22px; }
+  .team-domain { margin-bottom: 44px; }
 }
 @media(max-width:700px) {
   .case-folder__inner--team { padding: 16px 14px 44px; }
@@ -2185,6 +2179,10 @@
   .team-photo { padding: 7px 7px 4px; }
   .team-photo figcaption { min-height: 58px; }
   .team-photo__script { font-size: 18px; }
+  .team-domain { margin-bottom: 38px; }
+  .team-domain__head { gap: 10px; margin-bottom: 18px; padding-bottom: 9px; }
+  .team-domain__name { font-size: 24px; }
+  .team-photo__role { font-size: 7.5px; }
 }
 @media(max-width:360px) {
   .team-evidence__grid { grid-template-columns: 1fr; }

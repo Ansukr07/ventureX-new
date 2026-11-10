@@ -20,7 +20,7 @@ html, body {
 a, button, [role="button"],
 .folder-sheet, .case-folder-tag,
 .about-close, .the-header a,
-.case-edge a, .case-bottom a,
+.case-edge a,
 input, select, label {
   cursor: var(--app-cursor-pointer);
 }
