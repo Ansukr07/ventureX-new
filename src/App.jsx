@@ -447,6 +447,8 @@ function FilePage({
   onCaseEnterComplete
 }) {
   const [activeEntry, setActiveEntry] = useState(entry)
+  const [showScrollCue, setShowScrollCue] = useState(false)
+  const [scrollCueProgress, setScrollCueProgress] = useState(0)
   const isSwitchingRef = useRef(false)
   const hasFlippedRef = useRef(false)
 
@@ -478,6 +480,84 @@ function FilePage({
     document.title = activeEntry.name + '—Venture X'
   }, [activeEntry])
 
+  // At the end of a file, a deliberate extra downward scroll opens the next file.
+  useEffect(() => {
+    const bottomThreshold = 300
+    const maxDeltaPerScroll = 100
+    let overscrollAmount = 0
+    let touchStartY = null
+    let hasNavigated = false
+    let navigationTimer = null
+
+    const isAtBottom = () => {
+      const scrollRoot = document.scrollingElement || document.documentElement
+      return scrollRoot.scrollTop + window.innerHeight >= scrollRoot.scrollHeight - 2
+    }
+    const reset = () => {
+      overscrollAmount = 0
+      hasNavigated = false
+      if (navigationTimer) {
+        window.clearTimeout(navigationTimer)
+        navigationTimer = null
+      }
+      setShowScrollCue(false)
+      setScrollCueProgress(0)
+    }
+    const addDownwardIntent = amount => {
+      const atBottom = isAtBottom()
+      if (!atBottom) {
+        reset()
+        return
+      }
+      if (amount <= 0) {
+        if (amount < 0) reset()
+        return
+      }
+
+      setShowScrollCue(true)
+      overscrollAmount = Math.min(bottomThreshold, overscrollAmount + Math.min(amount, maxDeltaPerScroll))
+      const progress = overscrollAmount / bottomThreshold
+      setScrollCueProgress(progress)
+      if (overscrollAmount >= bottomThreshold && !hasNavigated) {
+        hasNavigated = true
+        navigationTimer = window.setTimeout(() => {
+          navigationTimer = null
+          handleTabClick(null, nextCase)
+        }, 1750)
+      }
+    }
+    const onWheel = event => addDownwardIntent(event.deltaY)
+    const onTouchStart = event => {
+      touchStartY = event.touches[0]?.clientY ?? null
+    }
+    const onTouchMove = event => {
+      if (touchStartY === null) return
+      const nextY = event.touches[0]?.clientY
+      if (nextY === undefined) return
+      const delta = touchStartY - nextY
+      touchStartY = nextY
+      addDownwardIntent(delta)
+    }
+    const onTouchEnd = () => { touchStartY = null }
+    const onScroll = () => {
+      if (!isAtBottom()) reset()
+    }
+
+    window.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: true })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('scroll', onScroll)
+      if (navigationTimer) window.clearTimeout(navigationTimer)
+    }
+  }, [activeEntry.slug])
+
   // Mosby aat: Case-to-About leave animation
   useLayoutEffect(() => {
     if (!isLeavingForAbout) return
@@ -490,7 +570,6 @@ function FilePage({
     tl.to('.case-content', { x: '-100vw' }, 0)
     tl.to('.case-folder-tags', { x: '-10vw', duration: 0.9 }, 0)
     tl.to('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
-    tl.to('.case-next-widget', { x: '-100vw', duration: 0.9 }, 0)
     return () => tl.kill()
   }, [isLeavingForAbout, onCaseLeftForAbout])
 
@@ -507,7 +586,6 @@ function FilePage({
     tl.from('.case-content', { x: '-100vw', duration: 0.9 }, 0)
     tl.from('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
     tl.from('.case-folder-tags', { x: '-10vw', duration: 1 }, 0)
-    tl.from('.case-next-widget', { x: '-100vw' }, 0)
     return () => tl.kill()
   }, [isEnteringFromAbout, onCaseEnterComplete])
 
@@ -523,7 +601,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom, .case-next-widget'
+      '.project, .extra-photos, .case-bottom'
     )
     const folder = folderRef.current
 
@@ -637,7 +715,7 @@ function FilePage({
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .case-bottom, .case-next-widget'
+      '.project, .extra-photos, .case-bottom'
     )
     const folder = folderRef.current
 
@@ -687,7 +765,7 @@ function FilePage({
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom, .case-next-widget'
+          '.project, .extra-photos, .case-bottom'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -754,7 +832,7 @@ function FilePage({
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .case-bottom, .case-next-widget'
+          '.project, .extra-photos, .case-bottom'
         )
         const folder = folderRef.current
 
@@ -1049,16 +1127,20 @@ function FilePage({
       </div>
 
       <div className="case-bottom">
-        <p>EXPLORE THE FILES</p>
-        <div>
-          {cases.filter(c => c.slug !== activeEntry.slug).slice(0, 4).map(c => (
-            <a key={c.slug} href={'/cases/' + c.slug} onClick={e => handleTabClick(e, c)}>
-              {c.name} ↗
-            </a>
-          ))}
-        </div>
+        <p>NEXT PAGE</p>
+        <a className="case-bottom-next" href={'/cases/' + nextCase.slug} onClick={e => handleTabClick(e, nextCase)}>
+          {nextCase.name} ↗
+        </a>
       </div>
     </main>
+
+    {showScrollCue && (
+      <div className="case-scroll-cue" aria-hidden="true">
+        <span style={{ '--scroll-fill': `${scrollCueProgress * 100}%` }}>
+          <span className="case-scroll-cue__label">Keep scrolling<br />for the next page</span>
+        </span>
+      </div>
+    )}
 
     {/* Floating Next Case Widget matching inspo */}
     {nextCase && (
