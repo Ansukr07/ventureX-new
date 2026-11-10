@@ -14,10 +14,20 @@ if (typeof window !== 'undefined') {
 }
 
 const groups = [
-  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
+  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 6] },
   { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
-  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, fee, and coordination information for teams considering VentureX.', files: [2, 3] },
-  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
+  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, fee, and coordination information for teams considering VentureX.', files: [2, 3, 4] },
+  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [5, 7] }
+]
+
+const teamPhotoNames = [
+  'Vaibhav Balakundi', 'P Deepthi Jain', 'Milan Sampath', 'Yeshwin J',
+  'Rishav Kumar Singh', 'Vansh Baranwal', 'Natania Martin', 'Rohan Ittigi',
+  'Raashi A', 'Jasvanti M', 'Harshith Kumar', 'Disha K',
+  'Archit Kumar', 'Jayakeerthy N J', 'Ansu Kumar', 'Bhuvan Shivaprasad',
+  'Aadya Bajpai', 'Krish Jain', 'Jiya Jain', 'Parikshith S',
+  'Abhyuday Kaushik', 'Dhyeya Talupula', 'Srilakshmi', 'Kushadhi J Yadav',
+  'Namratha R B', 'Bhuvan Tej Reddy Seethi', 'Ujwal Jawalgi', 'Gaurav S'
 ]
 function useRoute() {
   const [path, setPath] = useState(location.pathname)
@@ -430,6 +440,165 @@ function Home({
         </div>
       </section>
     </main>
+  )
+}
+
+function TeamEvidenceBoard({ images }) {
+  return (
+    <section className="team-evidence" aria-label="VentureX team photo archive">
+      <div className="team-evidence__board">
+        <aside className="team-evidence__note" aria-hidden="true">
+          <span>FIELD NOTES / 01-28</span>
+          <strong>THE<br />VENTUREX TEAM</strong>
+          <small>One crew. One big idea.</small>
+        </aside>
+                <svg className="team-evidence__loupe" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="team-loupe-handle" x1="112" y1="112" x2="181" y2="181" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#4f382d" />
+              <stop offset=".42" stopColor="#a77b59" />
+              <stop offset=".72" stopColor="#76503a" />
+              <stop offset="1" stopColor="#493126" />
+            </linearGradient>
+            <radialGradient id="team-loupe-glass" cx="0" cy="0" r="1" gradientTransform="matrix(68 66 -66 68 42 38)" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#d7e8dc" stopOpacity=".72" />
+              <stop offset="1" stopColor="#5c8e79" stopOpacity=".28" />
+            </radialGradient>
+            <filter id="team-loupe-shadow" x="-15%" y="-15%" width="140%" height="140%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+              <feOffset dy="4" />
+              <feComponentTransfer><feFuncA slope=".32" type="linear" /></feComponentTransfer>
+              <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <g filter="url(#team-loupe-shadow)">
+            <path d="m111 111 72 72" stroke="#4b3429" strokeWidth="25" strokeLinecap="round" />
+            <path d="m112 110 70 70" stroke="url(#team-loupe-handle)" strokeWidth="19" strokeLinecap="round" />
+            <path d="m116 112 61 61" stroke="#d1a27a" strokeOpacity=".65" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="70" cy="70" r="62" fill="url(#team-loupe-glass)" stroke="#e1e3d2" strokeWidth="13" />
+            <circle cx="70" cy="70" r="50" fill="none" stroke="#f3f4e8" strokeOpacity=".72" strokeWidth="1.5" />
+            <path d="M34 52c10-17 27-27 47-26" fill="none" stroke="#fff" strokeOpacity=".46" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="111" cy="111" r="8" fill="#876044" stroke="#ddc6a7" strokeWidth="2" />
+          </g>
+        </svg>
+        <svg className="team-evidence__thread" viewBox="0 0 1000 2400" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M54 180 C180 40 212 360 350 258 S515 122 600 315 S812 372 948 190 C1060 424 806 520 670 680 S370 820 132 690 C20 860 230 1030 472 960 S770 1010 923 890 C1035 1120 780 1260 560 1170 S226 1210 76 1370 C10 1520 275 1630 512 1515 S810 1510 940 1710 C1020 1890 740 1960 530 1850 S220 1900 82 2070 C36 2220 300 2320 535 2200 S820 2210 964 2350" />
+          <path d="M72 540 C280 650 366 462 514 560 S742 770 920 610 M85 1540 C260 1450 390 1660 580 1550 S780 1440 930 1580" />
+        </svg>
+        <div className="team-evidence__grid">
+          {images.map((src, index) => {
+            const frame = String(index + 1).padStart(2, '0')
+            return (
+              <figure className="team-photo" key={src}>
+                <div className="team-photo__image">
+                  <div className="team-photo__placeholder">
+                    <span>PHOTO / {frame}</span>
+                    <small>Drop team-{frame}.jpg here</small>
+                  </div>
+                  <img
+                    src={src}
+                    alt={`Team archive photograph ${frame}`}
+                    loading="lazy"
+                    onError={event => { event.currentTarget.hidden = true }}
+                  />
+                </div>
+                <figcaption>
+                  <span className="team-photo__script">{teamPhotoNames[index]}</span>
+                </figcaption>
+              </figure>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+function ArrivalTicketGuide() {
+  const ticketStageRef = useRef(null)
+  const [isRevealed, setIsRevealed] = useState(false)
+
+  useEffect(() => {
+    const ticketStage = ticketStageRef.current
+    if (!ticketStage) return
+
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (motion.matches || !('IntersectionObserver' in window)) {
+      setIsRevealed(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsRevealed(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' })
+
+    observer.observe(ticketStage)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <section className={'arrival-guide' + (isRevealed ? ' is-revealed' : '')} aria-labelledby="arrival-guide-title">
+      <div className="arrival-guide__heading">
+        <h2 id="arrival-guide-title">Coming from another state?</h2>
+        <p>Get into Bengaluru, then take the last leg to BMSIT&M in Avalahalli, Yelahanka.</p>
+      </div>
+
+      <div ref={ticketStageRef} className="arrival-ticket-layout">
+        <article className="arrival-boarding-pass">
+          <div className="arrival-boarding-pass__topline">
+            <span>VENTUREX · BOARDING PASS</span>
+            <span>BLR / YHK</span>
+          </div>
+          <div className="arrival-boarding-pass__route">
+            <div>
+              <span>ARRIVE IN</span>
+              <strong>BLR</strong>
+              <small>BENGALURU</small>
+            </div>
+            <span className="arrival-boarding-pass__arrows" aria-hidden="true">···›</span>
+            <div>
+              <span>FINAL STOP</span>
+              <strong>BMSIT</strong>
+              <small>AVALAHALLI · YELAHANKA</small>
+            </div>
+          </div>
+          <div className="arrival-boarding-pass__meta">
+            <div><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
+            <div><span>LAST MILE</span><b>BMTC + WALK / AUTO</b></div>
+            <div><span>DESTINATION</span><b>DODDABALLAPUR MAIN RD</b></div>
+          </div>
+          <div className="arrival-barcode" aria-hidden="true" />
+          <p className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</p>
+        </article>
+
+        <aside className="arrival-receipt">
+          <p className="arrival-receipt__eyebrow">YOUR LAST LEG</p>
+          <h3>Three ways in</h3>
+          <ol>
+            <li><b>Flying to BLR</b><span>Take BMTC Vayu Vajra towards Hebbal / Yelahanka, then a local bus or auto to Avalahalli.</span></li>
+            <li><b>Arriving by train</b><span>If your train stops at Yelahanka Junction, continue by local bus or auto. From KSR Bengaluru, reach Majestic and take BMTC 285-M towards Avalahalli.</span></li>
+            <li><b>Arriving by intercity bus</b><span>From Kempegowda Bus Station (Majestic), board BMTC 285-M towards Avalahalli / Doddaballapura and get off at Avalahalli.</span></li>
+          </ol>
+          <p className="arrival-receipt__fineprint">Check live routes and fares before you leave; traffic and service frequency vary.</p>
+        </aside>
+
+        <div className="arrival-city-ticket">
+          <span className="arrival-city-ticket__hole" aria-hidden="true" />
+          <div className="arrival-city-ticket__vertical">CITY TRANSFER · BMTC 285-M</div>
+          <div className="arrival-city-ticket__main">
+            <div className="arrival-city-ticket__print">
+              <span>BUS TICKET</span>
+              <b>MAJESTIC<br />› AVALAHALLI</b>
+              <small>ORDINARY SERVICE · PAY PER RIDE</small>
+            </div>
+          </div>
+          <div className="arrival-city-ticket__stub">YHK—BMSIT</div>
+        </div>
+      </div>
+
+    </section>
   )
 }
 
@@ -958,7 +1127,7 @@ function FilePage({
       <div className="case-content">
         <div className="case-content__inner" ref={contentInnerRef}>
           <div
-            className="case-folder"
+            className={'case-folder' + (activeEntry.slug === 'event-timeline' ? ' has-arrival-guide' : '')}
             ref={folderRef}
             style={{
               '--case-color': activeEntry.color,
@@ -1020,7 +1189,7 @@ function FilePage({
             </div>
 
             {/* Open Folder Inner Content */}
-            <div className="case-folder__inner">
+            <div className={"case-folder__inner" + (activeEntry.slug === 'team' ? ' case-folder__inner--team' : '')}>
               <article className="paper dossier" ref={paperRef}>
                 <div className="holes" aria-hidden="true">
                   {Array.from({ length: 9 }, (_, i) => (
@@ -1069,7 +1238,7 @@ function FilePage({
                 </div>
               </article>
 
-              <div className="projects">
+              <div className={'projects' + (activeEntry.timeline ? ' projects--timeline' : '')}>
                 {activeEntry.notes.map((note, i) => {
                   const noteTheme = NOTE_COLORS[i % NOTE_COLORS.length]
                   const noteRot = NOTE_ROTATIONS[i % NOTE_ROTATIONS.length]
@@ -1121,6 +1290,8 @@ function FilePage({
                   </div>
                 )}
               </div>
+              {activeEntry.slug === 'team' && <TeamEvidenceBoard images={activeEntry.images} />}
+              {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
             </div>
           </div>
         </div>

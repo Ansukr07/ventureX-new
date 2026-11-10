@@ -1,0 +1,1 @@
+The 28 team photos are optimized WebP files named `team-01.webp` through `team-28.webp`. Their paths are listed in `src/cases.json`.
