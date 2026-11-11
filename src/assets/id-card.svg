@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 402.89 577.53">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-2 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-3 {
+        fill: #f1c65d;
+      }
+
+      .cls-4 {
+        letter-spacing: -.06em;
+      }
+
+      .cls-5 {
+        font-size: 40.93px;
+      }
+
+      .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-11 {
+        fill: #fff;
+      }
+
+      .cls-5, .cls-6, .cls-10, .cls-11 {
+        font-family: Gottak-SemiBold, Gottak;
+        font-weight: 600;
+      }
+
+      .cls-12 {
+        letter-spacing: -.1em;
+      }
+
+      .cls-6 {
+        font-size: 37.05px;
+      }
+
+      .cls-13 {
+        fill: #699ad1;
+      }
+
+      .cls-8 {
+        font-family: EleganceNaturalValentine, 'Elegance Natural Valentine';
+        font-size: 100.6px;
+      }
+
+      .cls-14 {
+        stroke: #fff;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-14, .cls-15 {
+        fill: #2b5a48;
+      }
+
+      .cls-16 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-17 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-18 {
+        letter-spacing: 0em;
+      }
+
+      .cls-19 {
+        letter-spacing: -.01em;
+      }
+
+      .cls-9 {
+        opacity: .25;
+      }
+
+      .cls-20 {
+        fill: #da82aa;
+      }
+
+      .cls-21 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-22 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-23 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-10 {
+        font-size: 46.62px;
+      }
+
+      .cls-24 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-25 {
+        letter-spacing: -.07em;
+      }
+
+      .cls-26 {
+        letter-spacing: 0em;
+      }
+
+      .cls-27 {
+        letter-spacing: -.15em;
+      }
+
+      .cls-28 {
+        letter-spacing: -.04em;
+      }
+
+      .cls-29 {
+        letter-spacing: 0em;
+      }
+
+      .cls-11 {
+        font-size: 25.54px;
+      }
+
+      .cls-30 {
+        letter-spacing: -.08em;
+      }
+    </style>
+  </defs>
+  <g id="id">
+    <rect class="cls-15" width="402.89" height="577.53" rx="15.23" ry="15.23"/>
+    <rect class="cls-14" x="5.61" y="8.46" width="391.67" height="562.61" rx="15.23" ry="15.23"/>
+    <rect class="cls-7" x="142.04" y="18.86" width="118.81" height="10.81" rx="5.4" ry="5.4"/>
+    <g>
+      <rect class="cls-13" x="28.17" y="441.01" width="346.55" height="106.95" transform="translate(404.08 988.49) rotate(-180)"/>
+      <text class="cls-8" transform="translate(55.34 526.61) scale(.97 1)"><tspan class="cls-25" x="0" y="0">V</tspan><tspan class="cls-18" x="37.93" y="0">e</tspan><tspan class="cls-21" x="75.76" y="0">n</tspan><tspan class="cls-29" x="118.01" y="0">t</tspan><tspan class="cls-19" x="140.65" y="0">u</tspan><tspan class="cls-18" x="184.41" y="0">r</tspan><tspan class="cls-28" x="217.51" y="0">e</tspan><tspan class="cls-26" x="251.71" y="0">X</tspan></text>
+      <rect class="cls-3" x="28.04" y="38.38" width="345.93" height="70.56"/>
+      <text class="cls-5" transform="translate(43.2 89.72) scale(1.06 1)"><tspan class="cls-12" x="0" y="0">P</tspan><tspan class="cls-22" x="20.26" y="0">A</tspan><tspan class="cls-30" x="44.61" y="0">R</tspan><tspan class="cls-23" x="67.04" y="0">TICI</tspan><tspan class="cls-12" x="135.76" y="0">P</tspan><tspan class="cls-22" x="156.02" y="0">ANT 204</tspan></text>
+      <rect class="cls-20" x="28.04" y="124.68" width="344.82" height="296.91"/>
+      <text class="cls-10" transform="translate(39.78 315.99)"><tspan class="cls-1"><tspan x="0" y="0">Name </tspan></tspan><tspan class="cls-17"><tspan x="0" y="39.79">Surname</tspan></tspan></text>
+      <text class="cls-6" transform="translate(38.12 405.26)"><tspan class="cls-27" x="0" y="0">T</tspan><tspan class="cls-24" x="18.26" y="0">eam Name</tspan></text>
+      <text class="cls-11" transform="translate(205.19 162.5)"><tspan class="cls-2" x="0" y="0">pi</tspan><tspan class="cls-4" x="19.94" y="0">t</tspan><tspan class="cls-16" x="28.04" y="0">ch win build</tspan></text>
+      <g>
+        <rect class="cls-9" x="202.26" y="145.37" width="160.71" height="19.66"/>
+        <rect class="cls-7" x="201.76" y="145.69" width="1" height="22.29"/>
+        <rect class="cls-7" x="362.46" y="143.77" width="1" height="21.58"/>
+      </g>
+      <polygon class="cls-7" points="199.15 173.77 202.26 166.79 205.36 173.77 199.15 173.77"/>
+      <polygon class="cls-7" points="366.07 137.95 362.96 144.93 359.86 137.95 366.07 137.95"/>
+    </g>
+  </g>
+</svg>

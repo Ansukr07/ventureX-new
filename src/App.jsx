@@ -5,6 +5,7 @@ import { Flip } from 'gsap/Flip'
 import cases from './cases.json'
 import about from './about.json'
 import { DeskAssets } from './DeskAssets'
+import IdCard from './IdCard'
 import './App.css'
 
 gsap.registerPlugin(Flip)
@@ -984,6 +985,8 @@ function FilePage({
       }
     })
     tl.to('.case-content', { x: '-100vw' }, 0)
+    const leavingIdCard = document.querySelector('.case-id-card')
+    if (leavingIdCard) tl.to(leavingIdCard, { x: '-100vw' }, 0)
     tl.to('.case-folder-tags', { x: '-10vw', duration: 0.9 }, 0)
     tl.to('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
     return () => tl.kill()
@@ -1000,6 +1003,8 @@ function FilePage({
       }
     })
     tl.from('.case-content', { x: '-100vw', duration: 0.9 }, 0)
+    const enteringIdCard = document.querySelector('.case-id-card')
+    if (enteringIdCard) tl.from(enteringIdCard, { x: '-100vw' }, 0)
     tl.from('.case-hero-title', { x: '-50vw', duration: 0.9 }, 0)
     tl.from('.case-folder-tags', { x: '-10vw', duration: 1 }, 0)
     return () => tl.kill()
@@ -1017,7 +1022,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .team-evidence'
+      '.project, .extra-photos, .team-evidence, .case-id-card'
     )
     const folder = folderRef.current
 
@@ -1131,7 +1136,7 @@ function FilePage({
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .team-evidence'
+      '.project, .extra-photos, .team-evidence, .case-id-card'
     )
     const folder = folderRef.current
 
@@ -1181,7 +1186,7 @@ function FilePage({
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .team-evidence'
+          '.project, .extra-photos, .team-evidence, .case-id-card'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -1248,7 +1253,7 @@ function FilePage({
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .team-evidence'
+          '.project, .extra-photos, .team-evidence, .case-id-card'
         )
         const folder = folderRef.current
 
@@ -1544,6 +1549,14 @@ function FilePage({
         </div>
       </div>
     </main>
+
+    {/* VentureX ID card tucked into the right screen edge, outside the folder.
+        Fixed so it stays put while the file page scrolls. */}
+    {activeEntry.slug === 'executive-overview' && (
+      <aside className="case-id-card" aria-hidden="true">
+        <IdCard className="case-id-card__svg" />
+      </aside>
+    )}
 
     {showScrollCue && (
       <div className="case-scroll-cue" aria-hidden="true">
