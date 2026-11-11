@@ -762,11 +762,11 @@ function ArrivalTicketGuide() {
           <h3>Three ways in</h3>
           <div className="arrival-receipt__rule" aria-hidden="true" />
           <ol>
-            <li><b>Flying to BLR</b><span>Take BMTC Vayu Vajra towards Hebbal / Yelahanka, then a local bus or auto to Avalahalli.</span></li>
-            <li><b>Arriving by train</b><span>If your train stops at Yelahanka Junction, continue by local bus or auto. From KSR Bengaluru, reach Majestic and take BMTC 285-M towards Avalahalli.</span></li>
-            <li><b>Arriving by intercity bus</b><span>From Kempegowda Bus Station (Majestic), board BMTC 285-M towards Avalahalli / Doddaballapura and get off at Avalahalli.</span></li>
+            <li><b>Flying to BLR</b><span>Take BMTC Vayu Vajra towards Hebbal / Yelahanka, get down at Yelahanka NES Office Stop, then take a local bus or auto to BMSIT&amp;M, Avalahalli.</span></li>
+            <li><b>Arriving by train</b><span>If your train stops at Yelahanka Junction, get down at Yelahanka NES Office Stop, then take a local bus or auto to BMSIT&amp;M, Avalahalli. From KSR Bengaluru, reach Majestic and take BMTC 285-M towards Avalahalli.</span></li>
+            <li><b>Arriving by intercity bus</b><span>From Kempegowda Bus Station (Majestic), take BMTC 285-M towards Avalahalli / Doddaballapura, get down at Yelahanka NES Office Stop, and take a bus or auto to BMSIT&amp;M, Avalahalli.</span></li>
           </ol>
-          <p className="arrival-receipt__fineprint">Check live routes and fares before you leave; traffic and service frequency vary.</p>
+          <p className="arrival-receipt__fineprint">Check live routes and fares before you leave, traffic and service frequency may vary.</p>
         </aside>
 
         <div className="arrival-city-ticket">
