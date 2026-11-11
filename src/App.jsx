@@ -1297,6 +1297,12 @@ function FilePage({
         })
 
         if (folder) {
+          // Pin the container height while the folder is out of flow (the
+          // original Mosby transition does exactly this), so the page doesn't
+          // collapse and reflow mid-close on phones.
+          if (contentInnerRef.current) {
+            gsap.set(contentInnerRef.current, { height: folder.offsetHeight })
+          }
           const state = Flip.getState(folder, { props: 'transform,backgroundColor' })
 
           folder.style.position = 'fixed'
@@ -1310,7 +1316,12 @@ function FilePage({
 
           closeTl.add(Flip.from(state, {
             duration: 1.25,
-            ease: 'power3.inOut'
+            ease: 'power3.inOut',
+            onComplete: () => {
+              if (contentInnerRef.current) {
+                gsap.set(contentInnerRef.current, { clearProps: 'height' })
+              }
+            }
           }), 0)
         }
         closeTl.play()

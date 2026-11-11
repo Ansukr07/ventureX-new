@@ -443,6 +443,22 @@
  transform-origin: top right;
 }
 
+/* Phones: rendering hints only — nothing visual changes. Flattening the folder
+   skips 3D-sorting its whole subtree every frame (the cover flip only needs the
+   parent perspective, and paint order is unchanged), and dropping the permanent
+   will-change lets the browser release the giant full-height layers between
+   transitions instead of keeping them resident at 3x DPR. GSAP still promotes
+   layers itself while tweening. */
+@media only screen and (max-width: 768px) {
+ .case-folder {
+  transform-style: flat;
+  will-change: auto;
+ }
+ .case-folder__cover {
+  will-change: auto;
+ }
+}
+
 .case-folder__inner {
  position: relative;
  z-index: 1;
