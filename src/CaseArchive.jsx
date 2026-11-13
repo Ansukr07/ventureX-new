@@ -319,14 +319,9 @@ const PAGES = {
     { type: 'tag' },
     { type: 'airmail' }
   ],
-  'coordination-enquiries': [
-    { type: 'airmail' },
-    { type: 'form', title: 'ROUTING SLIP', code: 'VX-03-26' },
-    { type: 'tag' }
-  ],
   'team': [
     { type: 'fingerprint' },
-    { type: 'form', title: 'PERSONNEL FORM', code: 'VX-04-26' },
+    { type: 'form', title: 'PERSONNEL FORM', code: 'VX-03-26' },
     { type: 'tag' }
   ],
   'why-participate': [
@@ -335,7 +330,7 @@ const PAGES = {
     { type: 'fingerprint' }
   ],
   'for-founders': [
-    { type: 'form', title: 'FOUNDER SLIP', code: 'VX-06-26' },
+    { type: 'form', title: 'FOUNDER SLIP', code: 'VX-05-26' },
     { type: 'memo', stamp: 'TOP 30', to: 'SHORTLIST DESK', from: 'REVIEW PANEL', re: 'ROUND II ENTRY' },
     { type: 'tag' }
   ],
@@ -349,16 +344,14 @@ const PAGES = {
 const EXHIBITS = {
   'executive-overview': ['EXHIBIT 01', 'Executive Overview', 'VX·EO·26'],
   'frequently-asked-questions': ['EXHIBIT 02', 'FAQs', 'VX·FA·26'],
-  'coordination-enquiries': ['EXHIBIT 03', 'Coordination', 'VX·CO·26'],
-  'team': ['EXHIBIT 04', 'The Team', 'VX·TE·26'],
-  'why-participate': ['EXHIBIT 05', 'Why Participate', 'VX·WP·26'],
-  'for-founders': ['EXHIBIT 06', 'For Founders', 'VX·FF·26'],
-  'about-venturex': ['EXHIBIT 07', 'About VentureX', 'VX·AB·26']
+  'team': ['EXHIBIT 03', 'The Team', 'VX·TE·26'],
+  'why-participate': ['EXHIBIT 04', 'Why Participate', 'VX·WP·26'],
+  'for-founders': ['EXHIBIT 05', 'For Founders', 'VX·FF·26'],
+  'about-venturex': ['EXHIBIT 06', 'About VentureX', 'VX·AB·26']
 }
 
 const ENVELOPE_LINES = {
-  'frequently-asked-questions': ['ANSWERS ENCLOSED — DO NOT FOLD', 'VENTUREX DESK, E-CELL BMSIT&M', 'AVALAHALLI · YELAHANKA', 'BENGALURU 560064'],
-  'coordination-enquiries': ['COORDINATION ENQUIRIES — AIRMAIL', 'VENTUREX DESK, E-CELL BMSIT&M', 'AVALAHALLI · YELAHANKA', 'BENGALURU 560064']
+  'frequently-asked-questions': ['ANSWERS ENCLOSED — DO NOT FOLD', 'VENTUREX DESK, E-CELL BMSIT&M', 'AVALAHALLI · YELAHANKA', 'BENGALURU 560064']
 }
 
 function Artifact({ item, entry }) {

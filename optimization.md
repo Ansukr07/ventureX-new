@@ -81,7 +81,7 @@ Owner: content lead + developer. Target: days 2–5; overlap with P0 where possi
 These are research hypotheses, not verified search volumes. Validate with Search Console query data once available and a keyword research tool if accessible. Prioritize relevance and conversion intent; avoid unrelated broad terms such as “business” or thin pages for every city.
 
 - Give existing routes descriptive search titles: Executive Overview becomes “VentureX Event Overview & Eligibility”; Event Timeline becomes “VentureX Dates, Registration Deadline & Rounds”; FAQs becomes “VentureX FAQs: Fees, Team Size & Eligibility.” Keep current URLs unless a change is necessary; use permanent redirects for renamed URLs.
-- Give each indexable page one clear main heading and helpful subheadings. Link overview, timeline, FAQ, coordination, and registration with descriptive anchors.
+- Give each indexable page one clear main heading and helpful subheadings. Link overview, timeline, FAQ, and registration with descriptive anchors.
 - Place exact venue information and organizer identity in visible text. Add directions and an official map link after venue verification.
 - Publish genuine organizer/contact information and confirmed investor profiles with permission. Replace generic imagery with approved campus/event images where available; give them accurate alt text, dimensions, and captions.
 - Create one practical pitch submission guide answering actual submission requirements. Publish duration, format, judging criteria, and submission method only after organizers confirm them.

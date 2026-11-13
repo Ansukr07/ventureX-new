@@ -37,10 +37,10 @@ function setPageMetadata(title, description) {
 }
 
 const groups = [
-  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 6] },
+  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
   { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
-  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, fee, and coordination information for teams considering VentureX.', files: [2, 3, 4] },
-  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [5, 7] }
+  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
+  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
 ]
 
 function useRoute() {
