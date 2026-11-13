@@ -445,20 +445,54 @@
  transform-origin: top right;
 }
 
-/* Phones: rendering hints only — nothing visual changes. Flattening the folder
-   skips 3D-sorting its whole subtree every frame (the cover flip only needs the
-   parent perspective, and paint order is unchanged), and dropping the permanent
-   will-change lets the browser release the giant full-height layers between
-   transitions instead of keeping them resident at 3x DPR. GSAP still promotes
-   layers itself while tweening. */
+/* Phones: Mobile optimization for smooth, hardware-accelerated 3D folder & cover rotation.
+   Preserves 3D context without flattening raster bottlenecks, promotes GPU composite layers,
+   caps rotating cover to viewport, and prevents off-screen subtree paint thrashing. */
 @media only screen and (max-width: 768px) {
- .case-folder {
-  transform-style: flat;
-  will-change: auto;
- }
- .case-folder__cover {
-  will-change: auto;
- }
+  .case-folder {
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  .case-folder.is-flipping {
+    pointer-events: none;
+  }
+
+  .case-folder.is-flipping .case-folder__inner {
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
+  .case-folder__cover {
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform;
+    max-height: 100vh;
+    transform: translateZ(0) rotateY(-180deg);
+    -webkit-transform: translateZ(0) rotateY(-180deg);
+  }
+
+  .case-folder__cover__front,
+  .case-folder__cover__back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Replace GPU-intensive 250px blur box-shadow on mobile with a crisp lightweight shadow */
+  .case-folder__cover__shadow {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    will-change: opacity;
+  }
+
+  .case-folder__cover__front__shadow {
+    box-shadow: 1px 0 6px rgba(0, 0, 0, 0.2);
+    will-change: opacity;
+  }
 }
 
 .case-folder__inner {

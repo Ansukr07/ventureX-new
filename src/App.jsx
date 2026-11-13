@@ -380,9 +380,10 @@ function Home({
 
     const targetRect = selected ? selected.getBoundingClientRect() : null
 
-    // Exact Dct Home leave animation (0.6s)
+    // Exact Dct Home leave animation (0.6s desktop / 0.38s mobile)
+    const isMobile = window.innerWidth <= 768
     const tl = gsap.timeline({
-      defaults: { duration: 0.6, ease: 'power2.out' },
+      defaults: { duration: isMobile ? 0.38 : 0.6, ease: 'power2.out' },
       onComplete: () => {
         if (onSelectCase) {
           onSelectCase(groupIndex, pageIndex, item, targetRect)
@@ -392,10 +393,10 @@ function Home({
       }
     })
 
-    tl.to('.hero-title', { y: '2rem', opacity: 0, duration: 0.45 }, 0.05)
-    tl.to(unselected, { yPercent: 120, duration: 0.6, stagger: 0.08, ease: 'power2.in' }, 0)
+    tl.to('.hero-title', { y: '2rem', opacity: 0, duration: isMobile ? 0.25 : 0.45 }, 0.05)
+    tl.to(unselected, { yPercent: 120, duration: isMobile ? 0.38 : 0.6, stagger: isMobile ? 0.04 : 0.08, ease: 'power2.in' }, 0)
     if (inactivePeerTabs.length > 0) {
-      tl.to(inactivePeerTabs, { yPercent: 110, duration: 0.4, ease: 'power2.in' }, 0)
+      tl.to(inactivePeerTabs, { yPercent: 110, duration: isMobile ? 0.25 : 0.4, ease: 'power2.in' }, 0)
     }
     if (desc) tl.to(desc, { opacity: 0, duration: 0.15 }, 0)
     if (cat) tl.to(cat, { opacity: 0, duration: 0.15 }, 0)
@@ -1299,6 +1300,8 @@ function FilePage({
     })
 
     if (folder) {
+      if (isMobile) folder.classList.add('is-flipping')
+
       // 1. Initial stack placement: matches clicked folder on Home down to the sub-pixel
       folder.style.position = 'fixed'
       folder.style.left = `${rect.left}px`
@@ -1332,50 +1335,69 @@ function FilePage({
       folder.style.transform = ''
       folder.style.zIndex = ''
 
+      const openDuration = isMobile ? 0.95 : 1.5
+      const openEase = isMobile ? 'power2.inOut' : 'power3.inOut'
+
       const tl = gsap.timeline({
-        defaults: { duration: 1.5, ease: 'power3.inOut' },
+        defaults: { duration: openDuration, ease: openEase },
         paused: true
       })
 
-      // 1. 3D Cover flips open: rotateY 0deg -> -180deg over 1.5s
+      // 1. 3D Cover flips open: rotateY 0deg -> -180deg over openDuration
       tl.to(cover, {
         rotateY: -180,
-        duration: 1.5,
-        ease: 'power3.inOut'
+        duration: openDuration,
+        ease: openEase
       }, 0)
 
-      // 2. Cover shadow peaks at 0.25s (opacity: 1), fades at 0.6s (opacity: 0)
-      tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power3.inOut' }, 0.25)
-      tl.to(coverShadow, { opacity: 0, duration: 0.3, ease: 'power3.inOut' }, 0.6)
+      // 2. Cover shadow peaks and fades
+      const shadowPeakTime = isMobile ? 0.16 : 0.25
+      const shadowPeakDuration = isMobile ? 0.22 : 0.35
+      const shadowFadeTime = isMobile ? 0.38 : 0.6
+      const shadowFadeDuration = isMobile ? 0.2 : 0.3
+
+      tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: shadowPeakDuration, ease: openEase }, shadowPeakTime)
+      tl.to(coverShadow, { opacity: 0, duration: shadowFadeDuration, ease: openEase }, shadowFadeTime)
 
       // 3. Inner lined notebook page swings into view at 0.35s (rotate: -6deg -> 0deg, y: 55px -> 0px)
-      tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.35)
+      const paperTime = isMobile ? 0.22 : 0.35
+      const paperDuration = isMobile ? 0.45 : 0.6
+      tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: paperDuration, ease: 'power3.out' }, paperTime)
 
       // 4. Header title characters shutter reveal from left at 0.65s (xPercent: -150 -> 0, stagger: 0.025s)
-      tl.to(chars, { xPercent: 0, opacity: 1, duration: 0.65, stagger: 0.025, ease: 'power2.out' }, 0.65)
+      const charsTime = isMobile ? 0.4 : 0.65
+      const charsDuration = isMobile ? 0.45 : 0.65
+      const charsStagger = isMobile ? 0.015 : 0.025
+      tl.to(chars, { xPercent: 0, opacity: 1, duration: charsDuration, stagger: charsStagger, ease: 'power2.out' }, charsTime)
 
       // 5. Inactive side tags slide up into place at 0.85s (matches inspo kct: original-transitions.js:68)
       if (inactiveTags.length > 0) {
+        const tagsTime = isMobile ? 0.5 : 0.85
+        const tagsDuration = isMobile ? 0.5 : 0.75
         tl.to(inactiveTags, {
           yPercent: 0,
           opacity: 1,
-          duration: 0.75,
+          duration: tagsDuration,
           ease: 'power3.out',
           clearProps: 'yPercent,opacity'
-        }, 0.85)
+        }, tagsTime)
       }
 
       // 6. Scrapbook items rise up at 1.0s (y: 50vh -> 0)
-      tl.to(items, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 1.0)
+      const itemsTime = isMobile ? 0.6 : 1.0
+      const itemsDuration = isMobile ? 0.35 : 0.5
+      tl.to(items, { y: 0, opacity: 1, duration: itemsDuration, ease: 'power3.out' }, itemsTime)
 
       // 7. Morph folder from rotated stack position to upright case view
       Flip.from(state, {
-        duration: 1.5,
-        ease: 'power3.inOut',
+        duration: openDuration,
+        ease: openEase,
         onStart: () => {
           tl.play()
         },
         onComplete: () => {
+          if (folder) folder.classList.remove('is-flipping')
+          if (cover) gsap.set(cover, { visibility: 'hidden' })
           if (onInitialOpenComplete) onInitialOpenComplete()
         }
       })
@@ -1518,6 +1540,9 @@ function FilePage({
         )
         const folder = folderRef.current
 
+        const isMobile = window.innerWidth <= 768
+        if (folder && isMobile) folder.classList.add('is-flipping')
+
         if (folder) {
           folder.style.setProperty('--turning-front-color', activeEntry.color)
           folder.style.setProperty('--turning-back-color', activeEntry.color)
@@ -1534,21 +1559,32 @@ function FilePage({
           gsap.set(activeTag, { yPercent: 0, opacity: 1 })
         }
 
+        const closeDuration = isMobile ? 0.85 : 1.25
+        const closeEase = isMobile ? 'power2.inOut' : 'power3.inOut'
+
         const closeTl = gsap.timeline({
           paused: true,
           onComplete: () => {
+            if (folder) folder.classList.remove('is-flipping')
             isSwitchingRef.current = false
             if (done) done()
           }
         })
-        closeTl.to(items, { y: '50vh', opacity: 0, duration: 0.3, ease: 'power2.in' }, 0)
-        closeTl.to(chars, { xPercent: -150, opacity: 0, duration: 0.65, stagger: 0.015, ease: 'power2.inOut' }, 0)
-        closeTl.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: 0.65, ease: 'power3.inOut' }, 0)
-        closeTl.to(frontShadow, { opacity: 0, duration: 0.35, ease: 'power3.inOut' }, 0.65)
-        closeTl.to(cover, { rotateY: 0, duration: 1.25, ease: 'power3.inOut' }, 0)
+
+        const itemsDropDuration = isMobile ? 0.2 : 0.3
+        const charsDropDuration = isMobile ? 0.45 : 0.65
+        const charsStagger = isMobile ? 0.008 : 0.015
+        const shadowDuration1 = isMobile ? 0.45 : 0.65
+        const shadowDuration2 = isMobile ? 0.25 : 0.35
+        const shadowTime2 = isMobile ? 0.45 : 0.65
+
+        closeTl.to(items, { y: '50vh', opacity: 0, duration: itemsDropDuration, ease: 'power2.in' }, 0)
+        closeTl.to(chars, { xPercent: -150, opacity: 0, duration: charsDropDuration, stagger: charsStagger, ease: 'power2.inOut' }, 0)
+        closeTl.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: shadowDuration1, ease: closeEase }, 0)
+        closeTl.to(frontShadow, { opacity: 0, duration: shadowDuration2, ease: closeEase }, shadowTime2)
+        closeTl.to(cover, { rotateY: 0, duration: closeDuration, ease: closeEase }, 0)
 
         // 5. Flip folder back to stack geometry
-        const isMobile = window.innerWidth <= 768
         const rect = closeRect || (isMobile ? {
           left: 12,
           top: Math.round(window.innerHeight * 0.54 + safeGroupIndex * 50),
@@ -1580,9 +1616,10 @@ function FilePage({
           folder.style.zIndex = '100'
 
           closeTl.add(Flip.from(state, {
-            duration: 1.25,
-            ease: 'power3.inOut',
+            duration: closeDuration,
+            ease: closeEase,
             onComplete: () => {
+              if (folder) folder.classList.remove('is-flipping')
               if (contentInnerRef.current) {
                 gsap.set(contentInnerRef.current, { clearProps: 'height' })
               }
