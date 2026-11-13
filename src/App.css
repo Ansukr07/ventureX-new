@@ -890,6 +890,199 @@
   border: 4px solid #ffffff;
 }
 
+/* ========================================================
+   Archive Extras — bottom strip on every file page (skips
+   event-timeline). Artifacts after the "d—ot" seed-order form
+   and the Bridge of Spies prop flat-lay: typewritten form,
+   stamped memo, measurement strip, string tag, airmail
+   envelope, fingerprint card and wooden ruler.
+   ======================================================== */
+.case-archive {
+  padding: 34px 0 14px;
+}
+.case-archive__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  gap: 10px;
+  /* bleed past the dossier text margins so pairs share one row */
+  margin: 0 -2.5%;
+}
+.archive-item {
+  flex: 0 1 auto;
+}
+/* second-row pieces tuck up beneath the first row and drift off-centre,
+   so the board reads as one layered flat-lay instead of stacked rows */
+.case-archive__row .archive-item:nth-child(n+3) {
+  margin-top: -46px;
+}
+.case-archive__row .archive-item:nth-child(3) { margin-left: 5%; }
+.case-archive__row .archive-item:nth-child(4) { margin-right: 7%; }
+.archive-card {
+  position: relative;
+  transform: translateY(var(--arc-y, 0px)) rotate(var(--arc-rot, -1.5deg));
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0s;
+  will-change: transform;
+  cursor: var(--app-cursor-pointer);
+}
+/* scattered evidence board: each piece pinned at its own height and tilt */
+.case-archive__row .archive-item:nth-child(1) .archive-card { --arc-rot: -2.6deg; --arc-y: -8px; z-index: 3; }
+.case-archive__row .archive-item:nth-child(2) .archive-card { --arc-rot: 2.2deg; --arc-y: 56px; z-index: 2; }
+.case-archive__row .archive-item:nth-child(3) .archive-card { --arc-rot: -1.8deg; --arc-y: 22px; z-index: 1; }
+.case-archive__row .archive-item:nth-child(4) .archive-card { --arc-rot: 2.6deg; --arc-y: 64px; z-index: 2; }
+.archive-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.26));
+  transition: filter 0.35s ease;
+}
+.archive-card:hover {
+  transform: rotate(0deg) scale(1.03) translateY(-6px);
+  z-index: 12;
+}
+.archive-card:hover svg {
+  filter: drop-shadow(0 20px 32px rgba(0, 0, 0, 0.38));
+}
+
+/* artifact widths — sized up, capped to viewport so rows wrap gracefully */
+.archive-card--form { width: min(440px, 40vw); }
+.archive-card--memo { width: min(470px, 42vw); }
+.archive-card--specimen { width: min(215px, 19vw); }
+.archive-card--tag { width: min(390px, 34vw); }
+.archive-card--airmail { width: min(480px, 38vw); }
+.archive-card--fingerprint { width: min(380px, 30vw); }
+.archive-card--ruler { width: min(700px, 56vw); }
+
+/* paperclip on the order form */
+.archive-card__clip {
+  position: absolute;
+  right: 26px;
+  top: -16px;
+  width: 18px;
+  height: 78px;
+  z-index: 4;
+  pointer-events: none;
+}
+.archive-card__clip-svg {
+  width: 100%;
+  height: 100%;
+  color: #222222;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
+}
+/* the case-color swatch block slides up like a pulled sample */
+.arc-form-accent {
+  transform-box: fill-box;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.archive-card--form:hover .arc-form-accent {
+  transform: translateY(-5px);
+}
+
+/* memo: stamp re-inks itself */
+.arc-stamp-ink {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.archive-card--memo:hover .arc-stamp-ink {
+  animation: arc-stamp-ink 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+}
+@keyframes arc-stamp-ink {
+  0% { transform: scale(1.3) rotate(4deg); opacity: 0.45; }
+  55% { transform: scale(0.94) rotate(-1.5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* specimen strip: measurement arrows stretch outward */
+.arc-measure {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.archive-card--specimen:hover .arc-measure {
+  transform: scaleX(1.16);
+}
+
+/* luggage tag swings on its string */
+.arc-tag-swing {
+  transform-box: fill-box;
+  transform-origin: 12% 36%;
+}
+.archive-card--tag:hover .arc-tag-swing {
+  animation: arc-tag-swing 1.7s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+@keyframes arc-tag-swing {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-5deg); }
+  45% { transform: rotate(3.5deg); }
+  70% { transform: rotate(-2deg); }
+  90% { transform: rotate(0.8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* airmail envelope: postmark stamps itself in */
+.arc-postmark {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: rotate(-26deg) scale(1.5);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+.archive-card--airmail:hover .arc-postmark {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* fingerprint card: ink prints develop */
+.arc-print {
+  filter: blur(0.7px);
+  opacity: 0.8;
+  transition: filter 0.5s ease, opacity 0.5s ease;
+}
+.archive-card--fingerprint:hover .arc-print {
+  filter: blur(0);
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .archive-card--form { width: min(440px, 46vw); }
+  .archive-card--memo { width: min(470px, 46vw); }
+  .archive-card--tag { width: min(390px, 42vw); }
+  .archive-card--airmail { width: min(480px, 44vw); }
+  .archive-card--fingerprint { width: min(380px, 40vw); }
+  .archive-card--ruler { width: min(700px, 66vw); }
+  .archive-card--specimen { width: min(215px, 24vw); }
+}
+@media (max-width: 700px) {
+  .case-archive { padding: 22px 0 6px; }
+  .case-archive__row { gap: 14px 6px; margin: 0; }
+  .archive-item { flex: 1 1 100%; min-width: 0; }
+  .archive-item:has(.archive-card--specimen) { flex: 1 1 40%; }
+  .case-archive__row .archive-item .archive-card { --arc-y: 0px; }
+  .case-archive__row .archive-item:nth-child(n+3) { margin-top: 0; }
+  .case-archive__row .archive-item:nth-child(3) { margin-left: 0; }
+  .case-archive__row .archive-item:nth-child(4) { margin-right: 0; }
+  .archive-card { width: 100% !important; }
+  .archive-item:has(.archive-card--specimen) .archive-card { width: 100% !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .archive-card,
+  .archive-card svg,
+  .arc-form-accent,
+  .arc-measure,
+  .arc-postmark,
+  .arc-print {
+    transition: none;
+  }
+  .archive-card:hover .arc-stamp-ink,
+  .archive-card:hover .arc-tag-swing {
+    animation: none;
+  }
+  .arc-postmark { opacity: 1; transform: none; }
+  .arc-print { filter: none; }
+}
+
 /* Fixed scroll cue on file pages */
 .case-scroll-cue {
   position: fixed;
@@ -2047,7 +2240,18 @@
   stroke-linejoin: round;
   filter: drop-shadow(0 2px 1px rgba(57,20,16,.45));
 }
-.team-evidence__thread path + path { stroke-width: 3; opacity: .9; }
+/* metal pins holding the string in the board's outer gutters */
+.team-evidence__pin {
+  position: absolute;
+  z-index: 4;
+  width: 13px;
+  height: 13px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #eceade 0 20%, #b5b1a1 55%, #8c887b 100%);
+  box-shadow: 0 2px 3px rgba(0,0,0,.4), inset 0 -1px 2px rgba(0,0,0,.28);
+  pointer-events: none;
+}
 .team-domain {
   position: relative;
   z-index: 2;
@@ -2088,14 +2292,12 @@
   color: #27231d;
   box-shadow: 0 12px 22px rgba(0,0,0,.34), 0 2px 3px rgba(0,0,0,.28);
   transform: rotate(-1deg);
-  transition: transform .28s ease, box-shadow .28s ease;
 }
 .team-photo:nth-child(7n + 2) { transform: rotate(1.8deg) translateY(10px); }
 .team-photo:nth-child(7n + 3) { transform: rotate(-2.4deg) translateY(3px); }
 .team-photo:nth-child(7n + 4) { transform: rotate(1deg) translateY(16px); }
 .team-photo:nth-child(7n + 5) { transform: rotate(2.2deg) translateY(-4px); }
 .team-photo:nth-child(7n + 6) { transform: rotate(-1.7deg) translateY(12px); }
-.team-photo:hover { z-index: 6; transform: translateY(-5px) rotate(0) scale(1.025); box-shadow: 0 20px 30px rgba(0,0,0,.4); }
 .team-photo::before {
   content: '';
   position: absolute;

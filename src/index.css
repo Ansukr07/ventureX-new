@@ -29,6 +29,9 @@ input[type="url"], input[type="tel"], input[type="password"],
 textarea, [contenteditable="true"] {
   cursor: url('/classic-1/beam-48.png') 15 15, text;
 }
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{position:relative;isolation:isolate;margin:0;min-width:320px;background:#2b5a48}body::before,body::after{content:'';position:fixed;inset:0;pointer-events:none;background-position:center top;background-size:cover;background-repeat:no-repeat}body::before{z-index:0;background-image:url('/greenmat.svg');opacity:.56}body::after{z-index:1;background-image:url('/assets/dappled-sunlight.png');background-position:25% top;opacity:.32;filter:brightness(.82) contrast(1.4) saturate(.85)}button{font:inherit}a{color:inherit;text-decoration:none}::selection{background:#ffe44d;color:#191919}:focus-visible{outline:2px solid #ffe44d;outline-offset:4px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{position:relative;isolation:isolate;margin:0;min-width:320px;background:#2b5a48}body::after{content:'';position:fixed;inset:0;pointer-events:none;background-image:url('/assets/dappled-sunlight.png');background-position:25% top;background-size:cover;background-repeat:no-repeat;z-index:1;opacity:.32;filter:brightness(.82) contrast(1.4) saturate(.85)}
+/* code-drawn cutting mat replacing the old greenmat.svg (same opacity as before) */
+.site-mat{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.56}
+.site-mat svg{display:block;width:100%;height:100%}button{font:inherit}a{color:inherit;text-decoration:none}::selection{background:#ffe44d;color:#191919}:focus-visible{outline:2px solid #ffe44d;outline-offset:4px}
 html,body{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:none;width:0;height:0}
 html,body{overflow-x:clip}

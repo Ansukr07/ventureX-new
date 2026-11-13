@@ -6,6 +6,8 @@ import cases from './cases.json'
 import about from './about.json'
 import { DeskAssets } from './DeskAssets'
 import IdCard from './IdCard'
+import CaseArchive from './CaseArchive'
+import GreenMat from './GreenMat'
 import './App.css'
 
 gsap.registerPlugin(Flip)
@@ -540,6 +542,85 @@ const teamDomains = [
   ] }
 ]
 
+// Red string tying down each domain row of the evidence board: a taut strand
+// runs under every domain heading from the left gutter to the right, then the
+// string descends behind the photos to the next row. Measured with offsetTop
+// chains so the pattern stays put even while the board's entrance transform
+// is still settling.
+function TeamThread() {
+  const anchorRef = useRef(null)
+  const [geometry, setGeometry] = useState(null)
+
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current
+    if (!anchor) return
+    const board = anchor.parentElement
+    const measure = () => {
+      const heads = Array.from(board.querySelectorAll('.team-domain__head'))
+      if (heads.length === 0) {
+        setGeometry(null)
+        return
+      }
+      const strands = heads.map(head => {
+        const domain = head.offsetParent
+        const domainTop = domain && domain !== board ? domain.offsetTop : 0
+        return domainTop + head.offsetTop + head.offsetHeight + 14
+      })
+      let start = null
+      const note = board.querySelector('.team-evidence__note')
+      if (note) {
+        // drop from the note's bottom-left corner, clear of the title text
+        start = { x: note.offsetLeft + 16, y: note.offsetTop + note.offsetHeight + 8 }
+      }
+      setGeometry({ width: anchor.offsetWidth, height: anchor.offsetHeight, strands, start })
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measure())
+    const settleTimer = window.setTimeout(measure, 600)
+    return () => {
+      window.removeEventListener('resize', measure)
+      window.clearTimeout(settleTimer)
+    }
+  }, [])
+
+  const gutter = 26
+  const leftX = gutter
+  const rightX = geometry ? geometry.width - gutter : 0
+  const d = geometry
+    ? (geometry.start
+        ? `M ${geometry.start.x.toFixed(1)} ${geometry.start.y.toFixed(1)} L ${leftX} ${geometry.strands[0].toFixed(1)} `
+        : `M ${leftX} ${geometry.strands[0].toFixed(1)} `) +
+      geometry.strands
+        .map((y, i) => `L ${rightX} ${y.toFixed(1)}` + (i < geometry.strands.length - 1 ? ` L ${leftX} ${geometry.strands[i + 1].toFixed(1)}` : ''))
+        .join(' ')
+    : null
+  const pins = geometry
+    ? geometry.strands.flatMap(y => [
+        { x: leftX, y },
+        { x: rightX, y }
+      ])
+    : []
+  return (
+    <>
+      <span ref={anchorRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} aria-hidden="true" />
+      {geometry && (
+        <svg
+          className="team-evidence__thread"
+          viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d={d} />
+        </svg>
+      )}
+      {pins.map((pin, i) => (
+        <i key={i} className="team-evidence__pin" style={{ left: pin.x + 'px', top: pin.y + 'px' }} aria-hidden="true" />
+      ))}
+    </>
+  )
+}
+
 function TeamEvidenceBoard() {
   return (
     <section className="team-evidence" aria-label="VentureX team photo archive">
@@ -577,10 +658,7 @@ function TeamEvidenceBoard() {
             <circle cx="111" cy="111" r="8" fill="#876044" stroke="#ddc6a7" strokeWidth="2" />
           </g>
         </svg>
-        <svg className="team-evidence__thread" viewBox="0 0 1000 2400" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M54 180 C180 40 212 360 350 258 S515 122 600 315 S812 372 948 190 C1060 424 806 520 670 680 S370 820 132 690 C20 860 230 1030 472 960 S770 1010 923 890 C1035 1120 780 1260 560 1170 S226 1210 76 1370 C10 1520 275 1630 512 1515 S810 1510 940 1710 C1020 1890 740 1960 530 1850 S220 1900 82 2070 C36 2220 300 2320 535 2200 S820 2210 964 2350" />
-          <path d="M72 540 C280 650 366 462 514 560 S742 770 920 610 M85 1540 C260 1450 390 1660 580 1550 S780 1440 930 1580" />
-        </svg>
+        <TeamThread />
         {teamDomains.map((domain, di) => (
           <section className="team-domain" key={domain.name}>
             <header className="team-domain__head">
@@ -817,6 +895,7 @@ function FilePage({
   const [scrollCueProgress, setScrollCueProgress] = useState(0)
   const isSwitchingRef = useRef(false)
   const hasFlippedRef = useRef(false)
+  const cancelEasedScrollRef = useRef(null)
 
   const activeCaseIndex = cases.findIndex(c => c.slug === activeEntry.slug)
   const safeCaseIndex = activeCaseIndex >= 0 ? activeCaseIndex : 0
@@ -858,6 +937,18 @@ function FilePage({
     let targetScrollY = window.scrollY
     let previousFrameTime = 0
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Stops an eased wheel scroll still settling, so programmatic jumps
+    // (closing to home, switching tabs) aren't dragged back by this loop.
+    const stopEasedScroll = () => {
+      if (scrollFrame) {
+        window.cancelAnimationFrame(scrollFrame)
+        scrollFrame = 0
+      }
+      previousFrameTime = 0
+      targetScrollY = window.scrollY
+    }
+    cancelEasedScrollRef.current = stopEasedScroll
 
     const letNativeWheelHandle = event => {
       if (event.ctrlKey || event.deltaY === 0 || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return true
@@ -972,6 +1063,7 @@ function FilePage({
       window.removeEventListener('scroll', onScroll)
       if (navigationTimer) window.clearTimeout(navigationTimer)
       if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
+      cancelEasedScrollRef.current = null
     }
   }, [activeEntry.slug])
 
@@ -1022,7 +1114,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .team-evidence, .case-id-card'
+      '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item'
     )
     const folder = folderRef.current
 
@@ -1136,7 +1228,7 @@ function FilePage({
     const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .team-evidence, .case-id-card'
+      '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item'
     )
     const folder = folderRef.current
 
@@ -1181,12 +1273,15 @@ function FilePage({
           folderRef.current.style.setProperty('--turning-back-color', targetCase.color)
         }
         history.pushState({}, '', '/cases/' + targetCase.slug)
+        // Cancel any eased wheel scroll still settling first, otherwise the
+        // loop drags the page back down and the Flip starts off-screen.
+        if (cancelEasedScrollRef.current) cancelEasedScrollRef.current()
         window.scrollTo({ top: 0, behavior: 'instant' })
 
         // Target incoming page elements (guaranteed in DOM via flushSync)
         const newChars = document.querySelectorAll('.case-hero-title .case-char')
         const newItems = document.querySelectorAll(
-          '.project, .extra-photos, .team-evidence, .case-id-card'
+          '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item'
         )
 
         // Ensure incoming elements are hidden behind closed cover
@@ -1253,7 +1348,7 @@ function FilePage({
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .team-evidence, .case-id-card'
+          '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item'
         )
         const folder = folderRef.current
 
@@ -1262,6 +1357,10 @@ function FilePage({
           folder.style.setProperty('--turning-back-color', activeEntry.color)
         }
 
+        // Cancel any eased wheel scroll still settling first, otherwise the
+        // loop drags the page back to the bottom and the Flip starts from an
+        // off-screen position, desyncing the closing rotation from the stack.
+        if (cancelEasedScrollRef.current) cancelEasedScrollRef.current()
         window.scrollTo({ top: 0, behavior: 'instant' })
 
         gsap.set(cover, { visibility: 'visible' })
@@ -1555,6 +1654,8 @@ function FilePage({
               </div>
               {activeEntry.slug === 'team' && <TeamEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
+              {/* Pinned archive extras after both reference boards; event-timeline keeps its own tickets */}
+              <CaseArchive entry={activeEntry} />
             </div>
           </div>
         </div>
@@ -1887,7 +1988,9 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <>
+      <GreenMat />
+      <div className="app">
       <Header
         go={go}
         isFileOpen={Boolean(entry || transition?.type === 'home-to-case' || transition?.type === 'case-to-home')}
@@ -1957,6 +2060,7 @@ export default function App() {
           <a href="/" onClick={e => { e.preventDefault(); go('/') }}>Back to VentureX</a>
         </main>
       )}
-    </div>
+      </div>
+    </>
   )
 }
