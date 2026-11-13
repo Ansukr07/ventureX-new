@@ -1323,6 +1323,8 @@ function FilePage({
       folder.style.zIndex = '100'
 
       // Prepare initial states: cover shut at 0deg
+      folder.style.setProperty('--turning-front-color', activeEntry.color)
+      folder.style.setProperty('--turning-back-color', activeEntry.color)
       gsap.set(cover, { rotateY: 0, transformOrigin: 'left center', visibility: 'visible' })
       gsap.set(chars, { xPercent: -150, opacity: 0 })
       // Active tag is attached and visible from t = 0 (rotates smoothly with folder matching homepage stack)
@@ -1394,7 +1396,7 @@ function FilePage({
         },
         onComplete: () => {
           if (folder) folder.classList.remove('is-flipping')
-          if (cover) gsap.set(cover, { visibility: 'hidden' })
+          if (cover) gsap.set(cover, { visibility: 'visible', rotateY: -180 })
           gsap.set('.case-folder-tags', { clearProps: 'all' })
           if (onInitialOpenComplete) onInitialOpenComplete()
         }
