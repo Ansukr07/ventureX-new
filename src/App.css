@@ -431,7 +431,7 @@
  height: auto;
  min-height: 1100px;
  transform: none;
- transform-origin: top right;
+ transform-origin: top left;
 }
 .case-content__inner .case-folder.has-arrival-guide { min-height: 1900px; }
 
@@ -440,30 +440,53 @@
  perspective: 3000px;
  transform-style: preserve-3d;
  transition: background-color 0.4s ease;
- will-change: transform, width, height;
+ will-change: transform;
  border-radius: 0 4px 4px 0;
- transform-origin: top right;
+ transform-origin: top left;
 }
 
 /* Phones: Mobile optimization for smooth, hardware-accelerated 3D folder & cover rotation.
    Preserves 3D context without flattening raster bottlenecks, promotes GPU composite layers,
-   caps rotating cover to viewport, and prevents off-screen subtree paint thrashing. */
+   caps rotating cover to viewport, suppresses off-screen heavy subtrees and side SVG tags. */
 @media only screen and (max-width: 768px) {
+  .case-content {
+    overflow-x: clip;
+  }
+
   .case-folder {
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    transform-origin: top left;
   }
 
   .case-folder.is-flipping {
     pointer-events: none;
   }
 
+  /* Clip and isolate subtree paint during the 3D flip */
   .case-folder.is-flipping .case-folder__inner {
     max-height: 100vh;
     overflow: hidden;
+    contain: paint layout;
+  }
+
+  /* Suppress side tags during 3D flip so the 28 SVG shapes don't composite during rotation */
+  .case-folder.is-flipping .case-folder-tags {
+    opacity: 0 !important;
+    width: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Suppress heavy subtrees during flipping on mobile */
+  .case-folder.is-flipping .case-archive,
+  .case-folder.is-flipping .extra-photos,
+  .case-folder.is-flipping .projects,
+  .case-folder.is-flipping .team-evidence {
+    visibility: hidden !important;
   }
 
   .case-folder__cover {
