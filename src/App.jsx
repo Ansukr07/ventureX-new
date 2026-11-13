@@ -559,31 +559,16 @@ function bezierCatenary(p1, p2, options = {}) {
   return `C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
 }
 
-// Two-segment C1-continuous organic cord loop around outer board margin:
-// Curves smoothly from p1 to the margin apex with a vertical tangent,
-// then continues smoothly from the apex down to p2 with zero sharp cusps or corners.
+// Continuous organic cord loop around outer board margin:
+// Sweeps gracefully from p1 outward to targetApex and loops back into p2 with zero sharp cusps or flat walls.
 function bezierLoop(p1, p2, targetApex) {
-  const x0 = p1.x
-  const y0 = p1.y
-  const x1 = p2.x
-  const y1 = p2.y
-  const yMid = (y0 + y1) / 2
-  const dy = y1 - y0
-  const dx0 = targetApex - x0
-  const dx1 = targetApex - x1
+  const dy = p2.y - p1.y
+  // Position control points so the apex of the cubic Bezier lands smoothly at targetApex
+  const C = (targetApex - 0.125 * (p1.x + p2.x)) / 0.75
+  const cp1 = { x: C, y: p1.y + dy * 0.28 }
+  const cp2 = { x: C, y: p2.y - dy * 0.28 }
 
-  // Segment 1: from p1 to apex (targetApex, yMid)
-  // cp1 leaves p1 curving organically outward; cp2 enters apex purely vertical
-  const cp1 = { x: x0 + dx0 * 0.52, y: y0 + dy * 0.12 }
-  const cp2 = { x: targetApex, y: yMid - dy * 0.22 }
-
-  // Segment 2: from apex (targetApex, yMid) to p2
-  // cp3 leaves apex purely vertical (matching cp2 tangent); cp4 enters p2 organically
-  const cp3 = { x: targetApex, y: yMid + dy * 0.22 }
-  const cp4 = { x: x1 + dx1 * 0.52, y: y1 - dy * 0.12 }
-
-  return `C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${targetApex.toFixed(1)} ${yMid.toFixed(1)} ` +
-         `C ${cp3.x.toFixed(1)} ${cp3.y.toFixed(1)}, ${cp4.x.toFixed(1)} ${cp4.y.toFixed(1)}, ${x1.toFixed(1)} ${y1.toFixed(1)}`
+  return `C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
 }
 
 function segmentPath(p1, p2, options = {}) {
@@ -1287,6 +1272,7 @@ function FilePage({
   useLayoutEffect(() => {
     if (!isInitialOpen || hasFlippedRef.current) return
     hasFlippedRef.current = true
+    window.scrollTo({ top: 0, behavior: 'instant' })
 
     const cover = coverRef.current
     const coverShadow = coverShadowRef.current
@@ -1300,18 +1286,28 @@ function FilePage({
     const folder = folderRef.current
 
     const isMobile = window.innerWidth <= 768
+    const computeMobileStackRect = () => {
+      const stackWidth = window.innerWidth - 24
+      const openSize = Math.round(window.innerHeight * 0.75)
+      const folderHeight = Math.round(openSize + remaining * 50)
+      const stackTop = Math.round(window.innerHeight * 0.53)
+      const folderTop = stackTop + safeGroupIndex * 50
+      return {
+        left: 12,
+        top: folderTop,
+        width: stackWidth,
+        height: folderHeight
+      }
+    }
     // Fallback if targetRect wasn't passed (e.g. direct load)
-    const rect = targetRect || (isMobile ? {
-      left: 12,
-      top: Math.round(window.innerHeight * 0.54 + safeGroupIndex * 50),
-      width: window.innerWidth - 24,
-      height: Math.round(window.innerHeight * 0.75 + remaining * 50)
-    } : {
-      left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
-      top: Math.round(window.innerHeight * 0.54),
-      width: Math.min(1320, Math.round(window.innerWidth * 0.93)),
-      height: Math.round(window.innerHeight * 0.8 + remaining * 60)
-    })
+    const rect = (targetRect && (!isMobile || Math.abs(targetRect.width - (window.innerWidth - 24)) < 40))
+      ? targetRect
+      : (isMobile ? computeMobileStackRect() : {
+        left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
+        top: Math.round(window.innerHeight * 0.54),
+        width: Math.min(1320, Math.round(window.innerWidth * 0.93)),
+        height: Math.round(window.innerHeight * 0.8 + remaining * 60)
+      })
 
     if (folder) {
       if (isMobile) folder.classList.add('is-flipping')
@@ -1328,10 +1324,8 @@ function FilePage({
 
       // Prepare initial states: cover shut at 0deg
       gsap.set(cover, { rotateY: 0, transformOrigin: 'left center', visibility: 'visible' })
-      // Suppress side tags width & paint during Flip rotation (exact Mosby kct: original-transitions.js)
-      gsap.set('.case-folder-tags', { width: 0, opacity: 0 })
       gsap.set(chars, { xPercent: -150, opacity: 0 })
-      // Active tag is attached and visible from t = 0 (rotates smoothly with folder)
+      // Active tag is attached and visible from t = 0 (rotates smoothly with folder matching homepage stack)
       if (activeTag) gsap.set(activeTag, { yPercent: 0, opacity: 1 })
       // Inactive peer tabs start tucked behind folder edge
       if (inactiveTags.length > 0) gsap.set(inactiveTags, { yPercent: 110, opacity: 0 })
@@ -1572,8 +1566,11 @@ function FilePage({
         if (cancelEasedScrollRef.current) cancelEasedScrollRef.current()
         window.scrollTo({ top: 0, behavior: 'instant' })
 
-        // 1. Immediately suppress side tags so they don't composite during rotation
-        gsap.set('.case-folder-tags', { opacity: 0, width: 0 })
+        // 1. Tuck away only inactive peer tags; keep the active folder tab visible during closing rotation
+        const inactivePeerTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
+        if (inactivePeerTags.length > 0) {
+          gsap.to(inactivePeerTags, { yPercent: 110, opacity: 0, duration: 0.15, ease: 'power2.in' })
+        }
 
         // 2. Exact Mosby Rct pattern: quickly drop inner scrapbook items first (0.16s mobile / 0.22s desktop),
         // so the folder rotating back into the stack is virtually empty, eliminating mobile GPU fill-rate lag.
@@ -1617,17 +1614,27 @@ function FilePage({
             }, 0)
 
             // 3. Flip folder back to stack geometry
-            const rect = closeRect || (isMobile ? {
-              left: 12,
-              top: Math.round(window.innerHeight * 0.54 + safeGroupIndex * 50),
-              width: window.innerWidth - 24,
-              height: Math.round(window.innerHeight * 0.75 + remaining * 50)
-            } : {
-              left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
-              top: Math.round(window.innerHeight * 0.54 + safeGroupIndex * 60),
-              width: Math.min(1320, Math.round(window.innerWidth * 0.93)),
-              height: Math.round(window.innerHeight * 0.8 + remaining * 60)
-            })
+            const computeMobileStackRect = () => {
+              const stackWidth = window.innerWidth - 24
+              const openSize = Math.round(window.innerHeight * 0.75)
+              const folderHeight = Math.round(openSize + remaining * 50)
+              const stackTop = Math.round(window.innerHeight * 0.53)
+              const folderTop = stackTop + safeGroupIndex * 50
+              return {
+                left: 12,
+                top: folderTop,
+                width: stackWidth,
+                height: folderHeight
+              }
+            }
+            const rect = (closeRect && (!isMobile || Math.abs(closeRect.width - (window.innerWidth - 24)) < 40))
+              ? closeRect
+              : (isMobile ? computeMobileStackRect() : {
+                left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
+                top: Math.round(window.innerHeight * 0.54 + safeGroupIndex * 60),
+                width: Math.min(1320, Math.round(window.innerWidth * 0.93)),
+                height: Math.round(window.innerHeight * 0.8 + remaining * 60)
+              })
 
             if (folder) {
               if (contentInnerRef.current) {

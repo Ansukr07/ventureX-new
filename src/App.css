@@ -473,12 +473,15 @@
     contain: paint layout;
   }
 
-  /* Suppress side tags during 3D flip so the 28 SVG shapes don't composite during rotation */
-  .case-folder.is-flipping .case-folder-tags {
+  /* Keep the active folder tab visible during flip so rotation matches the homepage stack; tuck away inactive peer tags */
+  .case-folder.is-flipping .case-folder-tags__page:not(.--active) {
     opacity: 0 !important;
-    width: 0 !important;
-    pointer-events: none !important;
     visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .case-folder.is-flipping .case-folder-tags {
+    pointer-events: none !important;
   }
 
   /* Suppress heavy subtrees during flipping on mobile */
