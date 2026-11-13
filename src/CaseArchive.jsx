@@ -2,7 +2,7 @@
 // The artifacts are drawn from scratch in JSX SVG (like IdCard) after two
 // reference boards: a brutalist typewritten seed-order form with measurement
 // strips ("d—ot", HSE Design School) and the Bridge of Spies prop flat-lay by
-// Annie Atkins (dossier memo, string tag, airmail envelope, fingerprint card,
+// Annie Atkins (dossier memo, string tag, airmail envelope,
 // wooden ruler). All pieces share the dossier paper + Departure Mono language
 // already used across the site, tinted with each page's --case-color.
 
@@ -19,7 +19,6 @@ const INK = '#1d1b1a'
 const PAPER = '#fffcf9'
 const MANILA = '#d8b489'
 const WOOD = '#d3ab77'
-const DARK = '#221e1a'
 const MONO = "'Departure Mono', 'IBM Plex Mono', 'Courier New', monospace"
 
 // Shared paper texture + airmail stripe pattern defs
@@ -146,35 +145,6 @@ function StampMemo({ stamp, to, from, re, accent }) {
   )
 }
 
-// Dark specimen strip with measurement arrows (d—ot reference strips).
-function SpecimenStrip({ accent }) {
-  const marks = [
-    { label: '25 CM', y: 62 },
-    { label: '20 CM', y: 138 },
-    { label: '15 CM', y: 214 },
-    { label: '10 CM', y: 290 },
-    { label: '5 CM', y: 366 }
-  ]
-  return (
-    <svg viewBox="0 0 150 430" aria-hidden="true" focusable="false">
-      <rect width="150" height="430" rx="3" fill={DARK} />
-      <rect x="8" y="8" width="134" height="30" fill={accent} />
-      <text x="75" y="27" textAnchor="middle" fontFamily={MONO} fontSize="11" fontWeight="700" fill="#fff">VX·SPEC</text>
-      {marks.map(({ label, y }) => (
-        <g key={label} transform={`translate(75 ${y})`}>
-          <g className="arc-measure">
-            <line x1="-58" y1="0" x2="58" y2="0" stroke="#f2efe9" strokeWidth="1.6" />
-            <path d="M-58 0 l8 -4 v8 z M58 0 l-8 -4 v8 z" fill="#f2efe9" />
-            <rect x="-26" y="-10" width="52" height="20" fill={DARK} stroke="#f2efe9" strokeWidth="1" />
-            <text x="0" y="4" textAnchor="middle" fontFamily={MONO} fontSize="8.5" fill="#f2efe9">{label}</text>
-          </g>
-        </g>
-      ))}
-      <text x="75" y="416" textAnchor="middle" fontFamily={MONO} fontSize="7" fill="#f2efe9" opacity=".6">DO NOT TRIM — KEEP FULL WIDTH</text>
-    </svg>
-  )
-}
-
 // Manila luggage tag on a string (Bridge of Spies reference).
 function TagCard({ exhibit, name, code }) {
   return (
@@ -241,38 +211,6 @@ function AirmailEnvelope({ accent, lines }) {
   )
 }
 
-// Ink fingerprint record card (Bridge of Spies reference). Prints develop on hover.
-function FingerprintCard({ accent, caption }) {
-  const prints = [
-    { x: 44, y: 108, r: -8 }, { x: 120, y: 104, r: 6 }, { x: 196, y: 110, r: -4 },
-    { x: 52, y: 186, r: 10 }, { x: 128, y: 182, r: -6 }, { x: 200, y: 188, r: 5 }
-  ]
-  return (
-    <svg viewBox="0 0 250 312" aria-hidden="true" focusable="false">
-      <PaperDefs id="arfp" />
-      <Paper id="arfp" w={250} h={312}>
-        <rect x="0" y="0" width="250" height="26" fill={accent} />
-        <text x="125" y="17.5" textAnchor="middle" fontFamily={MONO} fontSize="9" fontWeight="700" fill="#fff">PARTICIPANT RECORD</text>
-        <text x="24" y="46" fontFamily={MONO} fontSize="8" fill={INK} opacity=".78">FINGERPRINTS — ROUNDS I & II</text>
-        <line x1="24" y1="54" x2="226" y2="54" stroke={INK} strokeWidth="1" />
-        {prints.map(({ x, y, r }, i) => (
-          <g key={i} className="arc-print" transform={`translate(${x} ${y}) rotate(${r})`}>
-            {[15, 11.5, 8, 4.8, 1.8].map((rx, k) => (
-              <ellipse key={k} rx={rx} ry={rx * 1.45} fill="none" stroke="#241f1b" strokeWidth="1.05" strokeDasharray={k % 2 ? '7 2.5' : '11 2'} opacity={k === 0 ? 0.35 : 0.6} />
-            ))}
-            <path d="M-7 3 C -3 -6 4 -7 7 0" fill="none" stroke="#241f1b" strokeWidth="1.2" />
-            <text x="0" y="34" textAnchor="middle" fontFamily={MONO} fontSize="6.5" fill={INK} opacity=".55">{String(i + 1).padStart(2, '0')}</text>
-          </g>
-        ))}
-        <line x1="24" y1="234" x2="226" y2="234" stroke="rgba(29,27,26,.4)" strokeWidth="0.8" />
-        <text x="24" y="252" fontFamily={MONO} fontSize="7.5" fill={INK} opacity=".8">{caption}</text>
-        <text x="24" y="272" fontFamily={MONO} fontSize="7" fill={INK} opacity=".6">VERIFIED AT THE VENTUREX DESK, YELAHANKA</text>
-        <rect x="0" y="304" width="250" height="8" fill={accent} opacity=".85" />
-      </Paper>
-    </svg>
-  )
-}
-
 // Wooden ruler (Bridge of Spies reference).
 function ArchiveRuler() {
   const ticks = []
@@ -306,12 +244,11 @@ function ArchiveRuler() {
   )
 }
 
-// Per-page artifact sets. event-timeline is intentionally absent — that page
-// already carries its own arrival-guide tickets.
+// Per-page artifact sets. event-timeline and team are intentionally absent —
+// they carry their own reference boards (arrival-guide tickets & team evidence board).
 const PAGES = {
   'executive-overview': [
     { type: 'memo', stamp: 'APPROVED', to: 'REVIEW PANEL', from: 'E-CELL BMSIT&M', re: 'EXECUTIVE SUMMARY' },
-    { type: 'specimen' },
     { type: 'ruler' }
   ],
   'frequently-asked-questions': [
@@ -319,15 +256,8 @@ const PAGES = {
     { type: 'tag' },
     { type: 'airmail' }
   ],
-  'team': [
-    { type: 'fingerprint' },
-    { type: 'form', title: 'PERSONNEL FORM', code: 'VX-03-26' },
-    { type: 'tag' }
-  ],
   'why-participate': [
-    { type: 'memo', stamp: 'RECOMMENDED', to: 'FOUNDERS DESK', from: 'INVESTOR PANEL', re: 'WHY TAKE PART' },
-    { type: 'specimen' },
-    { type: 'fingerprint' }
+    { type: 'memo', stamp: 'RECOMMENDED', to: 'FOUNDERS DESK', from: 'INVESTOR PANEL', re: 'WHY TAKE PART' }
   ],
   'for-founders': [
     { type: 'form', title: 'FOUNDER SLIP', code: 'VX-05-26' },
@@ -335,7 +265,6 @@ const PAGES = {
     { type: 'tag' }
   ],
   'about-venturex': [
-    { type: 'fingerprint' },
     { type: 'memo', stamp: 'ARCHIVED', to: 'THE RECORDS ROOM', from: 'E-CELL BMSIT&M', re: 'ABOUT THE FILE' },
     { type: 'ruler' }
   ]
@@ -344,10 +273,9 @@ const PAGES = {
 const EXHIBITS = {
   'executive-overview': ['EXHIBIT 01', 'Executive Overview', 'VX·EO·26'],
   'frequently-asked-questions': ['EXHIBIT 02', 'FAQs', 'VX·FA·26'],
-  'team': ['EXHIBIT 03', 'The Team', 'VX·TE·26'],
-  'why-participate': ['EXHIBIT 04', 'Why Participate', 'VX·WP·26'],
-  'for-founders': ['EXHIBIT 05', 'For Founders', 'VX·FF·26'],
-  'about-venturex': ['EXHIBIT 06', 'About VentureX', 'VX·AB·26']
+  'why-participate': ['EXHIBIT 03', 'Why Participate', 'VX·WP·26'],
+  'for-founders': ['EXHIBIT 04', 'For Founders', 'VX·FF·26'],
+  'about-venturex': ['EXHIBIT 05', 'About VentureX', 'VX·AB·26']
 }
 
 const ENVELOPE_LINES = {
@@ -362,14 +290,10 @@ function Artifact({ item, entry }) {
       return <FormSheet title={item.title} code={item.code} accent={accent} />
     case 'memo':
       return <StampMemo stamp={item.stamp} to={item.to} from={item.from} re={item.re} accent={accent} />
-    case 'specimen':
-      return <SpecimenStrip accent={accent} />
     case 'tag':
       return <TagCard exhibit={exhibit} name={name} code={code} />
     case 'airmail':
       return <AirmailEnvelope accent={accent} lines={ENVELOPE_LINES[entry.slug] || ['VENTUREX DESK, E-CELL BMSIT&M', 'AVALAHALLI · YELAHANKA', 'BENGALURU 560064']} />
-    case 'fingerprint':
-      return <FingerprintCard accent={accent} caption={name.toUpperCase() + ' — RECORD ON FILE'} />
     case 'ruler':
       return <ArchiveRuler />
     default:
@@ -378,7 +302,7 @@ function Artifact({ item, entry }) {
 }
 
 export default function CaseArchive({ entry }) {
-  if (entry.slug === 'event-timeline') return null
+  if (entry.slug === 'event-timeline' || entry.slug === 'team') return null
   const items = PAGES[entry.slug] || [
     { type: 'memo', stamp: 'FILED', to: 'RECORDS ROOM', from: 'E-CELL BMSIT&M', re: entry.name },
     { type: 'tag' }

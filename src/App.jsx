@@ -542,11 +542,42 @@ const teamDomains = [
   ] }
 ]
 
-// Red string tying down each domain row of the evidence board: a taut strand
-// runs under every domain heading from the left gutter to the right, then the
-// string descends behind the photos to the next row. Measured with offsetTop
-// chains so the pattern stays put even while the board's entrance transform
-// is still settling.
+// Cubic Bézier curve between p1 and p2 with natural catenary gravity droop / lateral bow
+function bezierCatenary(p1, p2, options = {}) {
+  const { sag = 0, bow = 0, bend = 0 } = options
+  const dx = p2.x - p1.x
+  const dy = p2.y - p1.y
+  const dist = Math.hypot(dx, dy)
+  const isHorizontal = Math.abs(dx) >= Math.abs(dy) * 0.75
+  const autoSag = sag !== 0 ? sag : isHorizontal ? Math.min(32, Math.max(10, Math.abs(dx) * 0.05)) : Math.min(22, Math.max(6, dist * 0.03))
+  const autoBow = bow !== 0 ? bow : (isHorizontal ? 0 : (dx >= 0 ? -1 : 1) * Math.min(28, Math.max(6, dist * 0.05)))
+  const cp1x = p1.x + dx * 0.32 + autoBow * 0.4 + bend
+  const cp1y = p1.y + dy * 0.22 + autoSag
+  const cp2x = p1.x + dx * 0.68 - autoBow * 0.4 + bend
+  const cp2y = p1.y + dy * 0.78 + autoSag
+  return `C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
+}
+
+// Single continuous C-loop curve between two pins across rows with a completely smooth, rounded apex (no corners/cusps)
+function bezierLoop(p1, p2, targetApex) {
+  const x0 = p1.x
+  const y0 = p1.y
+  const x1 = p2.x
+  const y1 = p2.y
+  const cpX = (targetApex - 0.125 * (x0 + x1)) / 0.75
+  const dy = y1 - y0
+  const cp1 = { x: cpX, y: y0 + dy * 0.08 }
+  const cp2 = { x: cpX, y: y1 - dy * 0.04 }
+  return `C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${x1.toFixed(1)} ${y1.toFixed(1)}`
+}
+
+function segmentPath(p1, p2, options = {}) {
+  return `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} ` + bezierCatenary(p1, p2, options)
+}
+
+// Organic investigative red-thread web connecting the evidence corkboard:
+// Multi-strand, catenary-drooping curves weaving through domain headings,
+// photo clusters, pushpins, and the central briefing note.
 function TeamThread() {
   const anchorRef = useRef(null)
   const [geometry, setGeometry] = useState(null)
@@ -561,18 +592,56 @@ function TeamThread() {
         setGeometry(null)
         return
       }
-      const strands = heads.map(head => {
-        const domain = head.offsetParent
-        const domainTop = domain && domain !== board ? domain.offsetTop : 0
-        return domainTop + head.offsetTop + head.offsetHeight + 14
+      const domains = Array.from(board.querySelectorAll('.team-domain'))
+      const domainData = heads.map((head, idx) => {
+        const domain = domains[idx] || head.closest('.team-domain') || head.offsetParent
+        let domainTop = 0
+        let curr = domain
+        while (curr && curr !== board) {
+          domainTop += curr.offsetTop
+          curr = curr.offsetParent
+        }
+        const headTop = domainTop + head.offsetTop + head.offsetHeight + 14
+        const domainHeight = domain ? domain.offsetHeight : 320
+        const midY = headTop + Math.max(60, (domainHeight - head.offsetHeight) * 0.48)
+        return { headY: headTop, midY }
       })
+
       let start = null
       const note = board.querySelector('.team-evidence__note')
       if (note) {
-        // drop from the note's bottom-left corner, clear of the title text
-        start = { x: note.offsetLeft + 16, y: note.offsetTop + note.offsetHeight + 8 }
+        let noteTop = 0
+        let noteLeft = 0
+        let curr = note
+        while (curr && curr !== board) {
+          noteTop += curr.offsetTop
+          noteLeft += curr.offsetLeft
+          curr = curr.offsetParent
+        }
+        start = { x: noteLeft + 24, y: noteTop + note.offsetHeight - 8 }
       }
-      setGeometry({ width: anchor.offsetWidth, height: anchor.offsetHeight, strands, start })
+
+      let loupe = null
+      const loupeEl = board.querySelector('.team-evidence__loupe')
+      if (loupeEl) {
+        let loupeTop = 0
+        let loupeLeft = 0
+        let curr = loupeEl
+        while (curr && curr !== board) {
+          loupeTop += curr.offsetTop
+          loupeLeft += curr.offsetLeft
+          curr = curr.offsetParent
+        }
+        loupe = { x: loupeLeft + loupeEl.offsetWidth * 0.45, y: loupeTop + loupeEl.offsetHeight * 0.45 }
+      }
+
+      setGeometry({
+        width: anchor.offsetWidth,
+        height: anchor.offsetHeight,
+        domains: domainData,
+        start,
+        loupe
+      })
     }
     measure()
     window.addEventListener('resize', measure)
@@ -584,38 +653,135 @@ function TeamThread() {
     }
   }, [])
 
-  const gutter = 26
-  const leftX = gutter
-  const rightX = geometry ? geometry.width - gutter : 0
-  const d = geometry
-    ? (geometry.start
-        ? `M ${geometry.start.x.toFixed(1)} ${geometry.start.y.toFixed(1)} L ${leftX} ${geometry.strands[0].toFixed(1)} `
-        : `M ${leftX} ${geometry.strands[0].toFixed(1)} `) +
-      geometry.strands
-        .map((y, i) => `L ${rightX} ${y.toFixed(1)}` + (i < geometry.strands.length - 1 ? ` L ${leftX} ${geometry.strands[i + 1].toFixed(1)}` : ''))
-        .join(' ')
-    : null
-  const pins = geometry
-    ? geometry.strands.flatMap(y => [
-        { x: leftX, y },
-        { x: rightX, y }
-      ])
-    : []
+  let paths = null
+  let pins = []
+
+  if (geometry && geometry.domains && geometry.domains.length > 0) {
+    const W = geometry.width
+    const gutter = Math.max(16, Math.min(32, W * 0.03))
+    const L = gutter
+    const R = W - gutter
+    const d = geometry.domains
+
+    const hY = (i, fallback) => d[i]?.headY ?? fallback
+
+    const notePin = geometry.start || { x: W * 0.14, y: 110 }
+
+    // Domain evidence pushpin hubs
+    const p0_M = { x: W * 0.44, y: hY(0, 140) + 10 }
+
+    const p1_M2 = { x: W * 0.72, y: hY(1, 460) + 10 }
+    const p1_hub = { x: W * 0.34, y: hY(1, 460) + 10 }
+
+    const p2_hub = { x: W * 0.46, y: hY(2, 780) + 10 }
+
+    const p3_hub2 = { x: W * 0.68, y: hY(3, 1140) + 10 }
+    const p3_hub1 = { x: W * 0.28, y: hY(3, 1140) + 10 }
+
+    const e_hub = { x: W * 0.52, y: hY(4, 1560) + 10 }
+
+    const cr_hub = { x: W * 0.38, y: hY(5, 1940) + 10 }
+
+    const co_hub = { x: W * 0.50, y: hY(6, 2260) + 10 }
+    const co_end = { x: W * 0.36, y: Math.min(geometry.height - 30, (d[6]?.midY ?? 2400) + 32) }
+
+    // Continuous primary cord weaving smoothly from pin to pin with organic C-loops at the sides (zero sharp corners)
+    let primary = `M ${notePin.x.toFixed(1)} ${notePin.y.toFixed(1)}`
+    // Note down to Domain 0
+    primary += ' ' + bezierCatenary(notePin, p0_M, { sag: 36, bow: -10 })
+    // Loop around right margin: Domain 0 (p0_M) -> Tech (p1_M2)
+    primary += ' ' + bezierLoop(p0_M, p1_M2, R)
+    // Across Tech heading: p1_M2 -> p1_hub (the 3-thread junction pin)
+    primary += ' ' + bezierCatenary(p1_M2, p1_hub, { sag: 22 })
+    // Loop around left margin: Tech (p1_hub) -> Design (p2_hub)
+    primary += ' ' + bezierLoop(p1_hub, p2_hub, L)
+    // Loop around right margin: Design (p2_hub) -> Marketing (p3_hub2)
+    primary += ' ' + bezierLoop(p2_hub, p3_hub2, R)
+    // Across Marketing heading: p3_hub2 -> p3_hub1
+    primary += ' ' + bezierCatenary(p3_hub2, p3_hub1, { sag: 22 })
+    // Loop around left margin: Marketing (p3_hub1) -> Events & Ops (e_hub)
+    primary += ' ' + bezierLoop(p3_hub1, e_hub, L)
+    // Loop around right margin: Events & Ops (e_hub) -> Corporate Relations (cr_hub)
+    primary += ' ' + bezierLoop(e_hub, cr_hub, R)
+    // Loop around left margin: Corporate Relations (cr_hub) -> Content (co_hub)
+    primary += ' ' + bezierLoop(cr_hub, co_hub, L)
+    // Final tie-off to bottom anchor pin
+    primary += ' ' + bezierCatenary(co_hub, co_end, { bow: -26, sag: 28 })
+
+    // Secondary cross-connecting investigation web (anchored at both ends with red pushpins)
+    const crossSegments = [
+      segmentPath(notePin, p1_hub, { sag: 28, bow: -14 }),
+      segmentPath(p0_M, p2_hub, { sag: 26, bow: 12 }),
+      segmentPath(p1_hub, p3_hub2, { sag: 30, bow: 16 }),
+      segmentPath(p2_hub, e_hub, { sag: 24, bow: -12 }),
+      segmentPath(p3_hub1, cr_hub, { sag: 28, bow: 14 }),
+      segmentPath(e_hub, co_hub, { sag: 26, bow: -10 }),
+      segmentPath(co_hub, co_end, { sag: 18, bow: 8 })
+    ]
+
+    // Accent tension links (dashed cord with pushpins anchoring each end)
+    const accentSegments = [
+      segmentPath(p0_M, p1_hub, { bow: 20, sag: 22 }),
+      segmentPath(p1_M2, p3_hub1, { bow: -30, sag: 34 }),
+      segmentPath(p2_hub, e_hub, { bow: 26, sag: 30 }),
+      segmentPath(p3_hub2, cr_hub, { bow: -24, sag: 28 })
+    ]
+
+    paths = {
+      primary,
+      cross: crossSegments.join(' '),
+      accent: accentSegments.join(' ')
+    }
+
+    // Only authentic red pushpins at key evidence hubs and junctions;
+    // all corners are purely curved loops with no pins or sharp vertices.
+    pins = [
+      { ...notePin, red: true },
+      { ...p0_M, red: true },
+      { ...p1_hub, red: true },
+      { ...p1_M2, red: true },
+      { ...p2_hub, red: true },
+      { ...p3_hub1, red: true },
+      { ...p3_hub2, red: true },
+      { ...e_hub, red: true },
+      { ...cr_hub, red: true },
+      { ...co_hub, red: true },
+      { ...co_end, red: true }
+    ]
+  }
+
   return (
     <>
       <span ref={anchorRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} aria-hidden="true" />
-      {geometry && (
+      {paths && (
         <svg
           className="team-evidence__thread"
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          <path d={d} />
+          {/* Depth contact shadows */}
+          <g className="team-evidence__thread-shadows">
+            <path d={paths.primary} className="thread-shadow" />
+            <path d={paths.cross} className="thread-shadow" />
+            <path d={paths.accent} className="thread-shadow thread-shadow--dashed" />
+          </g>
+
+          {/* Crimson evidence yarns */}
+          <g className="team-evidence__thread-strands">
+            <path d={paths.cross} className="thread-cross" />
+            <path d={paths.accent} className="thread-accent" />
+            <path d={paths.primary} className="thread-primary" />
+          </g>
         </svg>
       )}
       {pins.map((pin, i) => (
-        <i key={i} className="team-evidence__pin" style={{ left: pin.x + 'px', top: pin.y + 'px' }} aria-hidden="true" />
+        <i
+          key={i}
+          className={'team-evidence__pin' + (pin.red ? ' team-evidence__pin--red' : '')}
+          style={{ left: pin.x.toFixed(1) + 'px', top: pin.y.toFixed(1) + 'px' }}
+          aria-hidden="true"
+        />
       ))}
     </>
   )
@@ -1656,8 +1822,8 @@ function FilePage({
               )}
               {activeEntry.slug === 'team' && <TeamEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
-              {/* Pinned archive extras after both reference boards; event-timeline keeps its own tickets */}
-              <CaseArchive entry={activeEntry} />
+              {/* Pinned archive extras; team and event-timeline carry their own dedicated boards */}
+              {activeEntry.slug !== 'team' && activeEntry.slug !== 'event-timeline' && <CaseArchive entry={activeEntry} />}
             </div>
           </div>
         </div>
