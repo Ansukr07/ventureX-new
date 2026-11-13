@@ -466,13 +466,6 @@
     pointer-events: none;
   }
 
-  /* Clip and isolate subtree paint during the 3D flip */
-  .case-folder.is-flipping .case-folder__inner {
-    max-height: 100vh;
-    overflow: hidden;
-    contain: paint layout;
-  }
-
   /* Keep the active folder tab visible during flip so rotation matches the homepage stack; tuck away inactive peer tags */
   .case-folder.is-flipping .case-folder-tags__page:not(.--active) {
     opacity: 0 !important;
@@ -484,29 +477,16 @@
     pointer-events: none !important;
   }
 
-  /* Suppress heavy subtrees during flipping on mobile */
-  .case-folder.is-flipping .case-archive,
-  .case-folder.is-flipping .extra-photos,
-  .case-folder.is-flipping .projects,
-  .case-folder.is-flipping .team-evidence {
-    visibility: hidden !important;
-  }
-
   .case-folder__cover {
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     will-change: transform;
-    max-height: 100vh;
-    transform: translateZ(0) rotateY(-180deg);
-    -webkit-transform: translateZ(0) rotateY(-180deg);
   }
 
   .case-folder__cover__front,
   .case-folder__cover__back {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
   }
 
   /* Replace GPU-intensive 250px blur box-shadow on mobile with a crisp lightweight shadow */

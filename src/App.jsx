@@ -380,10 +380,9 @@ function Home({
 
     const targetRect = selected ? selected.getBoundingClientRect() : null
 
-    // Exact Dct Home leave animation (0.6s desktop / 0.38s mobile)
-    const isMobile = window.innerWidth <= 768
+    // Exact Dct Home leave animation (0.6s smooth easing)
     const tl = gsap.timeline({
-      defaults: { duration: isMobile ? 0.38 : 0.6, ease: 'power2.out' },
+      defaults: { duration: 0.6, ease: 'power2.out' },
       onComplete: () => {
         if (onSelectCase) {
           onSelectCase(groupIndex, pageIndex, item, targetRect)
@@ -393,10 +392,10 @@ function Home({
       }
     })
 
-    tl.to('.hero-title', { y: '2rem', opacity: 0, duration: isMobile ? 0.25 : 0.45 }, 0.05)
-    tl.to(unselected, { yPercent: 120, duration: isMobile ? 0.38 : 0.6, stagger: isMobile ? 0.04 : 0.08, ease: 'power2.in' }, 0)
+    tl.to('.hero-title', { y: '2rem', opacity: 0, duration: 0.45 }, 0.05)
+    tl.to(unselected, { yPercent: 120, duration: 0.6, stagger: 0.06, ease: 'power2.in' }, 0)
     if (inactivePeerTabs.length > 0) {
-      tl.to(inactivePeerTabs, { yPercent: 110, duration: isMobile ? 0.25 : 0.4, ease: 'power2.in' }, 0)
+      tl.to(inactivePeerTabs, { yPercent: 110, duration: 0.35, ease: 'power2.in' }, 0)
     }
     if (desc) tl.to(desc, { opacity: 0, duration: 0.15 }, 0)
     if (cat) tl.to(cat, { opacity: 0, duration: 0.15 }, 0)
@@ -646,7 +645,8 @@ function TeamThread() {
     measure()
     window.addEventListener('resize', measure)
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measure())
-    const settleTimer = window.setTimeout(measure, 600)
+    // Wait until after the 1.5s open animation completes before re-measuring to prevent forced reflows during rotation
+    const settleTimer = window.setTimeout(measure, 1800)
     return () => {
       window.removeEventListener('resize', measure)
       window.clearTimeout(settleTimer)
@@ -1281,7 +1281,7 @@ function FilePage({
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
     const items = document.querySelectorAll(
-      '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item'
+      '.project-gallery, .extra-photos, .team-evidence, .case-id-card, .case-archive'
     )
     const folder = folderRef.current
 
@@ -1345,8 +1345,9 @@ function FilePage({
       folder.style.transform = ''
       folder.style.zIndex = ''
 
-      const openDuration = isMobile ? 0.85 : 1.5
-      const openEase = isMobile ? 'power2.inOut' : 'power3.inOut'
+      // Unhurried, luxurious 1.5s duration with power3.inOut easing (Mosby kct exact signature)
+      const openDuration = 1.5
+      const openEase = 'power3.inOut'
 
       const tl = gsap.timeline({
         defaults: { duration: openDuration, ease: openEase },
@@ -1361,43 +1362,28 @@ function FilePage({
       }, 0)
 
       // 2. Cover shadow peaks and fades
-      const shadowPeakTime = isMobile ? 0.16 : 0.25
-      const shadowPeakDuration = isMobile ? 0.22 : 0.35
-      const shadowFadeTime = isMobile ? 0.38 : 0.6
-      const shadowFadeDuration = isMobile ? 0.2 : 0.3
-
-      tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: shadowPeakDuration, ease: openEase }, shadowPeakTime)
-      tl.to(coverShadow, { opacity: 0, duration: shadowFadeDuration, ease: openEase }, shadowFadeTime)
+      tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: openEase }, 0.25)
+      tl.to(coverShadow, { opacity: 0, duration: 0.3, ease: openEase }, 0.6)
 
       // 3. Inner lined notebook page swings into view at 0.35s (rotate: -6deg -> 0deg, y: 55px -> 0px)
-      const paperTime = isMobile ? 0.22 : 0.35
-      const paperDuration = isMobile ? 0.45 : 0.6
-      tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: paperDuration, ease: 'power3.out' }, paperTime)
+      tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.35)
 
       // 4. Header title characters shutter reveal from left at 0.65s (xPercent: -150 -> 0, stagger: 0.025s)
-      const charsTime = isMobile ? 0.38 : 0.65
-      const charsDuration = isMobile ? 0.42 : 0.65
-      const charsStagger = isMobile ? 0.015 : 0.025
-      tl.to(chars, { xPercent: 0, opacity: 1, duration: charsDuration, stagger: charsStagger, ease: 'power2.out' }, charsTime)
+      tl.to(chars, { xPercent: 0, opacity: 1, duration: 0.65, stagger: 0.025, ease: 'power2.out' }, 0.65)
 
       // 5. Inactive side tags slide up into place at 0.85s (matches inspo kct: original-transitions.js:68)
-      const tagsTime = isMobile ? 0.45 : 0.85
-      const tagsDuration = isMobile ? 0.45 : 0.75
-      tl.set('.case-folder-tags', { clearProps: 'width,opacity' }, tagsTime)
       if (inactiveTags.length > 0) {
         tl.to(inactiveTags, {
           yPercent: 0,
           opacity: 1,
-          duration: tagsDuration,
+          duration: 0.75,
           ease: 'power3.out',
           clearProps: 'yPercent,opacity'
-        }, tagsTime)
+        }, 0.85)
       }
 
-      // 6. Scrapbook items rise up at 1.0s (y: 50vh -> 0)
-      const itemsTime = isMobile ? 0.55 : 1.0
-      const itemsDuration = isMobile ? 0.35 : 0.5
-      tl.to(items, { y: 0, opacity: 1, duration: itemsDuration, ease: 'power3.out' }, itemsTime)
+      // 6. Scrapbook containers rise up at 1.0s (y: 50vh -> 0)
+      tl.to(items, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 1.0)
 
       // 7. Morph folder from rotated stack position to upright case view
       Flip.from(state, {
@@ -1572,19 +1558,19 @@ function FilePage({
           gsap.to(inactivePeerTags, { yPercent: 110, opacity: 0, duration: 0.15, ease: 'power2.in' })
         }
 
-        // 2. Exact Mosby Rct pattern: quickly drop inner scrapbook items first (0.16s mobile / 0.22s desktop),
+        // 2. Exact Mosby Rct pattern: quickly drop inner scrapbook containers first (0.2s),
         // so the folder rotating back into the stack is virtually empty, eliminating mobile GPU fill-rate lag.
-        const dropDuration = isMobile ? 0.16 : 0.22
         gsap.to(items, {
           y: '50vh',
           opacity: 0,
-          duration: dropDuration,
+          duration: 0.2,
           ease: 'power2.in',
           onComplete: () => {
             gsap.set(cover, { visibility: 'visible' })
 
-            const closeDuration = isMobile ? 0.85 : 1.25
-            const closeEase = isMobile ? 'power2.inOut' : 'power3.inOut'
+            // Unhurried, luxurious 1.5s duration with power3.inOut easing (Mosby Rct exact signature)
+            const closeDuration = 1.5
+            const closeEase = 'power3.inOut'
 
             const closeTl = gsap.timeline({
               paused: true,
@@ -1595,15 +1581,9 @@ function FilePage({
               }
             })
 
-            const charsDropDuration = isMobile ? 0.45 : 0.65
-            const charsStagger = isMobile ? 0.008 : 0.015
-            const shadowDuration1 = isMobile ? 0.45 : 0.65
-            const shadowDuration2 = isMobile ? 0.25 : 0.35
-            const shadowTime2 = isMobile ? 0.45 : 0.65
-
-            closeTl.to(chars, { xPercent: -150, opacity: 0, duration: charsDropDuration, stagger: charsStagger, ease: 'power2.inOut' }, 0)
-            closeTl.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: shadowDuration1, ease: closeEase }, 0)
-            closeTl.to(frontShadow, { opacity: 0, duration: shadowDuration2, ease: closeEase }, shadowTime2)
+            closeTl.to(chars, { xPercent: -150, opacity: 0, duration: 1.15, stagger: 0.035, ease: 'power2.inOut' }, 0)
+            closeTl.fromTo(frontShadow, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: closeEase }, 0)
+            closeTl.to(frontShadow, { opacity: 0, duration: 0.4, ease: closeEase }, 1.0)
             closeTl.to(cover, {
               rotateY: 0,
               duration: closeDuration,
@@ -1669,10 +1649,10 @@ function FilePage({
     }
   }, [onRegisterGoHome, targetRect, remaining, safeGroupIndex])
 
-  // Scrapbook Parallax & Micro-rotations (rotate: ±2deg)
+  // Scrapbook Parallax & Micro-rotations (rotate: ±2deg on desktop; disabled on mobile to maximize frame rate)
   useEffect(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (motion.matches) return
+    if (motion.matches || window.innerWidth <= 768) return
 
     const targets = document.querySelectorAll(
       '.portrait, .project-photo, .project-note, .extra-photos img'
