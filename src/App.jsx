@@ -1600,58 +1600,60 @@ function FilePage({
                 </div>
               </article>
 
-              <div className={'projects' + (activeEntry.timeline ? ' projects--timeline' : '')}>
-                {activeEntry.notes.map((note, i) => {
-                  const noteTheme = NOTE_COLORS[i % NOTE_COLORS.length]
-                  const noteRot = NOTE_ROTATIONS[i % NOTE_ROTATIONS.length]
-                  return (
-                    <section className={'project project-' + i} key={i}>
-                      <div className="project-photos">
-                        {activeEntry.images.slice(1 + i * 2, 3 + i * 2).map((src, j) => (
-                          <a
-                            href={src}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={`project-photo ${j === 0 ? 'photo-plan' : 'photo-feature'}`}
-                            key={src}
-                            aria-label={'Open image of ' + note.title}
-                          >
-                            <img src={src} alt={'Illustrative image for ' + note.title + ' ' + (j + 1)} loading="lazy" />
-                            {j === 1 && (
-                              <span className="photo-clip-wrapper" aria-hidden="true">
-                                <PaperclipFull className="photo-paperclip" />
-                              </span>
-                            )}
-                          </a>
-                        ))}
-                      </div>
-                      <div
-                        className={`project-note note-${noteTheme.name}`}
-                        style={{
-                          '--note-bg': noteTheme.bg,
-                          '--note-color': noteTheme.text,
-                          '--note-rot': `${noteRot}deg`
-                        }}
-                      >
-                        <span className="note-clip-wrapper" aria-hidden="true">
-                          <PaperclipTop className="note-paperclip" />
-                        </span>
-                        <span className="note-texture-overlay" aria-hidden="true" />
-                        <h2>{note.title}</h2>
-                        <p>{note.text}</p>
-                      </div>
-                    </section>
-                  )
-                })}
+              {(activeEntry.notes?.length > 0 || (activeEntry.images?.length || 0) > (activeEntry.notes?.length || 0) * 2 + 1) && (
+                <div className={'projects' + (activeEntry.timeline ? ' projects--timeline' : '')}>
+                  {activeEntry.notes.map((note, i) => {
+                    const noteTheme = NOTE_COLORS[i % NOTE_COLORS.length]
+                    const noteRot = NOTE_ROTATIONS[i % NOTE_ROTATIONS.length]
+                    return (
+                      <section className={'project project-' + i} key={i}>
+                        <div className="project-photos">
+                          {activeEntry.images.slice(1 + i * 2, 3 + i * 2).map((src, j) => (
+                            <a
+                              href={src}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={`project-photo ${j === 0 ? 'photo-plan' : 'photo-feature'}`}
+                              key={src}
+                              aria-label={'Open image of ' + note.title}
+                            >
+                              <img src={src} alt={'Illustrative image for ' + note.title + ' ' + (j + 1)} loading="lazy" />
+                              {j === 1 && (
+                                <span className="photo-clip-wrapper" aria-hidden="true">
+                                  <PaperclipFull className="photo-paperclip" />
+                                </span>
+                              )}
+                            </a>
+                          ))}
+                        </div>
+                        <div
+                          className={`project-note note-${noteTheme.name}`}
+                          style={{
+                            '--note-bg': noteTheme.bg,
+                            '--note-color': noteTheme.text,
+                            '--note-rot': `${noteRot}deg`
+                          }}
+                        >
+                          <span className="note-clip-wrapper" aria-hidden="true">
+                            <PaperclipTop className="note-paperclip" />
+                          </span>
+                          <span className="note-texture-overlay" aria-hidden="true" />
+                          <h2>{note.title}</h2>
+                          <p>{note.text}</p>
+                        </div>
+                      </section>
+                    )
+                  })}
 
-                {activeEntry.images.length > activeEntry.notes.length * 2 + 1 && (
-                  <div className="extra-photos">
-                    {activeEntry.images.slice(1 + activeEntry.notes.length * 2).map((src, i) => (
-                      <img key={src} src={src} alt={'Illustrative image for ' + activeEntry.name + ' ' + (i + 1)} loading="lazy" />
-                    ))}
-                  </div>
-                )}
-              </div>
+                  {activeEntry.images.length > activeEntry.notes.length * 2 + 1 && (
+                    <div className="extra-photos">
+                      {activeEntry.images.slice(1 + activeEntry.notes.length * 2).map((src, i) => (
+                        <img key={src} src={src} alt={'Illustrative image for ' + activeEntry.name + ' ' + (i + 1)} loading="lazy" />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
               {activeEntry.slug === 'team' && <TeamEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
               {/* Pinned archive extras after both reference boards; event-timeline keeps its own tickets */}
