@@ -168,8 +168,8 @@
   }
   .desk-item-earphones {
     top: clamp(140px, 21vh, 195px);
-    right: -75px;
-    width: 135px;
+    right: -80px;
+    width: 125px;
     opacity: 0.8;
   }
   .desk-item-paper-top {
@@ -209,8 +209,8 @@
   }
   .desk-item-earphones {
     top: clamp(130px, 21vh, 185px);
-    right: -70px;
-    width: 120px;
+    right: -75px;
+    width: 115px;
     opacity: 0.75;
   }
   .desk-item-paper-top {

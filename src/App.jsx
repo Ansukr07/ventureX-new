@@ -407,8 +407,15 @@ function Home({
       <section className="intro" id="hero">
         <h1 className="hero-title">VENTURE X</h1>
         <div className="intro-event" aria-label="VentureX event overview">
-          <p className="intro-event__lead">Student startup pitching meets investor connection.</p>
-          <p>By E-Cell, BMSIT&amp;M. Open to student teams across India (3–4 members). Free online round — the top 30 teams pitch live in Bengaluru on 30 December 2026.</p>
+          <p className="intro-event__lead">
+            <span>Student startup pitching</span>{' '}
+            <span>meets investor connection.</span>
+          </p>
+          <p className="intro-event__desc">
+            <span>By E-Cell, BMSIT&amp;M. Open to student teams across</span>{' '}
+            <span>India (3–4 members). Free online round — the top 30</span>{' '}
+            <span>teams pitch live in Bengaluru on 30 December 2026.</span>
+          </p>
         </div>
       </section>
       <section className="archive">
