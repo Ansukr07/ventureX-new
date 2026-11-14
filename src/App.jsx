@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
+import { Analytics } from '@vercel/analytics/react'
 import gsap from 'gsap'
 import { Flip } from 'gsap/Flip'
 import cases from './cases.json'
@@ -2212,6 +2213,7 @@ export default function App() {
 
   return (
     <>
+      <Analytics />
       <GreenMat />
       <div className="app">
       <Header
