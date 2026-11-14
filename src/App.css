@@ -511,10 +511,12 @@
   overflow: hidden !important;
 }
 
-/* Keep the active folder tab visible during flip so rotation matches the homepage stack; tuck away inactive peer tags */
+.case-folder.is-flipping .case-folder__inner > * {
+  will-change: transform, opacity;
+}
+
+/* Inactive peer tabs during flipping are controlled smoothly by GSAP (set tucked at yPercent: 110, opacity: 0, sliding in at 0.85s) */
 .case-folder.is-flipping .case-folder-tags__page:not(.--active) {
-  opacity: 0 !important;
-  visibility: hidden !important;
   pointer-events: none !important;
 }
 

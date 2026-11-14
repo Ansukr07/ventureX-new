@@ -1280,16 +1280,20 @@ function FilePage({
 
     const cover = coverRef.current
     const coverShadow = coverShadowRef.current
+    const frontShadow = frontShadowRef.current
     const chars = document.querySelectorAll('.case-hero-title .case-char')
     const activeTag = document.querySelector('.case-folder-tags__page.--active .case-folder-tag.is-visible')
     const inactiveTags = document.querySelectorAll('.case-folder-tags__page:not(.--active) .case-folder-tag.is-visible')
     const paper = paperRef.current
+
+    const isMobile = window.innerWidth <= 768
     const items = document.querySelectorAll(
-      '.project-gallery, .extra-photos, .team-evidence, .case-id-card, .case-archive'
+      isMobile
+        ? '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
+        : '.projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
     )
     const folder = folderRef.current
 
-    const isMobile = window.innerWidth <= 768
     const computeMobileStackRect = () => {
       const stackWidth = window.innerWidth - 24
       const openSize = Math.round(window.innerHeight * 0.75)
@@ -1326,19 +1330,7 @@ function FilePage({
       folder.style.transform = `translateY(${rect.height}px) rotate(-90deg)`
       folder.style.zIndex = '100'
 
-      // Prepare initial states: cover shut at 0deg
-      folder.style.setProperty('--turning-front-color', activeEntry.color)
-      folder.style.setProperty('--turning-back-color', activeEntry.color)
-      gsap.set(cover, { rotateY: 0, transformOrigin: 'left center', visibility: 'visible' })
-      gsap.set(chars, { xPercent: -150, opacity: 0 })
-      // Active tag is attached and visible from t = 0 (rotates smoothly with folder matching homepage stack)
-      if (activeTag) gsap.set(activeTag, { yPercent: 0, opacity: 1 })
-      // Inactive peer tabs start tucked behind folder edge
-      if (inactiveTags.length > 0) gsap.set(inactiveTags, { yPercent: 110, opacity: 0 })
-      gsap.set(paper, { rotate: -6, y: 55, opacity: 0.2 })
-      gsap.set(items, { y: '50vh', opacity: 0 })
-
-      // 2. Capture Flip state from exact stack position
+      // 2. Capture Flip state from exact stack position immediately (before dirtying DOM with sub-element setters)
       const state = Flip.getState(folder, { props: 'transform,backgroundColor' })
 
       // 3. Clear inline styles so folder computes its in-flow detail layout
@@ -1350,6 +1342,24 @@ function FilePage({
       folder.style.transformOrigin = ''
       folder.style.transform = ''
       folder.style.zIndex = ''
+
+      // 4. Prepare initial states for sub-elements:
+      folder.style.setProperty('--turning-front-color', activeEntry.color)
+      folder.style.setProperty('--turning-back-color', activeEntry.color)
+      gsap.set(cover, { rotateY: 0, transformOrigin: 'left center', visibility: 'visible' })
+      gsap.set(chars, { xPercent: -150, opacity: 0 })
+      // Active tag is attached and visible from t = 0 (rotates smoothly with folder matching homepage stack)
+      if (activeTag) gsap.set(activeTag, { yPercent: 0, opacity: 1 })
+      // Inactive peer tabs start tucked behind folder edge
+      if (inactiveTags.length > 0) gsap.set(inactiveTags, { yPercent: 110, opacity: 0 })
+      if (isMobile) {
+        // Exact Mosby kct pattern: keep entire folder interior tucked at 50vh & opacity 0 during 3D flip
+        // Eliminates rasterization overhead, compositor invalidations, and fill-rate bottlenecks on mobile GPUs
+        gsap.set(items, { y: '50vh', opacity: 0 })
+      } else {
+        gsap.set(paper, { rotate: -6, y: 55, opacity: 0.2 })
+        gsap.set(items, { y: '50vh', opacity: 0 })
+      }
 
       // Unhurried, luxurious 1.5s duration with power3.inOut easing (Mosby kct exact signature)
       const openDuration = 1.5
@@ -1367,12 +1377,19 @@ function FilePage({
         ease: openEase
       }, 0)
 
-      // 2. Cover shadow peaks and fades
-      tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: openEase }, 0.25)
-      tl.to(coverShadow, { opacity: 0, duration: 0.3, ease: openEase }, 0.6)
+      // 2. Cover shadow peaks and fades (on mobile, use lightweight frontShadow matching closing animation to eliminate fill-rate jank)
+      if (!isMobile) {
+        tl.fromTo(coverShadow, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: openEase }, 0.25)
+        tl.to(coverShadow, { opacity: 0, duration: 0.3, ease: openEase }, 0.6)
+      } else if (frontShadow) {
+        tl.fromTo(frontShadow, { opacity: 0 }, { opacity: 0.8, duration: 0.35, ease: openEase }, 0.25)
+        tl.to(frontShadow, { opacity: 0, duration: 0.3, ease: openEase }, 0.6)
+      }
 
-      // 3. Inner lined notebook page swings into view at 0.35s (rotate: -6deg -> 0deg, y: 55px -> 0px)
-      tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.35)
+      // 3. Inner lined notebook page swings into view at 0.35s (desktop only; mobile keeps folder empty during 3D flip for silky 60fps)
+      if (!isMobile) {
+        tl.to(paper, { rotate: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.35)
+      }
 
       // 4. Header title characters shutter reveal from left at 0.65s (xPercent: -150 -> 0, stagger: 0.025s)
       tl.to(chars, { xPercent: 0, opacity: 1, duration: 0.65, stagger: 0.025, ease: 'power2.out' }, 0.65)
@@ -1388,23 +1405,23 @@ function FilePage({
         }, 0.85)
       }
 
-      // 6. Scrapbook containers rise up at 1.0s (y: 50vh -> 0)
-      tl.to(items, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 1.0)
+      // 6. Scrapbook containers (plus dossier paper on mobile) rise up at 1.0s (y: 50vh -> 0)
+      // Matches authentic Mosby kct: u.from('.scrapbook-item', { y: '50vh', opacity: 0, duration: 0.5 }, 1.0)
+      tl.to(items, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', clearProps: 'y,opacity' }, 1.0)
 
       // 7. Morph folder from rotated stack position to upright case view
-      Flip.from(state, {
+      tl.add(Flip.from(state, {
         duration: openDuration,
         ease: openEase,
-        onStart: () => {
-          tl.play()
-        },
         onComplete: () => {
           if (folder) folder.classList.remove('is-flipping')
           if (cover) gsap.set(cover, { visibility: 'visible', rotateY: -180 })
           gsap.set('.case-folder-tags', { clearProps: 'all' })
           if (onInitialOpenComplete) onInitialOpenComplete()
         }
-      })
+      }), 0)
+
+      tl.play()
     } else {
       if (onInitialOpenComplete) onInitialOpenComplete()
     }
@@ -1539,7 +1556,7 @@ function FilePage({
         const frontShadow = frontShadowRef.current
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const items = document.querySelectorAll(
-          '.project, .extra-photos, .team-evidence, .case-id-card, .case-archive .archive-item, .paper.dossier'
+          '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
         )
         const folder = folderRef.current
         const folderInner = folder?.querySelector('.case-folder__inner')
