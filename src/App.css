@@ -499,6 +499,29 @@
  transform-origin: top left;
 }
 
+/* While flipping/rotating between stack and case view, constrain inner content
+   to folder bounds so vertical scrapbook layout doesn't bleed out horizontally */
+.case-folder.is-flipping {
+  pointer-events: none !important;
+}
+
+.case-folder.is-flipping .case-folder__inner {
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Keep the active folder tab visible during flip so rotation matches the homepage stack; tuck away inactive peer tags */
+.case-folder.is-flipping .case-folder-tags__page:not(.--active) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.case-folder.is-flipping .case-folder-tags {
+  pointer-events: none !important;
+}
+
 /* Phones: Mobile optimization for smooth, hardware-accelerated 3D folder & cover rotation.
    Preserves 3D context without flattening raster bottlenecks, promotes GPU composite layers,
    caps rotating cover to viewport, suppresses off-screen heavy subtrees and side SVG tags. */
@@ -514,21 +537,6 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     transform-origin: top left;
-  }
-
-  .case-folder.is-flipping {
-    pointer-events: none;
-  }
-
-  /* Keep the active folder tab visible during flip so rotation matches the homepage stack; tuck away inactive peer tags */
-  .case-folder.is-flipping .case-folder-tags__page:not(.--active) {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  .case-folder.is-flipping .case-folder-tags {
-    pointer-events: none !important;
   }
 
   .case-folder__cover {

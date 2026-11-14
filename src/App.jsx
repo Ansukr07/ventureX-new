@@ -1314,7 +1314,7 @@ function FilePage({
       })
 
     if (folder) {
-      if (isMobile) folder.classList.add('is-flipping')
+      folder.classList.add('is-flipping')
 
       // 1. Initial stack placement: matches clicked folder on Home down to the sub-pixel
       folder.style.position = 'fixed'
