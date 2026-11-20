@@ -73,9 +73,16 @@ for (const page of pages) {
   }
   const appHtml = renderToString(React.createElement(App, { initialPath: page.route }))
   html = html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
-  const target = page.route === '/' ? path.join(output, 'index.html') : path.join(output, page.route, 'index.html')
-  await mkdir(path.dirname(target), { recursive: true })
-  await writeFile(target, html)
+  if (page.route === '/') {
+    await writeFile(path.join(output, 'index.html'), html)
+  } else {
+    const dirTarget = path.join(output, page.route, 'index.html')
+    const cleanTarget = path.join(output, `${page.route}.html`)
+    await mkdir(path.dirname(dirTarget), { recursive: true })
+    await mkdir(path.dirname(cleanTarget), { recursive: true })
+    await writeFile(dirTarget, html)
+    await writeFile(cleanTarget, html)
+  }
 }
 
 const notFoundAppHtml = renderToString(React.createElement(App, { initialPath: '/404' }))
