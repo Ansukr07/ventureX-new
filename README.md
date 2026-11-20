@@ -11,7 +11,7 @@ npm run dev
 
 ## Production build and search pages
 
-The production build runs Vite and then `scripts/prerender.mjs`. The script writes initial event content and page-specific titles/descriptions to `dist/index.html`, each `dist/cases/<slug>/index.html`, and `dist/about/index.html`. React replaces that initial content after loading.
+The production build runs Vite and then `scripts/prerender.mjs`. The script builds a server bundle and prerenders the complete React component tree and page-specific metadata for each public route (`/`, `/about`, `/guide/pitch-video`, `/cases/<slug>`, and `404.html`) to static HTML in `dist`. On page load, React hydrates the prerendered markup with `hydrateRoot` in `src/main.jsx` for instant interactivity without layout shifts or content replacement.
 
 Set `SITE_URL` to the final HTTPS origin when building for production. It must contain only the origin, without a path or trailing slash. Example: `SITE_URL=https://venturex.example npm run build` (PowerShell: `$env:SITE_URL='https://venturex.example'; npm run build`). This adds canonical URLs, `og:url`, `dist/sitemap.xml`, and `dist/robots.txt`. Do not set a placeholder domain in a deployed build.
 

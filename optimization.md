@@ -38,7 +38,7 @@ These are repository findings, not a production crawl. The production domain, ho
 | Finding | Evidence | Priority |
 | --- | --- | --- |
 | Architecture metadata in the initial HTML | Resolved: `index.html` now describes VentureX and its student startup pitching event | Done in source; verify after deployment |
-| Empty initial React root | Resolved: `scripts/prerender.mjs` emits meaningful initial HTML for ten public routes | Done in build; verify direct production responses |
+| Empty initial React root / lack of hydration | Resolved: `scripts/prerender.mjs` prerenders the complete React component tree for all public routes, and `src/main.jsx` hydrates with `hydrateRoot` | Done in build; verify direct production responses |
 | Client-only metadata | Resolved: build output includes per-route titles/descriptions; client navigation updates metadata | Done in build; verify route crawls after deployment |
 | Essential facts buried in dossiers | Partially resolved: homepage summary and pitch guide are available as ordinary HTML; no registration action can be linked until organizer provides its URL | Registration destination TBA |
 | No sitemap or robots file in repository | Resolved conditionally: build emits both when `SITE_URL` is set | Requires final domain and host deployment |

@@ -1,5 +1,8 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
+import { build } from 'vite'
+import React from 'react'
+import { renderToString } from 'react-dom/server'
 import cases from '../src/cases.json' with { type: 'json' }
 import about from '../src/about.json' with { type: 'json' }
 
@@ -34,24 +37,27 @@ const finaleEvent = {
   },
   organizer: { '@type': 'Organization', name: 'Entrepreneurship Cell, BMS Institute of Technology & Management' }
 }
-const eventLinks = [
-  ['Event overview', '/cases/executive-overview'],
-  ['Dates and event timeline', '/cases/event-timeline'],
-  ['Eligibility and fees: FAQs', '/cases/frequently-asked-questions'],
-  ['Pitch video preparation guide', '/guide/pitch-video'],
-  ['About the organizers', '/about']
-]
-const eventNavigation = `<nav aria-label="VentureX event information"><ul>${eventLinks.map(([label, route]) => `<li><a href="${route}">${escape(label)}</a></li>`).join('')}</ul></nav>`
+
 const pages = [
-  { route: '/', title: 'VentureX | Student Startup Pitching & Investor Connect, Bengaluru', description: summary,
-    html: `<h1>VentureX — Student Startup Pitching &amp; Investor Connect</h1><p>${escape(summary)}</p><p>Teams of 3–4 students can submit a startup pitch and video demonstration online. The top 30 teams advance to the in-person finale at BMS Institute of Technology &amp; Management, Yelahanka, Bengaluru.</p><p>Registration details will be published when confirmed.</p>${eventNavigation}` },
-  ...cases.map(item => ({ route: `/cases/${item.slug}`, title: `VentureX ${item.name} | Student Startup Pitching`, description: item.bio?.[0] || summary,
-    html: `<h1>${escape(item.name)} — VentureX</h1>${(item.bio || []).map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}${item.faqs ? item.faqs.map(faq => `<h2>${escape(faq.question)}</h2><p>${escape(faq.answer)}</p>`).join('') : ''}${item.timeline ? `<ol>${item.timeline.map(step => `<li><strong>${escape(step.date)}: ${escape(step.title)}</strong> ${escape(step.text)}</li>`).join('')}</ol>` : ''}${eventNavigation}<p><a href="/">Explore VentureX</a></p>` })),
-  { route: '/about', title: 'About VentureX | E-Cell BMSIT&M', description: about.intro,
-    html: `<h1>About VentureX</h1><p>${escape(about.intro)}</p>${(about.sections || []).map(section => `<section><h2>${escape(section.heading)}</h2>${section.paragraphs.map(p => `<p>${escape(p)}</p>`).join('')}</section>`).join('')}${eventNavigation}<p><a href="/">Explore VentureX</a></p>` },
-  { route: '/guide/pitch-video', title: 'How to Prepare a VentureX Startup Pitch Video | Student Guide', description: 'Prepare your VentureX startup pitch and video demonstration. Learn the confirmed team rules and what to present before the online preliminary round.',
-    html: `<h1>Prepare your VentureX pitch</h1><p>The first round is online: student teams submit a startup pitch and video demonstration for investor evaluation. The round is free to enter.</p><h2>Build a clear case for your venture</h2><p>Explain the problem your startup addresses, what your product or idea does, and why it matters. Show the venture’s value, business model, and market potential in terms your audience can understand.</p><h2>Check your team</h2><p>Teams must have 3–4 students enrolled in accredited higher education institutions across India. Cross-college and interdepartmental teams are permitted. VentureX welcomes ideas from any industry.</p><h2>Know what happens next</h2><p>The top 30 teams advance to the live investor pitching round in Yelahanka, Bengaluru, on 30 December 2026.</p><h2>Submission details</h2><p>Registration link, deadline, video length, file format, submission method, and judging criteria are TBA.</p>${eventNavigation}` }
+  { route: '/', title: 'VentureX | Student Startup Pitching & Investor Connect, Bengaluru', description: summary },
+  ...cases.map(item => ({ route: `/cases/${item.slug}`, title: `VentureX ${item.name} | Student Startup Pitching`, description: item.bio?.[0] || summary })),
+  { route: '/about', title: 'About VentureX | E-Cell BMSIT&M', description: about.intro },
+  { route: '/guide/pitch-video', title: 'How to Prepare a VentureX Startup Pitch Video | Student Guide', description: 'Prepare your VentureX startup pitch and video demonstration. Learn the confirmed team rules and what to present before the online preliminary round.' }
 ]
+
+// Build temporary SSR bundle into node_modules/.cache/ssr-build to prerender React component tree
+const ssrDir = path.resolve('node_modules/.cache/ssr-build')
+await build({
+  build: {
+    ssr: 'src/App.jsx',
+    outDir: ssrDir,
+    emptyOutDir: true
+  },
+  logLevel: 'warn'
+})
+
+const appModulePath = path.join(ssrDir, 'App.js')
+const { default: App } = await import('file://' + appModulePath.replace(/\\/g, '/'))
 
 const setTag = (html, selector, replacement) => html.replace(selector, replacement)
 for (const page of pages) {
@@ -65,14 +71,21 @@ for (const page of pages) {
     const event = { ...finaleEvent, ...(siteUrl ? { url: `${siteUrl}/cases/event-timeline` } : {}) }
     html = html.replace('</head>', `<script type="application/ld+json">${JSON.stringify(event).replace(/</g, '\\u003c')}</script></head>`)
   }
-  html = html.replace('<div id="root"></div>', `<div id="root"><main class="seo-fallback">${page.html}</main></div>`)
+  const appHtml = renderToString(React.createElement(App, { initialPath: page.route }))
+  html = html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
   const target = page.route === '/' ? path.join(output, 'index.html') : path.join(output, page.route, 'index.html')
   await mkdir(path.dirname(target), { recursive: true })
   await writeFile(target, html)
 }
-await writeFile(path.join(output, '404.html'), template.replace('<div id="root"></div>', '<div id="root"><main><h1>Page not found</h1><p><a href="/">Return to VentureX</a></p></main></div>').replace('</head>', '<meta name="robots" content="noindex" /></head>'))
+
+const notFoundAppHtml = renderToString(React.createElement(App, { initialPath: '/404' }))
+const notFoundHtml = setTag(template, /<title>[^<]*<\/title>/, '<title>Page not found | VentureX</title>')
+  .replace('<div id="root"></div>', `<div id="root">${notFoundAppHtml}</div>`)
+  .replace('</head>', '<meta name="robots" content="noindex" /></head>')
+await writeFile(path.join(output, '404.html'), notFoundHtml)
+
 if (siteUrl) {
   await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(page => `<url><loc>${escape(siteUrl + page.route)}</loc></url>`).join('')}</urlset>`)
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`)
 }
-console.log(`Prepared ${pages.length} public routes${siteUrl ? ' with sitemap and canonical URLs' : ' (set SITE_URL for canonical URLs and sitemap)'}.`)
+console.log(`Prerendered and hydrated ${pages.length} public routes${siteUrl ? ' with sitemap and canonical URLs' : ' (set SITE_URL for canonical URLs and sitemap)'}.`)

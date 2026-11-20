@@ -11,6 +11,8 @@ import CaseArchive from './CaseArchive'
 import GreenMat from './GreenMat'
 import './App.css'
 
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
 gsap.registerPlugin(Flip)
 if (typeof window !== 'undefined') {
   window.gsap = gsap
@@ -18,6 +20,7 @@ if (typeof window !== 'undefined') {
 }
 
 function setPageMetadata(title, description) {
+  if (typeof document === 'undefined' || typeof window === 'undefined') return
   document.title = title
   const setContent = (selector, attribute, value) => {
     const element = document.querySelector(selector)
@@ -44,21 +47,34 @@ const groups = [
   { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
 ]
 
-function useRoute() {
-  const [path, setPath] = useState(location.pathname)
+function normalizePath(raw) {
+  if (!raw) return '/'
+  const trimmed = raw.replace(/\/+$/, '')
+  return trimmed === '' ? '/' : trimmed
+}
+
+function useRoute(initialPath) {
+  const [path, setPath] = useState(() => {
+    if (initialPath) return normalizePath(initialPath)
+    if (typeof window !== 'undefined' && window.location) {
+      return normalizePath(window.location.pathname)
+    }
+    return '/'
+  })
   useEffect(() => {
-    const f = () => setPath(location.pathname)
-    addEventListener('popstate', f)
-    return () => removeEventListener('popstate', f)
+    const f = () => setPath(normalizePath(location.pathname))
+    window.addEventListener('popstate', f)
+    return () => window.removeEventListener('popstate', f)
   }, [])
   function go(next, scrollToTop = true) {
-    if (next !== location.pathname) {
+    const normalizedNext = normalizePath(next)
+    if (typeof location !== 'undefined' && normalizedNext !== normalizePath(location.pathname)) {
       history.pushState({}, '', next)
     }
-    if (next !== path) {
-      setPath(next)
+    if (normalizedNext !== path) {
+      setPath(normalizedNext)
     }
-    if (scrollToTop) window.scrollTo({ top: 0, behavior: 'instant' })
+    if (scrollToTop && typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' })
   }
   return [path, go]
 }
@@ -265,7 +281,7 @@ function Home({
   }, [])
 
   // Cache folder positions for pixel-perfect Flip returning
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const folders = Array.from(document.querySelectorAll('.archive .folder'))
     if (folders.length > 0 && onSaveRects) {
       onSaveRects(folders.map(f => f.getBoundingClientRect()))
@@ -273,7 +289,7 @@ function Home({
   }, [onSaveRects])
 
   // Mosby eat: Enter Home from About transition
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isEnteringFromAbout) return
     isTransitioningRef.current = true
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -305,7 +321,7 @@ function Home({
   }, [isEnteringFromAbout, onEnteringComplete])
 
   // Mosby mat: Leave Home for About transition
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isLeavingForAbout) return
     isTransitioningRef.current = true
     setIsLeaving(true)
@@ -325,7 +341,7 @@ function Home({
   }, [isLeavingForAbout, onHomeLeftForAbout])
 
   // Returning from a file keeps its folder and active page in place while sibling files and folders rise from below
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isEntering) {
       isTransitioningRef.current = true
       const folders = Array.from(document.querySelectorAll('.archive .folder'))
@@ -586,7 +602,7 @@ function TeamThread() {
   const anchorRef = useRef(null)
   const [geometry, setGeometry] = useState(null)
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const anchor = anchorRef.current
     if (!anchor) return
     const board = anchor.parentElement
@@ -1239,7 +1255,7 @@ function FilePage({
   }, [activeEntry.slug])
 
   // Mosby aat: Case-to-About leave animation
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isLeavingForAbout) return
     const tl = gsap.timeline({
       defaults: { duration: 1, ease: 'power3.inOut' },
@@ -1256,7 +1272,7 @@ function FilePage({
   }, [isLeavingForAbout, onCaseLeftForAbout])
 
   // Mosby _ct: About-to-Case enter animation
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isEnteringFromAbout) return
     window.scrollTo({ top: 0, behavior: 'instant' })
     const tl = gsap.timeline({
@@ -1274,7 +1290,7 @@ function FilePage({
   }, [isEnteringFromAbout, onCaseEnterComplete])
 
   // Initial Open Animation (1.5s power3.inOut with 90deg Flip)
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isInitialOpen || hasFlippedRef.current) return
     hasFlippedRef.current = true
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -2036,7 +2052,7 @@ function About({ onClose, onRegisterClose }) {
   }, [onRegisterClose])
 
   // Mosby Enter Phase (KE)
-  useLayoutEffect(() => {
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
     const tl = gsap.timeline({
       defaults: { duration: 1, ease: 'power3.out' }
@@ -2115,8 +2131,8 @@ function About({ onClose, onRegisterClose }) {
   )
 }
 
-export default function App() {
-  const [path, go] = useRoute()
+export default function App({ initialPath } = {}) {
+  const [path, go] = useRoute(initialPath)
   const [pageTransition, setPageTransition] = useState(null)
   const [isHomeEnteringFromAbout, setIsHomeEnteringFromAbout] = useState(false)
   const [isCaseEnteringFromAbout, setIsCaseEnteringFromAbout] = useState(false)
