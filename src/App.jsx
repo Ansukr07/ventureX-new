@@ -1722,7 +1722,7 @@ function FilePage({
             </div>
 
             {/* Open Folder Inner Content */}
-            <div className={"case-folder__inner" + (activeEntry.slug === 'team' ? ' case-folder__inner--team' : '') + (activeEntry.slug === 'gallery' ? ' case-folder__inner--gallery' : '') + (activeEntry.slug === 'executive-overview' ? ' case-folder__inner--executive-overview' : '')}>
+            <div className={"case-folder__inner" + (activeEntry.slug === 'team' ? ' case-folder__inner--team' : '') + (activeEntry.slug === 'gallery' ? ' case-folder__inner--gallery' : '') + (activeEntry.slug === 'executive-overview' ? ' case-folder__inner--executive-overview' : '') + (activeEntry.slug === 'for-founders' ? ' case-folder__inner--for-founders' : '')}>
               <article className="paper dossier" ref={paperRef}>
                 <div className="holes" aria-hidden="true">
                   {Array.from({ length: 9 }, (_, i) => (
