@@ -248,5 +248,34 @@
       "Format:",
       "Online submissions followed by a live pitching round"
     ]
+  },
+  {
+    "slug": "gallery",
+    "name": "Gallery",
+    "color": "#d79a35",
+    "images": [
+      "/classic-1/gallery/DSC00645 (1).JPG",
+      "/classic-1/gallery/DSC01608.JPG",
+      "/classic-1/gallery/DSC01610.JPG",
+      "/classic-1/gallery/DSC01627.JPG",
+      "/classic-1/gallery/DSC01635.JPG",
+      "/classic-1/gallery/DSC01644.JPG",
+      "/classic-1/gallery/footimg6 (1).webp",
+      "/classic-1/gallery/image.png",
+      "/classic-1/gallery/IMG_4387.jpg",
+      "/classic-1/gallery/IMG_4392.jpg",
+      "/classic-1/gallery/IMG_4403.jpg",
+      "/classic-1/gallery/IMG_4412.jpg"
+    ],
+    "notes": [],
+    "bio": [
+      "A visual archive of VentureX: the people, places, and shared moments that bring the event to life."
+    ],
+    "info": [
+      "Collection:",
+      "VentureX event archive",
+      "Photographs:",
+      "12 selected moments"
+    ]
   }
 ]

@@ -42,7 +42,7 @@ function setPageMetadata(title, description) {
 }
 
 const groups = [
-  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
+  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 7, 5] },
   { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions, through the Top 30 shortlist, to the live investor pitching round.', files: [1] },
   { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
   { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
@@ -953,6 +953,58 @@ function TeamEvidenceBoard() {
             </div>
           </section>
         ))}
+      </div>
+    </section>
+  )
+}
+
+const galleryImages = [
+  ['DSC00645 (1).JPG', 'VentureX gathering'],
+  ['DSC01608.JPG', 'VentureX moment'],
+  ['DSC01610.JPG', 'VentureX moment'],
+  ['DSC01627.JPG', 'VentureX moment'],
+  ['DSC01635.JPG', 'VentureX moment'],
+  ['DSC01644.JPG', 'VentureX moment'],
+  ['footimg6 (1).webp', 'VentureX moment'],
+  ['image.png', 'VentureX moment'],
+  ['IMG_4387.jpg', 'VentureX moment'],
+  ['IMG_4392.jpg', 'VentureX moment'],
+  ['IMG_4403.jpg', 'VentureX moment'],
+  ['IMG_4412.jpg', 'VentureX moment']
+].map(([file, alt]) => ({
+  src: '/classic-1/gallery/' + file.replace(/\.(jpe?g|png)$/i, '.webp'),
+  fullSrc: '/classic-1/gallery/' + file,
+  alt
+}))
+
+function GalleryEvidenceBoard() {
+  useEffect(() => {
+    setPageMetadata(
+      'Gallery | VentureX',
+      'Explore moments from VentureX through the official event photo archive.'
+    )
+  }, [])
+
+  return (
+    <section className="gallery-evidence" aria-label="VentureX gallery">
+      <div className="gallery-evidence__board">
+        <header className="gallery-evidence__header">
+          <h2>VentureX in frames</h2>
+        </header>
+        <div className="gallery-evidence__grid">
+          {galleryImages.map((image, index) => (
+            <a
+              className={'gallery-photo gallery-photo--' + ((index % 5) + 1)}
+              href={image.fullSrc}
+              target="_blank"
+              rel="noreferrer"
+              key={image.src}
+            >
+              <span className="gallery-photo__number">{String(index + 1).padStart(2, '0')}</span>
+              <img src={image.src} alt={image.alt} loading="lazy" decoding="async" fetchPriority="low" />
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -1889,7 +1941,7 @@ function FilePage({
             </div>
 
             {/* Open Folder Inner Content */}
-            <div className={"case-folder__inner" + (activeEntry.slug === 'team' ? ' case-folder__inner--team' : '')}>
+            <div className={"case-folder__inner" + (activeEntry.slug === 'team' ? ' case-folder__inner--team' : '') + (activeEntry.slug === 'gallery' ? ' case-folder__inner--gallery' : '')}>
               <article className="paper dossier" ref={paperRef}>
                 <div className="holes" aria-hidden="true">
                   {Array.from({ length: 9 }, (_, i) => (
@@ -1898,7 +1950,7 @@ function FilePage({
                 </div>
                 <div className="dossier-left">
                   <div className="portrait">
-                    <img src={activeEntry.images[0]} alt={'Illustrative image for ' + activeEntry.name} />
+                    <img src={activeEntry.images[0]} alt={'Illustrative image for ' + activeEntry.name} loading={activeEntry.slug === 'gallery' ? 'lazy' : undefined} decoding="async" />
                     <span className="portrait-clip-wrapper" aria-hidden="true">
                       <PaperclipTop className="portrait-paperclip" />
                     </span>
@@ -1955,7 +2007,7 @@ function FilePage({
                               key={src}
                               aria-label={'Open image of ' + note.title}
                             >
-                              <img src={src} alt={'Illustrative image for ' + note.title + ' ' + (j + 1)} loading="lazy" />
+                              <img src={src} alt={'Illustrative image for ' + note.title + ' ' + (j + 1)} loading="lazy" decoding="async" />
                               {j === 1 && (
                                 <span className="photo-clip-wrapper" aria-hidden="true">
                                   <PaperclipFull className="photo-paperclip" />
@@ -1986,16 +2038,17 @@ function FilePage({
                   {activeEntry.images.length > activeEntry.notes.length * 2 + 1 && (
                     <div className="extra-photos">
                       {activeEntry.images.slice(1 + activeEntry.notes.length * 2).map((src, i) => (
-                        <img key={src} src={src} alt={'Illustrative image for ' + activeEntry.name + ' ' + (i + 1)} loading="lazy" />
+                        <img key={src} src={src} alt={'Illustrative image for ' + activeEntry.name + ' ' + (i + 1)} loading="lazy" decoding="async" />
                       ))}
                     </div>
                   )}
                 </div>
               )}
               {activeEntry.slug === 'team' && <TeamEvidenceBoard />}
+              {activeEntry.slug === 'gallery' && <GalleryEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
-              {/* Pinned archive extras; team and event-timeline carry their own dedicated boards */}
-              {activeEntry.slug !== 'team' && activeEntry.slug !== 'event-timeline' && <CaseArchive entry={activeEntry} />}
+              {/* Pinned archive extras; dedicated boards carry their own visual archive */}
+              {activeEntry.slug !== 'team' && activeEntry.slug !== 'gallery' && activeEntry.slug !== 'event-timeline' && <CaseArchive entry={activeEntry} />}
             </div>
           </div>
         </div>
