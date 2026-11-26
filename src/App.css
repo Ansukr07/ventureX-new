@@ -2174,59 +2174,236 @@
   letter-spacing: .28em;
 }
 @media(max-width:700px) {
-  .arrival-guide { width: calc(100% - 28px); margin: 0 auto 38px; }
-  .arrival-guide__heading h2 { font-size: clamp(32px, 9vw, 48px); }
-  .arrival-guide__heading > p:last-child { font-size: 12px; }
-  .arrival-ticket-layout { display: flex; flex-direction: column; aspect-ratio: auto; }
+  .case-folder.has-arrival-guide { min-height: auto; }
+  .arrival-guide { width: 100%; margin: 0 auto 38px; box-sizing: border-box; }
+  .arrival-guide__heading h2 { font-size: clamp(28px, 8vw, 42px); line-height: 1.1; }
+  .arrival-guide__heading > p:last-child { font-size: 12px; line-height: 1.5; }
+  .arrival-ticket-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    aspect-ratio: auto;
+    perspective: none;
+    transform: none;
+  }
   .arrival-boarding-pass {
     position: relative;
     left: auto;
     right: auto;
+    top: auto;
     width: 100%;
     aspect-ratio: auto;
-    min-height: 306px;
+    min-height: auto;
     padding: 0;
+    clip-path: none;
+    border-radius: 8px;
+    background: #3e3e3e;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transform: none !important;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-  .arrival-boarding-pass__content { position: relative; inset: auto; padding: 24px 9% 24px 11%; }
+  .arrival-boarding-pass::before {
+    left: 12px;
+    opacity: 0.45;
+  }
+  .arrival-boarding-pass__content {
+    position: relative;
+    inset: auto;
+    padding: 20px 16px 18px 22px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
   .arrival-boarding-pass__fineprint { display: none; }
   .arrival-boarding-pass::after { display: none; }
-  .arrival-boarding-pass__topline { flex-wrap: wrap; gap: 16px; }
-  .arrival-boarding-pass__brandname { font-size: 15px; }
-  .arrival-boarding-pass__routecodes { font-size: 9px; }
-  .arrival-boarding-pass__barcode { width: min(100%, 220px); }
-  .arrival-boarding-pass__serial { font-size: 11px; }
-  .arrival-boarding-pass__route { gap: 10px; margin-top: 30px; }
-  .arrival-boarding-pass__leg > span { font-size: 8px; padding-bottom: 5px; }
-  .arrival-boarding-pass__legstack { gap: 4px; }
-  .arrival-boarding-pass__legstack strong { font-size: clamp(30px, 9vw, 44px); }
-  .arrival-boarding-pass__legstack small { font-size: 9px; }
-  .arrival-boarding-pass__arrows { font-size: 20px; }
-  .arrival-boarding-pass__meta { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
-  .arrival-boarding-pass__meta > div:last-child { grid-column: 1 / -1; }
-  .arrival-boarding-pass__meta span { font-size: 8px; }
-  .arrival-boarding-pass__meta b { font-size: 10px; }
-  .arrival-boarding-pass__stars { font-size: 9px; letter-spacing: .18em; }
-  .arrival-boarding-pass__stub { display: none; }
+  .arrival-boarding-pass__topline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+  .arrival-boarding-pass__brand {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .arrival-boarding-pass__logo {
+    width: 6px;
+    height: 32px;
+    border-radius: 2px;
+    background: #eeeeee;
+    flex-shrink: 0;
+  }
+  .arrival-boarding-pass__brandname {
+    font-size: 13px;
+    line-height: 1.25;
+    margin: 0 0 3px;
+    white-space: nowrap;
+  }
+  .arrival-boarding-pass__routecodes {
+    font-size: 9px;
+    opacity: 0.7;
+    letter-spacing: 0.08em;
+  }
+  .arrival-boarding-pass__passtk {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    max-width: 135px;
+  }
+  .arrival-boarding-pass__barcode {
+    width: 100%;
+    max-width: 125px;
+    height: 28px;
+  }
+  .arrival-boarding-pass__serial {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+    white-space: nowrap;
+  }
+  .arrival-boarding-pass__route {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    padding: 12px 0;
+    border-top: 1px dashed rgba(238, 238, 238, 0.25);
+    border-bottom: 1px dashed rgba(238, 238, 238, 0.25);
+  }
+  .arrival-boarding-pass__leg {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    min-width: 0;
+  }
+  .arrival-boarding-pass__leg:last-child {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .arrival-boarding-pass__leg > span {
+    font-size: 8px;
+    padding-bottom: 0;
+    letter-spacing: 0.08em;
+    opacity: 0.65;
+    white-space: nowrap;
+  }
+  .arrival-boarding-pass__legstack {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .arrival-boarding-pass__leg:last-child .arrival-boarding-pass__legstack {
+    align-items: flex-end;
+  }
+  .arrival-boarding-pass__legstack strong {
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+  .arrival-boarding-pass__legstack small {
+    font-size: 8.5px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+  }
+  .arrival-boarding-pass__arrows {
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    flex-shrink: 0;
+    padding: 0 4px;
+  }
+  .arrival-boarding-pass__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    margin-top: 0;
+  }
+  .arrival-boarding-pass__meta > div:last-child {
+    grid-column: 1 / -1;
+  }
+  .arrival-boarding-pass__meta span {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    opacity: 0.65;
+  }
+  .arrival-boarding-pass__meta b {
+    font-size: 9.5px;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+  }
+  .arrival-boarding-pass__stars {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-align: center;
+    margin: 4px 0 0;
+    opacity: 0.45;
+  }
+  .arrival-boarding-pass__stub {
+    display: none;
+  }
   .arrival-receipt {
     position: relative;
     top: auto;
     left: auto;
-    width: 88%;
+    width: 100%;
     min-height: 0;
     aspect-ratio: auto;
-    padding: 14px 18px 18px;
-    margin: -14px 0 0 4%;
+    padding: 16px 16px 34px;
+    margin: 0;
+    box-sizing: border-box;
+    transform: none !important;
   }
   .arrival-receipt h3 { font-size: 14px; }
   .arrival-receipt li b { font-size: 10px; }
-  .arrival-receipt li span { font-size: 9px; line-height: 1.3; }
-  .arrival-receipt__fineprint { font-size: 8px; line-height: 1.3; }
+  .arrival-receipt li span { font-size: 9.5px; line-height: 1.35; }
+  .arrival-receipt__fineprint { font-size: 8px; line-height: 1.35; padding-bottom: 4px; }
   .arrival-city-ticket {
     position: relative;
     right: auto;
     top: auto;
-    width: 88%;
-    margin: 18px 4% 4px auto;
+    left: auto;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: auto;
+    height: 200px;
+    transform: none !important;
+    overflow: hidden;
+  }
+  .arrival-city-ticket__tag {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 180px;
+    aspect-ratio: 326 / 482;
+    transform: rotate(-90deg) !important;
+    transform-origin: center center;
+    flex-shrink: 0;
+  }
+  .arrival-city-ticket__cell span {
+    font-size: 6px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .arrival-city-ticket__cell b {
+    font-size: 8px;
+    white-space: nowrap;
   }
 }
 @media(max-width:700px){
