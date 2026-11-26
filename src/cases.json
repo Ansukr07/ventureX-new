@@ -4,9 +4,9 @@
     "name": "Executive Overview",
     "color": "#699ad1",
     "images": [
-      "https://images.unsplash.com/photo-1590098563686-06ab8778a6a7?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1758691736067-b309ee3ef7b9?auto=format&fit=crop&w=1200&q=85"
+      "/classic-1/gallery/footimg6 (1).webp",
+      "/classic-1/gallery/image.webp",
+      "/classic-1/gallery/DSC01644.webp"
     ],
     "notes": [
       {
@@ -87,7 +87,9 @@
     "name": "FAQs",
     "color": "#f5cf51",
     "images": [
-      "https://images.unsplash.com/photo-1758691736067-b309ee3ef7b9?auto=format&fit=crop&w=1200&q=85"
+      "/classic-1/gallery/20251212_161438-960.webp",
+      "/classic-1/gallery/IMG_4392.webp",
+      "/classic-1/gallery/IMG_4403.webp"
     ],
     "notes": [],
     "bio": [
@@ -156,7 +158,7 @@
     "name": "Why Participate",
     "color": "#803f98",
     "images": [
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85"
+      "/classic-1/gallery/DSC01950.webp"
     ],
     "notes": [],
     "bio": [
@@ -185,9 +187,9 @@
     "name": "For Founders",
     "color": "#803f98",
     "images": [
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1590098563686-06ab8778a6a7?auto=format&fit=crop&w=1200&q=85"
+      "/classic-1/gallery/DSC00645 (1).webp",
+      "/classic-1/gallery/image.webp",
+      "/classic-1/gallery/DSC01644.webp"
     ],
     "notes": [
       {
@@ -214,9 +216,9 @@
     "name": "About VentureX",
     "color": "#699ad1",
     "images": [
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=85"
+      "/classic-1/gallery/20251213_022705.webp",
+      "/classic-1/gallery/DSC01924.webp",
+      "/classic-1/gallery/DSC01635.webp"
     ],
     "notes": [
       { "title": "Where Capital Meets Connection", "text": "VentureX is a national-level investor-connect program that brings promising startups and potential investors together." }
@@ -232,35 +234,6 @@
       "Entrepreneurship Cell, BMS Institute of Technology & Management",
       "Format:",
       "Online submissions followed by a live pitching round"
-    ]
-  },
-  {
-    "slug": "gallery",
-    "name": "Gallery",
-    "color": "#d79a35",
-    "images": [
-      "/classic-1/gallery/DSC00645 (1).JPG",
-      "/classic-1/gallery/DSC01608.JPG",
-      "/classic-1/gallery/DSC01610.JPG",
-      "/classic-1/gallery/DSC01627.JPG",
-      "/classic-1/gallery/DSC01635.JPG",
-      "/classic-1/gallery/DSC01644.JPG",
-      "/classic-1/gallery/footimg6 (1).webp",
-      "/classic-1/gallery/image.png",
-      "/classic-1/gallery/IMG_4387.jpg",
-      "/classic-1/gallery/IMG_4392.jpg",
-      "/classic-1/gallery/IMG_4403.jpg",
-      "/classic-1/gallery/IMG_4412.jpg"
-    ],
-    "notes": [],
-    "bio": [
-      "A visual archive of VentureX: the people, places, and shared moments that bring the event to life."
-    ],
-    "info": [
-      "Collection:",
-      "VentureX event archive",
-      "Photographs:",
-      "12 selected moments"
     ]
   }
 ]

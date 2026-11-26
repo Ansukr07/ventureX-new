@@ -244,7 +244,7 @@ function ArchiveRuler() {
   )
 }
 
-// Per-page artifact sets. event-timeline, team, gallery, frequently-asked-questions,
+// Per-page artifact sets. event-timeline, team, frequently-asked-questions,
 // about-venturex, and why-participate are absent — they do not show bottom archive items.
 const PAGES = {
   'executive-overview': [
@@ -288,7 +288,6 @@ export default function CaseArchive({ entry }) {
   if (
     entry.slug === 'event-timeline' ||
     entry.slug === 'team' ||
-    entry.slug === 'gallery' ||
     entry.slug === 'frequently-asked-questions' ||
     entry.slug === 'about-venturex' ||
     entry.slug === 'why-participate'
