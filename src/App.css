@@ -33,18 +33,6 @@
 .pitch-guide section a{color:inherit;text-decoration:underline;text-underline-offset:4px}
 .pitch-guide a:focus-visible{outline:2px solid #f4ff9c;outline-offset:4px}
 .archive{margin-top:-41vh;position:relative;z-index:2}
-
-/* While preloader is active and folders are waiting to rise */
-.home.is-preloader-waiting .hero-title,
-.home.is-preloader-waiting .intro-event {
-  opacity: 0;
-  transform: translateY(25px);
-  pointer-events: none;
-}
-.home.is-preloader-waiting .archive .folder {
-  opacity: 0;
-  pointer-events: none;
-}
 .stack{
  --row:3.75rem;--open-size:80vh;--fold-size:20vw;--tab-height:2.75rem;
  --hover-ease:cubic-bezier(.33,1,.68,1);
