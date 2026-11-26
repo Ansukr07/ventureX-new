@@ -1130,8 +1130,6 @@ function FilePage({
   onCaseEnterComplete
 }) {
   const [activeEntry, setActiveEntry] = useState(entry)
-  const [showScrollCue, setShowScrollCue] = useState(false)
-  const [scrollCueProgress, setScrollCueProgress] = useState(0)
   const isSwitchingRef = useRef(false)
   const hasFlippedRef = useRef(false)
   const cancelEasedScrollRef = useRef(null)
@@ -1163,148 +1161,6 @@ function FilePage({
   useEffect(() => {
     setPageMetadata(`VentureX ${activeEntry.name} | Student Startup Pitching`, activeEntry.bio?.[0] || 'Explore the VentureX student startup pitching event.')
   }, [activeEntry])
-
-  // At the end of a file, a deliberate extra downward scroll opens the next file.
-  useEffect(() => {
-    const bottomThreshold = 300
-    const maxDeltaPerScroll = 100
-    let overscrollAmount = 0
-    let touchStartY = null
-    let hasNavigated = false
-    let navigationTimer = null
-    let scrollFrame = 0
-    let targetScrollY = window.scrollY
-    let previousFrameTime = 0
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    // Stops an eased wheel scroll still settling, so programmatic jumps
-    // (closing to home, switching tabs) aren't dragged back by this loop.
-    const stopEasedScroll = () => {
-      if (scrollFrame) {
-        window.cancelAnimationFrame(scrollFrame)
-        scrollFrame = 0
-      }
-      previousFrameTime = 0
-      targetScrollY = window.scrollY
-    }
-    cancelEasedScrollRef.current = stopEasedScroll
-
-    const letNativeWheelHandle = event => {
-      if (event.ctrlKey || event.deltaY === 0 || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return true
-      let element = event.target instanceof Element ? event.target : event.target?.parentElement
-      if (!element || element.closest('input, textarea, select, [contenteditable="true"]')) return true
-      while (element && element !== document.body) {
-        const overflowY = window.getComputedStyle(element).overflowY
-        const canScroll = /(auto|scroll|overlay)/.test(overflowY) && element.scrollHeight > element.clientHeight + 1
-        if (canScroll) {
-          const maxScroll = element.scrollHeight - element.clientHeight
-          if ((event.deltaY < 0 && element.scrollTop > 0) || (event.deltaY > 0 && element.scrollTop < maxScroll)) return true
-        }
-        element = element.parentElement
-      }
-      return false
-    }
-
-    const easeWheelScroll = time => {
-      const scrollRoot = document.scrollingElement || document.documentElement
-      const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight)
-      targetScrollY = Math.min(targetScrollY, maxScroll)
-      const currentScrollY = window.scrollY
-      const distance = targetScrollY - currentScrollY
-      if (Math.abs(distance) < 0.7) {
-        if (distance) window.scrollTo({ top: targetScrollY, behavior: 'instant' })
-        scrollFrame = 0
-        previousFrameTime = 0
-        return
-      }
-      const elapsed = previousFrameTime ? Math.min(time - previousFrameTime, 48) : 16.67
-      previousFrameTime = time
-      const ease = 1 - Math.exp(-elapsed / 220)
-      window.scrollTo({ top: currentScrollY + distance * ease, behavior: 'instant' })
-      scrollFrame = window.requestAnimationFrame(easeWheelScroll)
-    }
-
-    const isAtBottom = () => {
-      const scrollRoot = document.scrollingElement || document.documentElement
-      const effectiveScrollTop = scrollFrame ? Math.max(scrollRoot.scrollTop, targetScrollY) : scrollRoot.scrollTop
-      return effectiveScrollTop + window.innerHeight >= scrollRoot.scrollHeight - 2
-    }
-    const reset = () => {
-      overscrollAmount = 0
-      hasNavigated = false
-      if (navigationTimer) {
-        window.clearTimeout(navigationTimer)
-        navigationTimer = null
-      }
-      setShowScrollCue(false)
-      setScrollCueProgress(0)
-    }
-    const addDownwardIntent = amount => {
-      const atBottom = isAtBottom()
-      if (!atBottom) {
-        reset()
-        return
-      }
-      if (amount <= 0) {
-        if (amount < 0) reset()
-        return
-      }
-
-      setShowScrollCue(true)
-      overscrollAmount = Math.min(bottomThreshold, overscrollAmount + Math.min(amount, maxDeltaPerScroll))
-      const progress = overscrollAmount / bottomThreshold
-      setScrollCueProgress(progress)
-      if (overscrollAmount >= bottomThreshold && !hasNavigated) {
-        hasNavigated = true
-        navigationTimer = window.setTimeout(() => {
-          navigationTimer = null
-          handleTabClick(null, nextCase)
-        }, 1750)
-      }
-    }
-    const onWheel = event => {
-      addDownwardIntent(event.deltaY)
-      if (reduceMotion || letNativeWheelHandle(event)) return
-      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1
-      const scrollRoot = document.scrollingElement || document.documentElement
-      const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight)
-      if (!scrollFrame) targetScrollY = window.scrollY
-      targetScrollY = Math.max(0, Math.min(maxScroll, targetScrollY + event.deltaY * unit * 0.72))
-      event.preventDefault()
-      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(easeWheelScroll)
-    }
-    const onTouchStart = event => {
-      touchStartY = event.touches[0]?.clientY ?? null
-    }
-    const onTouchMove = event => {
-      if (touchStartY === null) return
-      const nextY = event.touches[0]?.clientY
-      if (nextY === undefined) return
-      const delta = touchStartY - nextY
-      touchStartY = nextY
-      addDownwardIntent(delta)
-    }
-    const onTouchEnd = () => { touchStartY = null }
-    const onScroll = () => {
-      if (!isAtBottom()) reset()
-    }
-
-    window.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchmove', onTouchMove, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchmove', onTouchMove)
-      window.removeEventListener('touchend', onTouchEnd)
-      window.removeEventListener('scroll', onScroll)
-      if (navigationTimer) window.clearTimeout(navigationTimer)
-      if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
-      cancelEasedScrollRef.current = null
-    }
-  }, [activeEntry.slug])
 
   // Mosby aat: Case-to-About leave animation
   useIsomorphicLayoutEffect(() => {
@@ -1358,8 +1214,8 @@ function FilePage({
     const isMobile = window.innerWidth <= 768
     const items = document.querySelectorAll(
       isMobile
-        ? '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
-        : '.projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
+        ? '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-next-btn'
+        : '.projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-next-btn'
     )
     const folder = folderRef.current
 
@@ -1625,7 +1481,7 @@ function FilePage({
         const frontShadow = frontShadowRef.current
         const chars = document.querySelectorAll('.case-hero-title .case-char')
         const items = document.querySelectorAll(
-          '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-scroll-cue'
+          '.paper.dossier, .projects, .extra-photos, .team-evidence, .case-id-card, .case-archive, .case-next-btn'
         )
         const folder = folderRef.current
         const folderInner = folder?.querySelector('.case-folder__inner')
@@ -1986,36 +1842,17 @@ function FilePage({
       </aside>
     )}
 
-    {showScrollCue && (
-      <div className="case-scroll-cue" aria-hidden="true">
-        <span style={{ '--scroll-fill': `${scrollCueProgress * 100}%` }}>
-          <span className="case-scroll-cue__label">Keep scrolling<br />for the next page</span>
-        </span>
-      </div>
-    )}
-
-    {/* Floating Next Case Widget matching inspo */}
+    {/* Simple Next Button */}
     {nextCase && (
-      <aside
-        className="case-next-widget"
-        style={{ '--next-case-color': nextCase.color }}
+      <button
+        type="button"
+        className="case-next-btn"
         onClick={e => handleTabClick(e, nextCase)}
-        role="button"
-        tabIndex={0}
         aria-label={`Go to next file: ${nextCase.name}`}
-        onKeyDown={e => {
-          if (e.key === 'Enter' || e.key === ' ') handleTabClick(e, nextCase)
-        }}
       >
-        <div className="case-next-card">
-          <span className="case-next-kicker">Next File</span>
-          <h4 className="case-next-name">{nextCase.name}</h4>
-          <p className="case-next-sub">
-            {nextGroup?.label || (nextCase.notes?.[0]?.title ? nextCase.notes[0].title.split('(')[0].trim() : 'Archive Dossier')}
-          </p>
-        </div>
-        <span className="case-next-btn">Next →</span>
-      </aside>
+        <span>Next</span>
+        <span className="case-next-btn__arrow" aria-hidden="true">→</span>
+      </button>
     )}
   </>
   )
