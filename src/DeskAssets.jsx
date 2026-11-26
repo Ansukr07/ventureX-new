@@ -267,7 +267,7 @@ export function DeskAssets({ isEntering = false, isLeaving = false }) {
         }
       )
     })
-  }, [isEntering])
+  }, [])
 
   // 2. Handle Case opening exit transition
   useEffect(() => {
