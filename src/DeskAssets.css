@@ -143,77 +143,124 @@
 
 /* Responsive: Mobile Viewports (max-width: 768px) */
 @media (max-width: 768px) {
-  /* Clean perimeter framing on mobile: tuck along borders so central folders are 100% unobstructed */
   .desk-item-scissors {
-    top: 55px;
-    left: -40px;
-    width: 105px;
+    top: 14px;
+    left: 8px;
+    width: 82px;
   }
   .desk-item-sticky {
-    display: none; /* Hide sticky on mobile so top header & hero remain clear */
+    display: block;
+    top: 14px;
+    left: clamp(76px, 22vw, 112px);
+    width: 62px;
   }
   .desk-item-paperclip-sticky {
-    display: none;
-  }
-  .desk-item-glasses {
-    top: 25vh;
-    left: -45px;
-    width: 135px;
-    opacity: 0.85;
-  }
-  .desk-item-binder {
-    top: 55px;
-    right: 12px;
-    width: 70px;
-  }
-  .desk-item-earphones {
-    top: clamp(140px, 21vh, 195px);
-    right: -80px;
-    width: 125px;
-    opacity: 0.8;
+    display: block;
+    top: 8px;
+    left: clamp(118px, 34vw, 156px);
+    width: 14px;
   }
   .desk-item-paper-top {
-    top: -20px;
-    right: 80px;
-    width: 70px;
+    display: block;
+    top: 8px;
+    right: clamp(68px, 20vw, 95px);
+    width: 42px;
   }
-  .desk-item-paper-lowerleft {
-    top: 75vh;
-    left: -25px;
-    width: 75px;
+  .desk-item-binder {
+    top: 14px;
+    right: 12px;
+    width: 52px;
   }
-  .desk-item-paper-bottomright {
-    top: 78vh;
-    right: -25px;
-    width: 80px;
+  .desk-item-glasses {
+    display: block;
+    top: clamp(285px, 35vh, 335px);
+    left: 8px;
+    width: 88px;
+    opacity: 0.92;
+  }
+  .desk-item-earphones {
+    display: block;
+    top: clamp(285px, 35vh, 335px);
+    right: 8px;
+    width: 92px;
+    opacity: 0.92;
   }
   .desk-item-paperclip-right {
-    display: none;
+    display: block;
+    top: clamp(460px, 57vh, 530px);
+    right: 14px;
+    width: 15px;
+  }
+  .desk-item-paper-lowerleft {
+    top: clamp(540px, 73vh, 670px);
+    left: 12px;
+    width: 60px;
+  }
+  .desk-item-paper-bottomright {
+    top: clamp(565px, 76vh, 700px);
+    right: 12px;
+    width: 64px;
   }
 }
 
 /* Responsive: Extra Small Mobile (max-width: 480px) */
 @media (max-width: 480px) {
   .desk-item-scissors {
-    top: 48px;
-    left: -45px;
-    width: 95px;
+    top: 12px;
+    left: 6px;
+    width: 76px;
   }
-  .desk-item-binder {
-    top: 48px;
-    right: 8px;
-    width: 60px;
+  .desk-item-sticky {
+    display: block;
+    top: 12px;
+    left: clamp(68px, 20vw, 98px);
+    width: 56px;
   }
-  .desk-item-glasses {
-    display: none;
-  }
-  .desk-item-earphones {
-    top: clamp(130px, 21vh, 185px);
-    right: -75px;
-    width: 115px;
-    opacity: 0.75;
+  .desk-item-paperclip-sticky {
+    display: block;
+    top: 6px;
+    left: clamp(108px, 31vw, 140px);
+    width: 13px;
   }
   .desk-item-paper-top {
-    display: none;
+    display: block;
+    top: 6px;
+    right: clamp(62px, 18vw, 86px);
+    width: 38px;
+  }
+  .desk-item-binder {
+    top: 12px;
+    right: 10px;
+    width: 48px;
+  }
+  .desk-item-glasses {
+    display: block;
+    top: clamp(285px, 35vh, 330px);
+    left: 6px;
+    width: 82px;
+    opacity: 0.9;
+  }
+  .desk-item-earphones {
+    display: block;
+    top: clamp(285px, 35vh, 330px);
+    right: 6px;
+    width: 86px;
+    opacity: 0.9;
+  }
+  .desk-item-paperclip-right {
+    display: block;
+    top: clamp(450px, 56vh, 520px);
+    right: 12px;
+    width: 14px;
+  }
+  .desk-item-paper-lowerleft {
+    top: clamp(540px, 72vh, 660px);
+    left: 10px;
+    width: 56px;
+  }
+  .desk-item-paper-bottomright {
+    top: clamp(560px, 75vh, 690px);
+    right: 10px;
+    width: 60px;
   }
 }

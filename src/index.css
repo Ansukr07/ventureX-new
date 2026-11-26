@@ -16,6 +16,8 @@
 }
 html, body {
   cursor: var(--app-cursor);
+  overflow-x: hidden;
+  max-width: 100%;
 }
 a, button, [role="button"],
 .folder-sheet, .case-folder-tag,
