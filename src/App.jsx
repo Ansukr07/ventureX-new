@@ -1829,7 +1829,13 @@ function FilePage({
               {activeEntry.slug === 'gallery' && <GalleryEvidenceBoard />}
               {activeEntry.slug === 'event-timeline' && <ArrivalTicketGuide />}
               {/* Pinned archive extras; dedicated boards carry their own visual archive */}
-              {activeEntry.slug !== 'team' && activeEntry.slug !== 'gallery' && activeEntry.slug !== 'event-timeline' && <CaseArchive entry={activeEntry} />}
+              {activeEntry.slug !== 'team' &&
+                activeEntry.slug !== 'gallery' &&
+                activeEntry.slug !== 'event-timeline' &&
+                activeEntry.slug !== 'frequently-asked-questions' &&
+                activeEntry.slug !== 'about-venturex' && (
+                  <CaseArchive entry={activeEntry} />
+                )}
             </div>
           </div>
         </div>

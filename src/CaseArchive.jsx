@@ -244,17 +244,12 @@ function ArchiveRuler() {
   )
 }
 
-// Per-page artifact sets. event-timeline and team are intentionally absent —
-// they carry their own reference boards (arrival-guide tickets & team evidence board).
+// Per-page artifact sets. event-timeline, team, gallery, frequently-asked-questions,
+// and about-venturex are absent — they do not show bottom archive items.
 const PAGES = {
   'executive-overview': [
     { type: 'memo', stamp: 'APPROVED', to: 'REVIEW PANEL', from: 'E-CELL BMSIT&M', re: 'EXECUTIVE SUMMARY' },
     { type: 'ruler' }
-  ],
-  'frequently-asked-questions': [
-    { type: 'form', title: 'ENQUIRY LOG', code: 'VX-02-26' },
-    { type: 'tag' },
-    { type: 'airmail' }
   ],
   'why-participate': [
     { type: 'memo', stamp: 'RECOMMENDED', to: 'FOUNDERS DESK', from: 'INVESTOR PANEL', re: 'WHY TAKE PART' }
@@ -263,24 +258,16 @@ const PAGES = {
     { type: 'form', title: 'FOUNDER SLIP', code: 'VX-05-26' },
     { type: 'memo', stamp: 'TOP 30', to: 'SHORTLIST DESK', from: 'REVIEW PANEL', re: 'ROUND II ENTRY' },
     { type: 'tag' }
-  ],
-  'about-venturex': [
-    { type: 'memo', stamp: 'ARCHIVED', to: 'THE RECORDS ROOM', from: 'E-CELL BMSIT&M', re: 'ABOUT THE FILE' },
-    { type: 'ruler' }
   ]
 }
 
 const EXHIBITS = {
   'executive-overview': ['EXHIBIT 01', 'Executive Overview', 'VX·EO·26'],
-  'frequently-asked-questions': ['EXHIBIT 02', 'FAQs', 'VX·FA·26'],
   'why-participate': ['EXHIBIT 03', 'Why Participate', 'VX·WP·26'],
-  'for-founders': ['EXHIBIT 04', 'For Founders', 'VX·FF·26'],
-  'about-venturex': ['EXHIBIT 05', 'About VentureX', 'VX·AB·26']
+  'for-founders': ['EXHIBIT 04', 'For Founders', 'VX·FF·26']
 }
 
-const ENVELOPE_LINES = {
-  'frequently-asked-questions': ['ANSWERS ENCLOSED — DO NOT FOLD', 'VENTUREX DESK, E-CELL BMSIT&M', 'AVALAHALLI · YELAHANKA', 'BENGALURU 560064']
-}
+const ENVELOPE_LINES = {}
 
 function Artifact({ item, entry }) {
   const accent = entry.color
@@ -302,11 +289,15 @@ function Artifact({ item, entry }) {
 }
 
 export default function CaseArchive({ entry }) {
-  if (entry.slug === 'event-timeline' || entry.slug === 'team') return null
-  const items = PAGES[entry.slug] || [
-    { type: 'memo', stamp: 'FILED', to: 'RECORDS ROOM', from: 'E-CELL BMSIT&M', re: entry.name },
-    { type: 'tag' }
-  ]
+  if (
+    entry.slug === 'event-timeline' ||
+    entry.slug === 'team' ||
+    entry.slug === 'gallery' ||
+    entry.slug === 'frequently-asked-questions' ||
+    entry.slug === 'about-venturex'
+  ) return null
+  const items = PAGES[entry.slug]
+  if (!items || items.length === 0) return null
   return (
     <section className="case-archive" aria-hidden="true" style={{ '--case-color': entry.color }}>
       <div className="case-archive__row">
