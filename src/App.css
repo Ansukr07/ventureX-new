@@ -1138,6 +1138,72 @@
   }
 }
 
+/* Executive Overview cohesive downside flat-lay pattern */
+.case-folder__inner--executive-overview .projects {
+  padding-top: 16px;
+}
+.case-folder__inner--executive-overview .project {
+  min-height: auto;
+  padding: 10px 1% 16px;
+  gap: 5%;
+}
+.case-folder__inner--executive-overview .project-note {
+  max-width: 420px;
+}
+.case-folder__inner--executive-overview .project-photo.photo-feature {
+  margin-top: 36px;
+}
+.case-folder__inner--executive-overview .case-archive {
+  padding: 8px 0 40px;
+  margin-top: 0;
+}
+.case-folder__inner--executive-overview .case-archive__row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+}
+.case-folder__inner--executive-overview .case-archive__row .archive-item {
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+.case-folder__inner--executive-overview .case-archive__row .archive-item:nth-child(1) .archive-card {
+  --arc-rot: -1.2deg;
+  --arc-y: 0px;
+  width: min(440px, 88vw);
+}
+.case-folder__inner--executive-overview .case-archive__row .archive-item:nth-child(2) .archive-card {
+  --arc-rot: 0.8deg;
+  --arc-y: 0px;
+  width: min(560px, 92vw);
+  margin-top: -6px;
+}
+@media (max-width: 700px) {
+  .case-folder__inner--executive-overview .projects {
+    padding-top: 12px;
+  }
+  .case-folder__inner--executive-overview .project {
+    padding: 12px 0 16px;
+    gap: 18px;
+  }
+  .case-folder__inner--executive-overview .case-archive {
+    padding: 10px 0 28px;
+  }
+  .case-folder__inner--executive-overview .case-archive__row {
+    gap: 12px;
+  }
+  .case-folder__inner--executive-overview .case-archive__row .archive-item:nth-child(1) .archive-card {
+    width: min(340px, 100%) !important;
+  }
+  .case-folder__inner--executive-overview .case-archive__row .archive-item:nth-child(2) .archive-card {
+    width: min(340px, 100%) !important;
+    margin-top: 0;
+  }
+}
+
 /* Floating Next Case Button */
 .case-next-btn {
   position: fixed;
