@@ -47,6 +47,8 @@ const groups = [
   { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, learn from industry perspectives, and build connections that can move your venture forward.', files: [4, 6] }
 ]
 
+const orderedCases = groups.flatMap(g => g.files.map(idx => cases[idx]))
+
 function normalizePath(raw) {
   if (!raw) return '/'
   const trimmed = raw.replace(/\/+$/, '')
@@ -1136,9 +1138,9 @@ function FilePage({
   const hasFlippedRef = useRef(false)
   const cancelEasedScrollRef = useRef(null)
 
-  const activeCaseIndex = cases.findIndex(c => c.slug === activeEntry.slug)
+  const activeCaseIndex = orderedCases.findIndex(c => c.slug === activeEntry.slug)
   const safeCaseIndex = activeCaseIndex >= 0 ? activeCaseIndex : 0
-  const nextCase = cases[(safeCaseIndex + 1) % cases.length]
+  const nextCase = orderedCases[(safeCaseIndex + 1) % orderedCases.length]
   const nextGroup = groups.find(g => g.files.some(idx => cases[idx].slug === nextCase.slug))
 
   const coverRef = useRef(null)
