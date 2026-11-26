@@ -1026,54 +1026,56 @@ function ArrivalTicketGuide() {
       </div>
 
       <div ref={ticketStageRef} className="arrival-ticket-layout">
-        <article className="arrival-boarding-pass">
-          <span className="arrival-boarding-pass__fineprint" aria-hidden="true">DO NOT EXPOSE TO EXCESSIVE HEAT OR DIRECT SUNLIGHT</span>
-          <div className="arrival-boarding-pass__content">
-            <div className="arrival-boarding-pass__topline">
-              <div className="arrival-boarding-pass__brand">
-                <span className="arrival-boarding-pass__logo" aria-hidden="true" />
-                <div>
-                  <p className="arrival-boarding-pass__brandname">VENTUREX ·<br />BOARDING PASS</p>
-                  <small className="arrival-boarding-pass__routecodes">BLR / YHK</small>
+        <div className="arrival-boarding-pass-wrap">
+          <article className="arrival-boarding-pass">
+            <span className="arrival-boarding-pass__fineprint" aria-hidden="true">DO NOT EXPOSE TO EXCESSIVE HEAT OR DIRECT SUNLIGHT</span>
+            <div className="arrival-boarding-pass__content">
+              <div className="arrival-boarding-pass__topline">
+                <div className="arrival-boarding-pass__brand">
+                  <span className="arrival-boarding-pass__logo" aria-hidden="true" />
+                  <div>
+                    <p className="arrival-boarding-pass__brandname">VENTUREX ·<br />BOARDING PASS</p>
+                    <small className="arrival-boarding-pass__routecodes">BLR / YHK</small>
+                  </div>
+                </div>
+                <div className="arrival-boarding-pass__passtk">
+                  <PixelBarcode />
+                  <span className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</span>
                 </div>
               </div>
-              <div className="arrival-boarding-pass__passtk">
-                <PixelBarcode />
-                <span className="arrival-boarding-pass__serial">VX—BMSIT—ARRIVAL—01</span>
-              </div>
-            </div>
-            <div className="arrival-boarding-pass__route">
-              <div className="arrival-boarding-pass__leg">
-                <span>ARRIVE IN</span>
-                <div className="arrival-boarding-pass__legstack">
-                  <strong>BLR</strong>
-                  <small>BENGALURU</small>
+              <div className="arrival-boarding-pass__route">
+                <div className="arrival-boarding-pass__leg">
+                  <span>ARRIVE IN</span>
+                  <div className="arrival-boarding-pass__legstack">
+                    <strong>BLR</strong>
+                    <small>BENGALURU</small>
+                  </div>
+                </div>
+                <span className="arrival-boarding-pass__arrows" aria-hidden="true">···›</span>
+                <div className="arrival-boarding-pass__leg">
+                  <span>FINAL STOP</span>
+                  <div className="arrival-boarding-pass__legstack">
+                    <strong>BMSIT</strong>
+                    <small>AVALAHALLI · YELAHANKA</small>
+                  </div>
                 </div>
               </div>
-              <span className="arrival-boarding-pass__arrows" aria-hidden="true">···›</span>
-              <div className="arrival-boarding-pass__leg">
-                <span>FINAL STOP</span>
-                <div className="arrival-boarding-pass__legstack">
-                  <strong>BMSIT</strong>
-                  <small>AVALAHALLI · YELAHANKA</small>
-                </div>
+              <div className="arrival-boarding-pass__meta">
+                <div><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
+                <div><span>LAST MILE</span><b>BMTC + WALK / AUTO</b></div>
+                <div><span>DESTINATION</span><b>DODDABALLAPUR MAIN RD</b></div>
               </div>
+              <p className="arrival-boarding-pass__stars" aria-hidden="true">***********************</p>
             </div>
-            <div className="arrival-boarding-pass__meta">
-              <div><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
-              <div><span>LAST MILE</span><b>BMTC + WALK / AUTO</b></div>
-              <div><span>DESTINATION</span><b>DODDABALLAPUR MAIN RD</b></div>
+            <div className="arrival-boarding-pass__stub">
+              <p className="arrival-boarding-pass__stubbrand">VENTUREX ·<br />BOARDING PASS</p>
+              <small className="arrival-boarding-pass__stubcodes">BLR / YHK</small>
+              <div className="arrival-boarding-pass__stubrow"><span>ARRIVE IN</span><b>BLR</b></div>
+              <div className="arrival-boarding-pass__stubrow"><span>FINAL STOP</span><b>BMSIT</b></div>
+              <div className="arrival-boarding-pass__stubrow"><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
             </div>
-            <p className="arrival-boarding-pass__stars" aria-hidden="true">***********************</p>
-          </div>
-          <div className="arrival-boarding-pass__stub">
-            <p className="arrival-boarding-pass__stubbrand">VENTUREX ·<br />BOARDING PASS</p>
-            <small className="arrival-boarding-pass__stubcodes">BLR / YHK</small>
-            <div className="arrival-boarding-pass__stubrow"><span>ARRIVE IN</span><b>BLR</b></div>
-            <div className="arrival-boarding-pass__stubrow"><span>FINAL STOP</span><b>BMSIT</b></div>
-            <div className="arrival-boarding-pass__stubrow"><span>TRAVEL MODE</span><b>FLIGHT / TRAIN / BUS</b></div>
-          </div>
-        </article>
+          </article>
+        </div>
 
         <aside className="arrival-receipt" aria-label="Bengaluru arrival route receipt">
           <p className="arrival-receipt__eyebrow">YOUR LAST LEG</p>

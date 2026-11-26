@@ -1699,6 +1699,9 @@
   perspective: 1500px;
   transform-style: preserve-3d;
 }
+.arrival-boarding-pass-wrap {
+  display: contents;
+}
 .arrival-boarding-pass {
   position: absolute;
   z-index: 1;
@@ -2186,88 +2189,119 @@
     perspective: none;
     transform: none;
   }
-  .arrival-boarding-pass {
+  .arrival-boarding-pass-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    width: 100%;
-    aspect-ratio: auto;
-    min-height: auto;
+    width: 220px;
+    height: 640px;
+    margin: 12px auto 24px;
+    flex-shrink: 0;
+  }
+  .arrival-boarding-pass {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 638px;
+    height: 220px;
+    min-height: 0;
+    aspect-ratio: 1352 / 466;
     padding: 0;
-    clip-path: none;
-    border-radius: 8px;
-    background: #3e3e3e;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-    transform: none !important;
     overflow: hidden;
+    clip-path: polygon(5.917% .054%, 0 .054%, 0 99.84%, 5.917% 99.84%, 5.917% 99.09%, 6.139% 99.09%, 6.139% 99.84%, 73.52% 99.84%, 73.52% 99.09%, 73.74% 99.09%, 73.74% 99.84%, 100% 99.84%, 100% .054%, 73.74% .054%, 73.74% 2.307%, 73.52% 2.307%, 73.52% .054%, 6.139% .054%, 6.139% 2.307%, 5.917% 2.307%);
+    background: #444444;
+    color: #eeeeee;
+    transform: translate(-50%, -50%) rotate(-90deg) !important;
+    transform-origin: center center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     box-sizing: border-box;
   }
-  .arrival-boarding-pass::before {
-    left: 12px;
-    opacity: 0.45;
+  .arrival-boarding-pass__fineprint {
+    display: flex;
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    font-family: 'Departure Mono', monospace;
+    font-weight: 400;
+    font-size: 5px;
+    line-height: 1;
+    letter-spacing: .15em;
+    opacity: .5;
   }
+  .arrival-boarding-pass::before,
+  .arrival-boarding-pass::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, rgba(238,238,238,.9) 0 8px, transparent 8px 16px);
+  }
+  .arrival-boarding-pass::before { left: 6.14%; }
+  .arrival-boarding-pass::after { left: 73.6%; }
   .arrival-boarding-pass__content {
-    position: relative;
-    inset: auto;
-    padding: 20px 16px 18px 22px;
+    position: absolute;
+    inset: 0 26.4% 0 6.14%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: space-between;
+    padding: 12px 14px 10px 14px;
   }
-  .arrival-boarding-pass__fineprint { display: none; }
-  .arrival-boarding-pass::after { display: none; }
   .arrival-boarding-pass__topline {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
-    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 0;
   }
   .arrival-boarding-pass__brand {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: flex-start;
     flex: 1 1 auto;
-    min-width: 0;
   }
   .arrival-boarding-pass__logo {
-    width: 6px;
-    height: 32px;
+    width: 5px;
+    height: 28px;
     border-radius: 2px;
     background: #eeeeee;
     flex-shrink: 0;
   }
   .arrival-boarding-pass__brandname {
-    font-size: 13px;
-    line-height: 1.25;
-    margin: 0 0 3px;
+    font-size: 11px;
+    line-height: 1.2;
+    margin: 0 0 2px;
     white-space: nowrap;
   }
   .arrival-boarding-pass__routecodes {
-    font-size: 9px;
-    opacity: 0.7;
-    letter-spacing: 0.08em;
+    font-size: 7.5px;
+    letter-spacing: .12em;
+    opacity: .6;
   }
   .arrival-boarding-pass__passtk {
-    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
-    max-width: 135px;
+    gap: 3px;
+    flex: 0 0 auto;
   }
   .arrival-boarding-pass__barcode {
-    width: 100%;
-    max-width: 125px;
-    height: 28px;
+    width: 120px;
+    height: 24px;
   }
   .arrival-boarding-pass__serial {
-    font-size: 8px;
-    letter-spacing: 0.04em;
-    opacity: 0.75;
+    font-size: 7.5px;
+    letter-spacing: .04em;
+    opacity: .75;
     white-space: nowrap;
   }
   .arrival-boarding-pass__route {
@@ -2276,93 +2310,123 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    margin-top: 2px;
-    padding: 12px 0;
-    border-top: 1px dashed rgba(238, 238, 238, 0.25);
-    border-bottom: 1px dashed rgba(238, 238, 238, 0.25);
+    margin: 0;
+    padding: 0;
+    border: none;
   }
   .arrival-boarding-pass__leg {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3px;
-    min-width: 0;
-  }
-  .arrival-boarding-pass__leg:last-child {
+    flex-direction: row;
     align-items: flex-end;
-    text-align: right;
+    gap: 5px;
   }
   .arrival-boarding-pass__leg > span {
-    font-size: 8px;
-    padding-bottom: 0;
-    letter-spacing: 0.08em;
-    opacity: 0.65;
+    font-size: 7.5px;
+    letter-spacing: .08em;
+    opacity: .65;
     white-space: nowrap;
+    padding-bottom: 2px;
   }
   .arrival-boarding-pass__legstack {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  .arrival-boarding-pass__leg:last-child .arrival-boarding-pass__legstack {
-    align-items: flex-end;
-  }
   .arrival-boarding-pass__legstack strong {
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: 0.04em;
+    font-size: 20px;
+    line-height: .95;
+    letter-spacing: .04em;
   }
   .arrival-boarding-pass__legstack small {
-    font-size: 8.5px;
+    font-size: 8px;
     line-height: 1.2;
-    letter-spacing: 0.02em;
-    opacity: 0.8;
+    letter-spacing: .02em;
+    opacity: .8;
   }
   .arrival-boarding-pass__arrows {
-    font-size: 16px;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
+    font-size: 14px;
+    letter-spacing: .05em;
+    opacity: .7;
     flex-shrink: 0;
     padding: 0 4px;
   }
   .arrival-boarding-pass__meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 14px;
-    margin-top: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0;
   }
-  .arrival-boarding-pass__meta > div:last-child {
-    grid-column: 1 / -1;
+  .arrival-boarding-pass__meta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
   .arrival-boarding-pass__meta span {
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    opacity: 0.65;
+    font-size: 6.5px;
+    letter-spacing: .06em;
+    opacity: .65;
+    white-space: nowrap;
   }
   .arrival-boarding-pass__meta b {
-    font-size: 9.5px;
-    line-height: 1.25;
-    letter-spacing: 0.02em;
+    font-size: 7.5px;
+    letter-spacing: .02em;
+    white-space: nowrap;
   }
   .arrival-boarding-pass__stars {
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    font-size: 8px;
+    letter-spacing: .18em;
     text-align: center;
-    margin: 4px 0 0;
-    opacity: 0.45;
+    margin: 0;
+    opacity: .5;
   }
   .arrival-boarding-pass__stub {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    inset: 0 0 0 73.74%;
+    padding: 12px 10px 10px 10px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+  }
+  .arrival-boarding-pass__stubbrand {
+    font-size: 10px;
+    line-height: 1.25;
+    margin: 0 0 2px;
+  }
+  .arrival-boarding-pass__stubcodes {
+    font-size: 6.5px;
+    letter-spacing: .12em;
+    opacity: .6;
+    display: block;
+  }
+  .arrival-boarding-pass__stubrow {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 3px;
+  }
+  .arrival-boarding-pass__stubrow span {
+    font-size: 6px;
+    letter-spacing: .06em;
+    opacity: .6;
+  }
+  .arrival-boarding-pass__stubrow b {
+    font-size: 7.5px;
+    letter-spacing: .02em;
   }
   .arrival-receipt {
     position: relative;
     top: auto;
     left: auto;
     width: 100%;
+    max-width: 290px;
     min-height: 0;
     aspect-ratio: auto;
     padding: 16px 16px 34px;
-    margin: 0;
+    margin: 0 auto;
     box-sizing: border-box;
     transform: none !important;
   }
@@ -2376,7 +2440,7 @@
     top: auto;
     left: auto;
     width: 100%;
-    margin: 0;
+    margin: 0 auto;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
