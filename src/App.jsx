@@ -565,7 +565,7 @@ function Home({
                         if (!e.currentTarget.contains(e.relatedTarget)) resetPreview()
                       }}
                     >
-                      <span className="tab-row" aria-hidden="true">
+                      <span className={'tab-row' + (g.files.length >= 3 ? ' tab-row--multi' : '')} aria-hidden="true">
                         {g.files.map((tabIndex, slot) => (
                           <span
                             key={tabIndex}
