@@ -156,16 +156,9 @@
     "name": "Why Participate",
     "color": "#803f98",
     "images": [
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1590098563686-06ab8778a6a7?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=85"
     ],
-    "notes": [
-      {
-        "title": "Make your pitch count",
-        "text": "Present your venture, demonstrate its potential, and take a step towards your next stage of growth."
-      }
-    ],
+    "notes": [],
     "bio": [
       "Pitch to renowned investors. Present your venture to an established panel and make your vision stand out.",
       "Unlock investment opportunities. Showcase your business potential and take a step towards securing investment for growth.",

@@ -245,14 +245,11 @@ function ArchiveRuler() {
 }
 
 // Per-page artifact sets. event-timeline, team, gallery, frequently-asked-questions,
-// and about-venturex are absent — they do not show bottom archive items.
+// about-venturex, and why-participate are absent — they do not show bottom archive items.
 const PAGES = {
   'executive-overview': [
     { type: 'memo', stamp: 'APPROVED', to: 'REVIEW PANEL', from: 'E-CELL BMSIT&M', re: 'EXECUTIVE SUMMARY' },
     { type: 'ruler' }
-  ],
-  'why-participate': [
-    { type: 'memo', stamp: 'RECOMMENDED', to: 'FOUNDERS DESK', from: 'INVESTOR PANEL', re: 'WHY TAKE PART' }
   ],
   'for-founders': [
     { type: 'form', title: 'FOUNDER SLIP', code: 'VX-05-26' },
@@ -263,7 +260,6 @@ const PAGES = {
 
 const EXHIBITS = {
   'executive-overview': ['EXHIBIT 01', 'Executive Overview', 'VX·EO·26'],
-  'why-participate': ['EXHIBIT 03', 'Why Participate', 'VX·WP·26'],
   'for-founders': ['EXHIBIT 04', 'For Founders', 'VX·FF·26']
 }
 
@@ -294,7 +290,8 @@ export default function CaseArchive({ entry }) {
     entry.slug === 'team' ||
     entry.slug === 'gallery' ||
     entry.slug === 'frequently-asked-questions' ||
-    entry.slug === 'about-venturex'
+    entry.slug === 'about-venturex' ||
+    entry.slug === 'why-participate'
   ) return null
   const items = PAGES[entry.slug]
   if (!items || items.length === 0) return null
