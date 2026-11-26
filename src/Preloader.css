@@ -1,0 +1,177 @@
+/* ==========================================================================
+   VentureX Animated Preloader Stylesheet
+   Matches exact landing page cutting mat (#2b5a48) & dappled sunlight
+   ========================================================================== */
+
+.vx-preloader-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+
+.vx-preloader-overlay.is-fallback-bg {
+  background-color: #2b5a48;
+  pointer-events: auto;
+}
+
+.vx-preloader-overlay .vx-center-composition {
+  pointer-events: auto;
+}
+
+/* Background matching landing page cutting mat & dappled sunlight for fallback non-home routes */
+.vx-preloader-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #2b5a48;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vx-preloader-sunlight {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: url('/assets/dappled-sunlight.png');
+  background-position: 25% top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.32;
+  filter: brightness(0.82) contrast(1.4) saturate(0.85);
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Central Composition: Logo, Dashed Motion Trails & Progress Indicator
+   ========================================================================== */
+.vx-center-composition {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 580px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Dashed motion trails */
+.vx-trails-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 135%;
+  height: 165%;
+  pointer-events: auto;
+  z-index: 1;
+  overflow: visible;
+}
+
+/* Central VentureX Logo Box */
+.vx-logo-box {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vx-logo-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Progress Section */
+.vx-progress-section {
+  position: relative;
+  z-index: 2;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.vx-progress-track {
+  width: clamp(170px, 20vw, 205px);
+  height: 18px;
+  border-radius: 9999px;
+  border: 2.5px solid #FDFBF7;
+  background-color: rgba(23, 48, 38, 0.85);
+  padding: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.vx-progress-bar {
+  height: 100%;
+  background-color: #818CF8;
+  border-radius: 9999px;
+  transition: width 0.12s ease-out;
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.6);
+  will-change: width;
+}
+
+.vx-loading-text {
+  margin-top: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FDFBF7;
+  letter-spacing: 0.32em;
+  text-transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .vx-logo-box {
+    max-width: 330px;
+  }
+  .vx-trails-svg {
+    width: 120%;
+    height: 140%;
+  }
+  .vx-progress-track {
+    width: 160px;
+    height: 16px;
+  }
+  .vx-loading-text {
+    font-size: 11px;
+    letter-spacing: 0.28em;
+  }
+}
+
+@media (max-width: 480px) {
+  .vx-logo-box {
+    max-width: 270px;
+  }
+  .vx-progress-track {
+    width: 140px;
+    height: 15px;
+  }
+  .vx-loading-text {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+  }
+}

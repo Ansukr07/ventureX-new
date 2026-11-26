@@ -6,6 +6,7 @@ import { Flip } from 'gsap/Flip'
 import cases from './cases.json'
 import about from './about.json'
 import { DeskAssets } from './DeskAssets'
+import { Preloader } from './Preloader'
 import IdCard from './IdCard'
 import CaseArchive from './CaseArchive'
 import GreenMat from './GreenMat'
@@ -253,7 +254,9 @@ function Home({
   onSelectCase,
   onSaveRects,
   isLeavingForAbout,
-  onHomeLeftForAbout
+  onHomeLeftForAbout,
+  isPreloaderActive = false,
+  shouldAnimatePreloaderFolders = false
 }) {
   const [hovered, setHovered] = useState(() => (isEntering && closedGroupIndex !== null && closedGroupIndex !== undefined)
     ? { group: closedGroupIndex, page: closedPageIndex ?? 0 }
@@ -261,6 +264,7 @@ function Home({
   const [unfolded, setUnfolded] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
   const isTransitioningRef = useRef(false)
+  const hasAnimatedPreloaderRef = useRef(false)
 
   function preview(group, page) {
     if (isTransitioningRef.current) return
@@ -287,6 +291,77 @@ function Home({
       onSaveRects(folders.map(f => f.getBoundingClientRect()))
     }
   }, [onSaveRects])
+
+  // Entrance animation for folders when preloader completes:
+  // "bring the file design one by one from down to appear and synce"
+  useIsomorphicLayoutEffect(() => {
+    if (!shouldAnimatePreloaderFolders || hasAnimatedPreloaderRef.current) return
+    hasAnimatedPreloaderRef.current = true
+    isTransitioningRef.current = true
+
+    const folders = Array.from(document.querySelectorAll('.archive .folder'))
+    if (folders.length === 0) {
+      isTransitioningRef.current = false
+      return
+    }
+
+    const isReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (isReduced) {
+      gsap.set(folders, { clearProps: 'transform,opacity,visibility,pointerEvents' })
+      gsap.set('.hero-title, .intro-event', { clearProps: 'transform,opacity,pointerEvents' })
+      isTransitioningRef.current = false
+      return
+    }
+
+    // Explicitly set starting positions below viewport: y: 0 ensures no inherited CSS translation offset
+    gsap.set(folders, { y: 0, yPercent: 120, opacity: 0, visibility: 'visible', pointerEvents: 'none' })
+    gsap.set('.hero-title', { y: 20, opacity: 0, pointerEvents: 'none' })
+    gsap.set('.intro-event', { y: 15, opacity: 0, pointerEvents: 'none' })
+
+    const tl = gsap.timeline({
+      defaults: { duration: 0.35, ease: 'power3.out' },
+      onComplete: () => {
+        gsap.set(folders, { clearProps: 'transform,opacity,visibility,pointerEvents' })
+        gsap.set('.hero-title, .intro-event', { clearProps: 'transform,opacity,pointerEvents' })
+        isTransitioningRef.current = false
+        if (onSaveRects) {
+          const freshFolders = Array.from(document.querySelectorAll('.archive .folder'))
+          onSaveRects(freshFolders.map(f => f.getBoundingClientRect()))
+        }
+      }
+    })
+
+    // 1. Bring lowest file design (purple) first, and then accordingly (yellow, red, blue)
+    // Speed is fast, one by one in rapid synchronized succession (decreased duration and stagger)
+    const reversedFolders = [...folders].reverse()
+    tl.to(reversedFolders, {
+      y: 0,
+      yPercent: 0,
+      opacity: 1,
+      duration: 0.35,
+      stagger: 0.055,
+      ease: 'power3.out'
+    }, 0)
+
+    // 2. Only when this is done, the description and ventureX appear
+    tl.to('.hero-title', {
+      y: 0,
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out',
+      pointerEvents: 'auto'
+    }, '+=0.04')
+
+    tl.to('.intro-event', {
+      y: 0,
+      opacity: 1,
+      duration: 0.35,
+      ease: 'power2.out',
+      pointerEvents: 'auto'
+    }, '<+0.06')
+
+    return () => tl.kill()
+  }, [shouldAnimatePreloaderFolders, onSaveRects])
 
   // Mosby eat: Enter Home from About transition
   useIsomorphicLayoutEffect(() => {
@@ -418,8 +493,10 @@ function Home({
     if (cat) tl.to(cat, { opacity: 0, duration: 0.15 }, 0)
   }
 
+  const isWaitingForPreloader = isPreloaderActive || (!hasAnimatedPreloaderRef.current && !shouldAnimatePreloaderFolders && !isEntering && !isEnteringFromAbout)
+
   return (
-    <main className="home">
+    <main className={'home' + (isWaitingForPreloader ? ' is-preloader-waiting' : '')}>
       <DeskAssets isEntering={isEntering || isEnteringFromAbout} isLeaving={isLeaving || isLeavingForAbout} />
       <section className="intro" id="hero">
         <h1 className="hero-title">VENTURE X</h1>
@@ -1312,20 +1389,20 @@ function FilePage({
     const folder = folderRef.current
 
     const computeMobileStackRect = () => {
-      const stackWidth = window.innerWidth - 24
+      const stackWidth = window.innerWidth
       const openSize = Math.round(window.innerHeight * 0.75)
       const folderHeight = Math.round(openSize + remaining * 50)
       const stackTop = Math.round(window.innerHeight * 0.53)
       const folderTop = stackTop + safeGroupIndex * 50
       return {
-        left: 12,
+        left: 0,
         top: folderTop,
         width: stackWidth,
         height: folderHeight
       }
     }
     // Fallback if targetRect wasn't passed (e.g. direct load)
-    const rect = (targetRect && (!isMobile || Math.abs(targetRect.width - (window.innerWidth - 24)) < 40))
+    const rect = (targetRect && (!isMobile || Math.abs(targetRect.width - window.innerWidth) < 40))
       ? targetRect
       : (isMobile ? computeMobileStackRect() : {
         left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
@@ -1635,19 +1712,19 @@ function FilePage({
 
             // 3. Flip folder back to stack geometry
             const computeMobileStackRect = () => {
-              const stackWidth = window.innerWidth - 24
+              const stackWidth = window.innerWidth
               const openSize = Math.round(window.innerHeight * 0.75)
               const folderHeight = Math.round(openSize + remaining * 50)
               const stackTop = Math.round(window.innerHeight * 0.53)
               const folderTop = stackTop + safeGroupIndex * 50
               return {
-                left: 12,
+                left: 0,
                 top: folderTop,
                 width: stackWidth,
                 height: folderHeight
               }
             }
-            const rect = (closeRect && (!isMobile || Math.abs(closeRect.width - (window.innerWidth - 24)) < 40))
+            const rect = (closeRect && (!isMobile || Math.abs(closeRect.width - window.innerWidth) < 40))
               ? closeRect
               : (isMobile ? computeMobileStackRect() : {
                 left: Math.round((window.innerWidth - Math.min(1320, window.innerWidth * 0.93)) / 2),
@@ -2140,6 +2217,8 @@ export default function App({ initialPath } = {}) {
   const [closedPageIndex, setClosedPageIndex] = useState(null)
   const [isHomeEntering, setIsHomeEntering] = useState(false)
   const [transition, setTransition] = useState(null)
+  const [isPreloaderActive, setIsPreloaderActive] = useState(true)
+  const [shouldAnimatePreloaderFolders, setShouldAnimatePreloaderFolders] = useState(false)
   const previousRouteRef = useRef('/')
   const filePageGoHomeRef = useRef(null)
   const aboutCloseRef = useRef(null)
@@ -2148,6 +2227,13 @@ export default function App({ initialPath } = {}) {
   const entry = cases.find(c => path === '/cases/' + c.slug)
   const currentGroupIndex = entry ? groups.findIndex(g => g.files.some(i => cases[i].slug === entry.slug)) : 0
   const safeCurrentGroupIndex = currentGroupIndex >= 0 ? currentGroupIndex : 0
+
+  const handlePreloaderComplete = () => {
+    setIsPreloaderActive(false)
+    if (path === '/') {
+      setShouldAnimatePreloaderFolders(true)
+    }
+  }
 
   // Track previous route so About close returns to the correct place
   useEffect(() => {
@@ -2252,6 +2338,10 @@ export default function App({ initialPath } = {}) {
 
   return (
     <>
+      <Preloader
+        isHome={path === '/'}
+        onComplete={handlePreloaderComplete}
+      />
       <Analytics />
       <GreenMat />
       <div className="app">
@@ -2316,6 +2406,8 @@ export default function App({ initialPath } = {}) {
           onHomeLeftForAbout={handleHomeLeftForAbout}
           onSelectCase={handleSelectCase}
           onSaveRects={handleSaveFolderRects}
+          isPreloaderActive={isPreloaderActive}
+          shouldAnimatePreloaderFolders={shouldAnimatePreloaderFolders}
         />
       ) : (
         <main className="route-not-found">
