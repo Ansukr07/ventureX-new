@@ -98,7 +98,9 @@
  transition:transform .65s var(--hover-ease);
 }
 .folder-face.is-unfolded .folder-category-arrow{transform:rotate(0deg)}
-.folder-description{position:absolute;top:var(--row);left:54px;right:54px;max-width:750px;font:clamp(14px,1.1vw,16px)/1.4 'Lil Grotesk',Arial,sans-serif;text-wrap:balance}
+.folder-face:not(.is-unfolded) .folder-description{opacity:0;pointer-events:none}
+.folder-description{position:absolute;top:var(--row);left:54px;right:54px;max-width:none;font:clamp(13px,1.05vw,15px)/1.35 'Lil Grotesk',Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .35s var(--hover-ease)}
+.folder-face.is-unfolded .folder-description{opacity:1}
 .folder-open-content{position:absolute;left:54px;right:54px;bottom:55px;transform:translateZ(1px);transition:transform .65s var(--hover-ease)}
 .compass-row{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:60px}
 .compass{display:inline-flex;flex:0 1 80px;width:80px;aspect-ratio:1;min-width:0}
