@@ -554,6 +554,7 @@ const teamDomains = [
   ] },
   { name: 'Corporate relations', members: [
     { name: 'Arush Singh', role: 'Corporate Relations Head', img: '/team/team-30.webp' },
+    { name: 'G Bhavana', role: 'Corporate Relations Vice Head', img: '/team/team-35.webp' },
     { name: 'Harshith Kumar Medathati', role: 'Corporate Relations Associate', img: '/team/team-10.webp' },
     { name: 'Bhuvan Tej Reddy Seethi', role: 'Corporate Relations Associate', img: '/team/team-26.webp' }
   ] },
