@@ -83,8 +83,8 @@ export default function GreenMat() {
   return (
     <div className="site-mat" aria-hidden="true">
       <svg viewBox={`0 0 ${MAT_W} ${MAT_H}`} preserveAspectRatio="xMidYMin slice">
-        <rect width={MAT_W} height={MAT_H} fill="#2b5a48" />
-        <g fill="none" stroke="#fff" strokeMiterlimit="10">
+        <rect width={MAT_W} height={MAT_H} fill="#dfd4c9" />
+        <g fill="none" stroke="rgba(45, 35, 30, 0.22)" strokeMiterlimit="10">
           <g strokeWidth="0.25">
             {FINE_XS.map(x =>
               FINE_YS.map(y => (
@@ -103,7 +103,7 @@ export default function GreenMat() {
             <path key={sweep.d} d={sweep.d} strokeWidth={sweep.w} />
           ))}
         </g>
-        <g fill="#fff" fontFamily="AgencyFB-Reg, 'Agency FB'" fontSize="22.86">
+        <g fill="rgba(45, 35, 30, 0.5)" fontFamily="AgencyFB-Reg, 'Agency FB'" fontSize="22.86">
           {LABELS.map(([x, y, label]) => (
             <text key={x + '-' + label} transform={`translate(${x} ${y})`}>
               <tspan x="0" y="0">{label}</tspan>
