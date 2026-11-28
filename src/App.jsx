@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Analytics } from '@vercel/analytics/react'
 import gsap from 'gsap'
@@ -41,10 +41,10 @@ function setPageMetadata(title, description) {
 }
 
 const groups = [
-  { color: '#699ad1', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
-  { color: '#ec2127', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions to the live investor pitching round.', files: [1] },
-  { color: '#f5cf51', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
-  { color: '#803f98', label: 'Why Participate', description: 'Put your idea in front of investors, gain industry perspectives, and scale your venture.', files: [4, 6] }
+  { color: '#1A0089', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
+  { color: '#FF5E33', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions to the live investor pitching round.', files: [1] },
+  { color: '#EFE7D3', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
+  { color: '#B7CF4F', label: 'Why Participate', description: 'Put your idea in front of investors, gain industry perspectives, and scale your venture.', files: [4, 6] }
 ]
 
 const orderedCases = groups.flatMap(g => g.files.map(idx => cases[idx]))
@@ -202,22 +202,19 @@ function CompassRow() {
 }
 
 function TabShape({ name }) {
-  const path = "M1.1449 0H-521.145C-531.065 0-540.343 4.90374-545.932 13.0999L-558.55 31.6066C-563.837 39.3607-572.615 44-582 44H62C52.6151 44 43.8369 39.3607 38.5499 31.6066L25.9318 13.0999C20.3434 4.90373 11.0649 0 1.1449 0Z"
   return (
     <>
-      <svg className="tab-side tab-start" viewBox="0 0 62 44" preserveAspectRatio="none" aria-hidden="true">
-        <path d={path} fill="currentColor" />
-      </svg>
+      <span className="tab-side tab-start" aria-hidden="true" />
       <span className="tab-middle">{name}</span>
-      <svg className="tab-side tab-end" viewBox="0 0 62 44" preserveAspectRatio="none" aria-hidden="true">
-        <path d={path} fill="currentColor" />
-      </svg>
+      <span className="tab-side tab-end" aria-hidden="true" />
     </>
   )
 }
 
 function isTabDark(color) {
-  return color === '#f5cf51' || color === '#f5cf52'
+  if (!color) return false
+  const c = color.toLowerCase()
+  return c === '#efe7d3' || c === '#b7cf4f' || c === '#f5cf51' || c === '#f5cf52'
 }
 
 function PaperclipTop({ className = '' }) {

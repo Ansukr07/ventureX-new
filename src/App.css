@@ -66,6 +66,7 @@
 .folder-face::before,
 .folder-sheet::before,
 .tab-middle::before,
+.tab-side::before,
 .case-folder__inner::before,
 .case-folder__cover__front::before,
 .case-folder__cover__back::before{
@@ -77,8 +78,10 @@
  z-index:1;
  opacity:0.75;
 }
-.tab-middle::before{
- opacity:0.4;
+.tab-middle::before,
+.tab-side::before{
+ opacity:0.75;
+ background-size:160px auto;
 }
 .folder-face > *,
 .tab-middle > *,
@@ -103,7 +106,19 @@
 }
 .folder-tab.is-visible{visibility:visible;pointer-events:auto}
 .folder-tab>*{pointer-events:none}
-.tab-side{width:calc(var(--tab-height)*1.409);height:100%;flex:none;color:var(--tab-color)}
+.tab-side{
+ width:calc(var(--tab-height)*1.409);
+ height:100%;
+ flex:none;
+ background-color:var(--tab-color);
+ position:relative;
+ -webkit-mask-image:url('/assets/tab-end.svg');
+ mask-image:url('/assets/tab-end.svg');
+ -webkit-mask-size:100% 100%;
+ mask-size:100% 100%;
+ -webkit-mask-repeat:no-repeat;
+ mask-repeat:no-repeat;
+}
 .tab-start{transform:scale(-1,1.01) translateX(-1px);margin-right:-1px}
 .tab-end{transform:scaleY(1.01) translateX(-1px);margin-left:-1px}
 .tab-middle{height:100%;display:flex;align-items:center;justify-content:center;background:var(--tab-color);position:relative;z-index:2;padding-inline:8px;padding-bottom:2px}
