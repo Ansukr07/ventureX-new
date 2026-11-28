@@ -248,8 +248,7 @@ function ArchiveRuler() {
 // about-venturex, and why-participate are absent — they do not show bottom archive items.
 const PAGES = {
   'executive-overview': [
-    { type: 'memo', stamp: 'APPROVED', to: 'REVIEW PANEL', from: 'E-CELL BMSIT&M', re: 'EXECUTIVE SUMMARY' },
-    { type: 'ruler' }
+    { type: 'memo', stamp: 'APPROVED', to: 'REVIEW PANEL', from: 'E-CELL BMSIT&M', re: 'EXECUTIVE SUMMARY' }
   ],
   'for-founders': [
     { type: 'form', title: 'FOUNDER SLIP', code: 'VX-05-26' },
