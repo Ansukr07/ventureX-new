@@ -181,7 +181,7 @@
    padding: 0 4px;
    font-size: 12px;
    line-height: 1.5;
-   color: rgba(253, 250, 247, 0.92);
+   color: #1d1b1a;
  }
  .intro-event__desc span {
    display: block;
@@ -194,7 +194,7 @@
    font-weight: 600;
    line-height: 1.35;
    white-space: nowrap;
-   color: #fdfaf7;
+   color: #1d1b1a;
    margin-bottom: 7px;
    letter-spacing: -0.01em;
  }
