@@ -1676,12 +1676,14 @@ function FilePage({
                   ))}
                 </div>
                 <div className="dossier-left">
-                  <div className="portrait">
-                    <img src={activeEntry.images[0]} alt={'Illustrative image for ' + activeEntry.name} decoding="async" />
-                    <span className="portrait-clip-wrapper" aria-hidden="true">
-                      <PaperclipTop className="portrait-paperclip" />
-                    </span>
-                  </div>
+                  {activeEntry.images?.[0] && (
+                    <div className="portrait">
+                      <img src={activeEntry.images[0]} alt={'Illustrative image for ' + activeEntry.name} decoding="async" />
+                      <span className="portrait-clip-wrapper" aria-hidden="true">
+                        <PaperclipTop className="portrait-paperclip" />
+                      </span>
+                    </div>
+                  )}
                   <div className="life-info">
                     {activeEntry.info.map((line, i) => (
                       <p key={i} className={i % 2 === 0 ? 'info-label' : ''}>{line}</p>

@@ -87,9 +87,7 @@
     "name": "FAQs",
     "color": "#EFE7D3",
     "images": [
-      "/classic-1/gallery/20251212_161438-960.webp",
-      "/classic-1/gallery/IMG_4392.webp",
-      "/classic-1/gallery/IMG_4403.webp"
+      "/classic-1/gallery/20251212_161438-960.webp"
     ],
     "notes": [],
     "bio": [
@@ -187,7 +185,9 @@
     "slug": "for-founders",
     "name": "For Founders",
     "color": "#B7CF4F",
-    "images": [],
+    "images": [
+      "/classic-1/gallery/DSC00645 (1).webp"
+    ],
     "notes": [],
     "bio": [
       "You have the vision. Now make it investment-ready. Have a promising startup, a scalable business model, or an idea with the potential to disrupt the market? VentureX puts your venture before renowned investors, giving you a platform to demonstrate its value, validate its potential, and pursue the next stage of growth.",
