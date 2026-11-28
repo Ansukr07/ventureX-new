@@ -257,7 +257,35 @@ function Home({
     : null)
   const [unfolded, setUnfolded] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
+  const [isComingSoon, setIsComingSoon] = useState(false)
+  const comingSoonTimeoutRef = useRef(null)
   const isTransitioningRef = useRef(false)
+
+  function handleRegisterClick() {
+    if (comingSoonTimeoutRef.current) {
+      clearTimeout(comingSoonTimeoutRef.current)
+    }
+    setIsComingSoon(true)
+    comingSoonTimeoutRef.current = setTimeout(() => {
+      setIsComingSoon(false)
+    }, 6000)
+  }
+
+  function handleDismissComingSoon(e) {
+    e.stopPropagation()
+    if (comingSoonTimeoutRef.current) {
+      clearTimeout(comingSoonTimeoutRef.current)
+    }
+    setIsComingSoon(false)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (comingSoonTimeoutRef.current) {
+        clearTimeout(comingSoonTimeoutRef.current)
+      }
+    }
+  }, [])
 
   function preview(group, page) {
     if (isTransitioningRef.current) return
@@ -426,6 +454,35 @@ function Home({
             <span>India (3–4 members). Free online round — the top 30</span>{' '}
             <span>teams pitch live in Bengaluru on 30 December 2026.</span>
           </p>
+          <div className="intro-actions">
+            <button
+              type="button"
+              className={`register-btn${isComingSoon ? ' is-coming-soon' : ''}`}
+              onClick={handleRegisterClick}
+              aria-label={isComingSoon ? 'Registrations Coming Soon' : 'Register Now'}
+            >
+              <span className="register-btn__text">
+                {isComingSoon ? 'Coming Soon' : 'Register Now'}
+              </span>
+              <span className="register-btn__icon" aria-hidden="true">
+                {isComingSoon ? '✦' : '→'}
+              </span>
+            </button>
+            {isComingSoon && (
+              <div className="register-toast" role="status" aria-live="polite">
+                <span className="register-toast__pill">Coming Soon</span>
+                <span className="register-toast__msg">Registrations will open shortly!</span>
+                <button
+                  type="button"
+                  className="register-toast__close"
+                  onClick={handleDismissComingSoon}
+                  aria-label="Dismiss notification"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </section>
       <section className="archive">
