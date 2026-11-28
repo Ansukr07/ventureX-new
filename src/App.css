@@ -1872,7 +1872,7 @@
 /* Ticket silhouettes follow the Departure Mono receipt, boarding pass, and bag tag proportions. */
 .arrival-guide {
   width: min(1240px, calc(100% - clamp(32px, 7vw, 96px)));
-  margin: 0 auto 54px;
+  margin: clamp(54px, 6.5vw, 96px) auto 54px;
   color: #f7f5ed;
 }
 .arrival-guide__heading { margin: 0 0 30px; }
@@ -2383,7 +2383,7 @@
 }
 @media(max-width:700px) {
   .case-folder.has-arrival-guide { min-height: auto; }
-  .arrival-guide { width: 100%; margin: 0 auto 38px; box-sizing: border-box; }
+  .arrival-guide { width: 100%; margin: 44px auto 38px; box-sizing: border-box; }
   .arrival-guide__heading h2 { font-size: clamp(28px, 8vw, 42px); line-height: 1.1; }
   .arrival-guide__heading > p:last-child { font-size: 12px; line-height: 1.5; }
   .arrival-ticket-layout {
