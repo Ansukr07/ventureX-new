@@ -8,7 +8,6 @@ import about from './about.json'
 import { DeskAssets } from './DeskAssets'
 import IdCard from './IdCard'
 import CaseArchive from './CaseArchive'
-import GreenMat from './GreenMat'
 import './App.css'
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -2098,7 +2097,6 @@ export default function App({ initialPath } = {}) {
   return (
     <>
       <Analytics />
-      <GreenMat />
       <div className="app">
       <Header
         go={go}
