@@ -213,9 +213,9 @@
    letter-spacing: -0.01em;
  }
 }
-@media(max-width:768px){.intro{padding:clamp(70px,9.5vh,84px) 14px 0}}
+@media(max-width:768px){.intro{padding:clamp(88px,13.5vh,125px) 14px 0}}
 @media(max-width:700px){
- .intro{height:78dvh;min-height:500px;padding:clamp(70px,9.5vh,84px) 14px 0}
+ .intro{height:78dvh;min-height:500px;padding:clamp(88px,13.5vh,125px) 14px 0}
  .archive{margin-top:-25dvh}.stack{width:100%;margin:0 auto;--row:50px;--open-size:75dvh}
  .folder-face,.folder-sheet{border-radius:0}
  .folder-description{left:20px;right:20px;font-size:14px}
@@ -1665,7 +1665,7 @@
  .file-nav__back { padding: 6px 13px; font-size: 13.5px; border-radius: 5px; gap: 6px; }
  .file-nav__back svg { width: 15px; height: 15px; stroke-width: 2.2; }
  .case-page { padding-top: 52px; }
- .intro { height: 78vh; min-height: 500px; padding: clamp(70px, 9.5vh, 84px) 14px 0; }
+ .intro { height: 78vh; min-height: 500px; padding: clamp(88px, 13.5vh, 125px) 14px 0; }
  .intro h1, .hero-title { white-space: normal; font-size: clamp(48px, 11vw, 75px); }
  .intro p, .intro-subtitle { font-size: 13px; }
  .archive { margin-top: -25vh; }

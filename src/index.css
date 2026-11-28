@@ -32,7 +32,7 @@ textarea, [contenteditable="true"] {
   cursor: url('/classic-1/beam-48.png') 15 15, text;
 }
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{position:relative;isolation:isolate;margin:0;min-width:320px;background:#dfd4c9}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;background-image:url('/assets/site-texture.webp');background-repeat:repeat;background-size:640px auto;z-index:1;opacity:.8}
+body::after{display:none}
 .site-mat{display:none}
 .site-mat svg{display:block;width:100%;height:100%}button{font:inherit}a{color:inherit;text-decoration:none}::selection{background:#ffe44d;color:#191919}:focus-visible{outline:2px solid #ffe44d;outline-offset:4px}
 .site-mat svg{display:block;width:100%;height:100%}button{font:inherit}a{color:inherit;text-decoration:none}::selection{background:#ffe44d;color:#191919}:focus-visible{outline:2px solid #ffe44d;outline-offset:4px}
