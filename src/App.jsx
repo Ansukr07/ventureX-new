@@ -40,10 +40,10 @@ function setPageMetadata(title, description) {
 }
 
 const groups = [
-  { color: '#FE6237', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
-  { color: '#FFB62E', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions to the live investor pitching round.', files: [1] },
-  { color: '#7CC3FF', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
-  { color: '#4164FF', label: 'Why Participate', description: 'Put your idea in front of investors, gain industry perspectives, and scale your venture.', files: [4, 6] }
+  { color: '#1A0089', label: 'Event Overview', description: 'The essential VentureX details and guidance for founders preparing to pitch.', files: [0, 5] },
+  { color: '#FF5E33', label: 'Timeline & Phases', description: 'Follow the journey from online video submissions to the live investor pitching round.', files: [1] },
+  { color: '#EFE7D3', label: 'Participant Guide', description: 'Find eligibility, team, and fee information for teams considering VentureX.', files: [2, 3] },
+  { color: '#B7CF4F', label: 'Why Participate', description: 'Put your idea in front of investors, gain industry perspectives, and scale your venture.', files: [4, 6] }
 ]
 
 const orderedCases = groups.flatMap(g => g.files.map(idx => cases[idx]))
