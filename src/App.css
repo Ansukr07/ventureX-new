@@ -18,11 +18,11 @@
 @media(max-width:768px){body:has(.home){overscroll-behavior:none}}
 .intro{min-height:680px;height:100vh;padding:20vh 4% 0;text-align:center}
 .intro h1{font:400 clamp(58px,9.6vw,132px)/.85 Elegance,serif;white-space:nowrap;margin:0;letter-spacing:.015em}
-.intro-event{max-width:650px;margin:clamp(20px,3vh,34px) auto 0;color:#fdfaf7;font:400 clamp(14px,1.15vw,17px)/1.48 'Lil Grotesk',Arial,sans-serif;text-align:center;text-wrap:balance}
+.intro-event{max-width:650px;margin:clamp(20px,3vh,34px) auto 0;color:#1d1b1a;font:400 clamp(14px,1.15vw,17px)/1.48 'Lil Grotesk',Arial,sans-serif;text-align:center;text-wrap:balance}
 .intro-event p{margin:0 0 8px}
 .intro-event__lead{font-weight:700;font-size:clamp(17px,1.5vw,22px)}
 .intro-event span{display:inline}
-.pitch-guide{min-height:100vh;padding:clamp(72px,10vh,120px) 24px 100px;color:#fdfaf7}
+.pitch-guide{min-height:100vh;padding:clamp(72px,10vh,120px) 24px 100px;color:#1d1b1a}
 .pitch-guide__inner{width:min(100%,760px);margin-inline:auto;font:400 clamp(17px,1.45vw,20px)/1.6 'Lil Grotesk',Arial,sans-serif}
 .pitch-guide__back{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:6px;border:1.5px solid rgba(0,0,0,.18);background:#f5cf51;color:#122018;font:600 14px/1 'Lil Grotesk',Arial,sans-serif;text-decoration:none;box-shadow:0 3px 8px rgba(0,0,0,.28);transition:background .2s ease,transform .18s ease}
 .pitch-guide__back:hover{background:#ffe37a;transform:translateY(-1.5px);text-decoration:none}
@@ -363,7 +363,7 @@
  font: 700 18px/1 Founders, Arial, sans-serif;
  text-transform: uppercase;
  letter-spacing: .025em;
- color: #fff;
+ color: #1d1b1a;
  transition: opacity .2s;
 }
 .the-header-logo:hover {
@@ -371,7 +371,7 @@
 }
 .the-header-about {
  font: 400 15px/1 'Lil Grotesk', Arial, sans-serif;
- color: #fff;
+ color: #1d1b1a;
  opacity: .85;
  transition: opacity .2s;
 }
@@ -406,11 +406,11 @@
 }
 .case-hero.is-shrunk {
  height: 52px;
- background-color: rgba(50, 21, 33, 0.94);
+ background-color: rgba(223, 212, 201, 0.94);
  backdrop-filter: blur(14px);
  -webkit-backdrop-filter: blur(14px);
- border-bottom: 1px solid rgba(255, 255, 255, 0.1);
- box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+ border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 .case-hero h1,
 .case-hero-title {
@@ -421,7 +421,7 @@
  transform-origin: left center;
  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
  will-change: transform;
- color: #fdfaf7;
+ color: #1d1b1a;
  display: inline-flex;
  flex-wrap: nowrap;
  white-space: nowrap;
