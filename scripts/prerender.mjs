@@ -86,9 +86,9 @@ for (const page of pages) {
 }
 
 const notFoundAppHtml = renderToString(React.createElement(App, { initialPath: '/404' }))
-const notFoundHtml = setTag(template, /<title>[^<]*<\/title>/, '<title>Page not found | VentureX</title>')
+const notFoundHtml = setTag(template, /<title>[^<]*<\/title>/, '<title>404: Case File Not Found | VentureX</title>')
   .replace('<div id="root"></div>', `<div id="root">${notFoundAppHtml}</div>`)
-  .replace('</head>', '<meta name="robots" content="noindex" /></head>')
+  .replace('</head>', '<meta name="robots" content="noindex" /><meta name="description" content="The requested case file or dossier could not be found in the VentureX archive catalog." /></head>')
 await writeFile(path.join(output, '404.html'), notFoundHtml)
 
 if (siteUrl) {

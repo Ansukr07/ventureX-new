@@ -150,6 +150,94 @@ function PitchGuide() {
   </main>
 }
 
+function NotFound({ go }) {
+  useEffect(() => {
+    setPageMetadata(
+      '404: Case File Not Found | VentureX',
+      'The requested document or case dossier could not be found in the VentureX archive catalog.'
+    )
+  }, [])
+
+  return (
+    <main className="not-found-page">
+      <div className="not-found-card">
+        <div className="not-found-header">
+          <div className="not-found-stamp" aria-label="Classified Record Missing">
+            <span>RECORD MISSING</span>
+            <span className="not-found-stamp__code">// 404-ERR</span>
+          </div>
+          <span className="not-found-serial">DOSSIER-ID: VX-UNKNOWN</span>
+        </div>
+
+        <div className="not-found-body">
+          <div className="not-found-hero">
+            <span className="not-found-huge">404</span>
+            <div className="not-found-titles">
+              <h1 className="not-found-heading">Case File Not Found</h1>
+              <p className="not-found-tagline">This document is not filed in the VentureX archive.</p>
+            </div>
+          </div>
+
+          <p className="not-found-text">
+            The dossier you requested may have been relocated, declassified, or does not exist in our active catalog. Return to the main desk to browse confirmed pitch event materials.
+          </p>
+
+          <div className="not-found-cta-row">
+            <a
+              href="/"
+              className="not-found-btn not-found-btn--primary"
+              onClick={e => {
+                e.preventDefault()
+                go('/')
+              }}
+            >
+              <span>Return to VentureX Home</span>
+              <span className="not-found-btn__arrow" aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/cases/executive-overview"
+              className="not-found-btn not-found-btn--secondary"
+              onClick={e => {
+                e.preventDefault()
+                go('/cases/executive-overview')
+              }}
+            >
+              <span>Executive Overview</span>
+            </a>
+          </div>
+
+          <div className="not-found-directory">
+            <span className="not-found-directory__title">CONFIRMED ARCHIVE FILES</span>
+            <div className="not-found-directory__grid">
+              <a href="/cases/executive-overview" onClick={e => { e.preventDefault(); go('/cases/executive-overview') }}>
+                <span className="dot dot--orange" /> Executive Overview
+              </a>
+              <a href="/cases/for-founders" onClick={e => { e.preventDefault(); go('/cases/for-founders') }}>
+                <span className="dot dot--blue" /> For Founders
+              </a>
+              <a href="/cases/event-timeline" onClick={e => { e.preventDefault(); go('/cases/event-timeline') }}>
+                <span className="dot dot--yellow" /> Event Timeline
+              </a>
+              <a href="/cases/frequently-asked-questions" onClick={e => { e.preventDefault(); go('/cases/frequently-asked-questions') }}>
+                <span className="dot dot--skyblue" /> FAQs
+              </a>
+              <a href="/cases/team" onClick={e => { e.preventDefault(); go('/cases/team') }}>
+                <span className="dot dot--green" /> Team
+              </a>
+              <a href="/cases/why-participate" onClick={e => { e.preventDefault(); go('/cases/why-participate') }}>
+                <span className="dot dot--blue" /> Why Participate
+              </a>
+              <a href="/about" onClick={e => { e.preventDefault(); go('/about') }}>
+                <span className="dot dot--yellow" /> About VentureX
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
+
 const compassImages = ['f.png', 'f-1.png', 'f-2.avif', 'f-3.png', 'f-4.png', 'f-5.png', 'f-6.avif']
 
 function CompassRow() {
@@ -2218,11 +2306,7 @@ export default function App({ initialPath } = {}) {
           onSaveRects={handleSaveFolderRects}
         />
       ) : (
-        <main className="route-not-found">
-          <h1>Page not found</h1>
-          <p>This file is not in the VentureX archive.</p>
-          <a href="/" onClick={e => { e.preventDefault(); go('/') }}>Back to VentureX</a>
-        </main>
+        <NotFound go={go} />
       )}
       </div>
     </>
