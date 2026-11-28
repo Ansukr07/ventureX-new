@@ -81,7 +81,7 @@
 .tab-middle::before,
 .tab-side::before{
  opacity:0.75;
- background-size:160px auto;
+ background-size:320px auto;
 }
 .folder-face > *,
 .tab-middle > *,

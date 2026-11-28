@@ -418,7 +418,6 @@ function Home({
 
   return (
     <main className="home">
-      <DeskAssets isEntering={isEntering || isEnteringFromAbout} isLeaving={isLeaving || isLeavingForAbout} />
       <section className="intro" id="hero">
         <h1 className="hero-title">VENTURE X</h1>
         <div className="intro-event" aria-label="VentureX event overview">
