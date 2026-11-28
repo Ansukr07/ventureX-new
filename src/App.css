@@ -16,7 +16,7 @@
 .home{height:100vh;height:100dvh;overflow:hidden}
 /* Pin the homepage to the visible mobile viewport and kill rubber-band/pull-to-refresh */
 @media(max-width:768px){body:has(.home){overscroll-behavior:none}}
-.intro{min-height:680px;height:100vh;padding:20vh 4% 0;text-align:center}
+.intro{min-height:640px;height:100vh;padding:clamp(64px,11vh,105px) 4% 0;text-align:center}
 .intro h1{font:400 clamp(58px,9.6vw,132px)/.85 Elegance,serif;white-space:nowrap;margin:0;letter-spacing:.015em}
 .intro-event{max-width:650px;margin:clamp(16px,2.2vh,26px) auto 0;color:#1d1b1a;font:400 clamp(14px,1.15vw,17px)/1.48 'Lil Grotesk',Arial,sans-serif;text-align:center;text-wrap:balance}
 .intro-event p{margin:0 0 8px}
@@ -199,8 +199,9 @@
    letter-spacing: -0.01em;
  }
 }
+@media(max-width:768px){.intro{padding:clamp(44px,6.5vh,60px) 14px 0}}
 @media(max-width:700px){
- .intro{height:78dvh;min-height:540px;padding:120px 14px 0}
+ .intro{height:78dvh;min-height:500px;padding:clamp(44px,6.5vh,60px) 14px 0}
  .archive{margin-top:-25dvh}.stack{width:100%;margin:0 auto;--row:50px;--open-size:75dvh}
  .folder-face,.folder-sheet{border-radius:0}
  .folder-description{left:20px;right:20px;font-size:14px}
@@ -1650,7 +1651,7 @@
  .file-nav__back { padding: 6px 13px; font-size: 13.5px; border-radius: 5px; gap: 6px; }
  .file-nav__back svg { width: 15px; height: 15px; stroke-width: 2.2; }
  .case-page { padding-top: 52px; }
- .intro { height: 78vh; min-height: 540px; padding: 120px 14px 0; }
+ .intro { height: 78vh; min-height: 500px; padding: clamp(44px, 6.5vh, 60px) 14px 0; }
  .intro h1, .hero-title { white-space: normal; font-size: clamp(48px, 11vw, 75px); }
  .intro p, .intro-subtitle { font-size: 13px; }
  .archive { margin-top: -25vh; }
