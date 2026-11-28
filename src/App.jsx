@@ -166,7 +166,6 @@ function NotFound({ go }) {
             <span>RECORD MISSING</span>
             <span className="not-found-stamp__code">// 404-ERR</span>
           </div>
-          <span className="not-found-serial">DOSSIER-ID: VX-UNKNOWN</span>
         </div>
 
         <div className="not-found-body">
@@ -194,43 +193,6 @@ function NotFound({ go }) {
               <span>Return to VentureX Home</span>
               <span className="not-found-btn__arrow" aria-hidden="true">→</span>
             </a>
-            <a
-              href="/cases/executive-overview"
-              className="not-found-btn not-found-btn--secondary"
-              onClick={e => {
-                e.preventDefault()
-                go('/cases/executive-overview')
-              }}
-            >
-              <span>Executive Overview</span>
-            </a>
-          </div>
-
-          <div className="not-found-directory">
-            <span className="not-found-directory__title">CONFIRMED ARCHIVE FILES</span>
-            <div className="not-found-directory__grid">
-              <a href="/cases/executive-overview" onClick={e => { e.preventDefault(); go('/cases/executive-overview') }}>
-                <span className="dot dot--orange" /> Executive Overview
-              </a>
-              <a href="/cases/for-founders" onClick={e => { e.preventDefault(); go('/cases/for-founders') }}>
-                <span className="dot dot--blue" /> For Founders
-              </a>
-              <a href="/cases/event-timeline" onClick={e => { e.preventDefault(); go('/cases/event-timeline') }}>
-                <span className="dot dot--yellow" /> Event Timeline
-              </a>
-              <a href="/cases/frequently-asked-questions" onClick={e => { e.preventDefault(); go('/cases/frequently-asked-questions') }}>
-                <span className="dot dot--skyblue" /> FAQs
-              </a>
-              <a href="/cases/team" onClick={e => { e.preventDefault(); go('/cases/team') }}>
-                <span className="dot dot--green" /> Team
-              </a>
-              <a href="/cases/why-participate" onClick={e => { e.preventDefault(); go('/cases/why-participate') }}>
-                <span className="dot dot--blue" /> Why Participate
-              </a>
-              <a href="/about" onClick={e => { e.preventDefault(); go('/about') }}>
-                <span className="dot dot--yellow" /> About VentureX
-              </a>
-            </div>
           </div>
         </div>
       </div>
