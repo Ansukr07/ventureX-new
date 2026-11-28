@@ -111,7 +111,6 @@ function Header({ go, isFileOpen = false, onBackHome }) {
 function Footer() {
   return (
     <footer className="folder-footer">
-      <img className="scale" src="/footer/scale.svg" alt="Architectural scale" />
       <span className="footer-year">© 2026</span>
     </footer>
   )
