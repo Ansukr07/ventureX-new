@@ -2,7 +2,7 @@
   {
     "slug": "executive-overview",
     "name": "Executive Overview",
-    "color": "#699ad1",
+    "color": "#FE6237",
     "images": [
       "/classic-1/gallery/footimg6 (1).webp",
       "/classic-1/gallery/image.webp",
@@ -33,7 +33,7 @@
   {
     "slug": "event-timeline",
     "name": "Event Timeline",
-    "color": "#ec2127",
+    "color": "#FFB62E",
     "images": [
       "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -85,7 +85,7 @@
   {
     "slug": "frequently-asked-questions",
     "name": "FAQs",
-    "color": "#f5cf51",
+    "color": "#7CC3FF",
     "images": [
       "/classic-1/gallery/20251212_161438-960.webp",
       "/classic-1/gallery/IMG_4392.webp",
@@ -157,7 +157,7 @@
   {
     "slug": "why-participate",
     "name": "Why Participate",
-    "color": "#803f98",
+    "color": "#4164FF",
     "images": [
       "/classic-1/gallery/DSC01950.webp"
     ],
@@ -186,7 +186,7 @@
   {
     "slug": "for-founders",
     "name": "For Founders",
-    "color": "#803f98",
+    "color": "#4164FF",
     "images": [
       "/classic-1/gallery/DSC00645 (1).webp",
       "/classic-1/gallery/image.webp",
@@ -215,14 +215,17 @@
   {
     "slug": "about-venturex",
     "name": "About VentureX",
-    "color": "#699ad1",
+    "color": "#FE6237",
     "images": [
       "/classic-1/gallery/20251213_022705.webp",
       "/classic-1/gallery/DSC01924.webp",
       "/classic-1/gallery/DSC01635.webp"
     ],
     "notes": [
-      { "title": "Where Capital Meets Connection", "text": "VentureX is a national-level investor-connect program that brings promising startups and potential investors together." }
+      {
+        "title": "Where Capital Meets Connection",
+        "text": "VentureX is a national-level investor-connect program that brings promising startups and potential investors together."
+      }
     ],
     "bio": [
       "VentureX is an entrepreneurial pitching platform by E-Cell, BMSIT&M, designed to bring promising startups, innovative ideas, and potential investors together.",
